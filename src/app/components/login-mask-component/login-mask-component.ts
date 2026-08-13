@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-login-mask-component',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './login-mask-component.html',
   styleUrl: './login-mask-component.scss',
 })
