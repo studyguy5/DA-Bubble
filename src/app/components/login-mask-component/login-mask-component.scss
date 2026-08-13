@@ -52,6 +52,7 @@
         align-items: center;
         gap:20px;
         background-color: rgba(236, 238, 254, 1);
+        outline: 1px solid rgba(236, 238, 254, 1);
         color: rgba(68, 77, 242, 0.8);
         border:none;
         border-radius: 100px;
@@ -60,12 +61,12 @@
         transition: 0.3s;
         margin-bottom: 43px;
         &:hover{
-            transition: 0.3s all;
+            transition: 0.3s ease-in-out;
             padding:11px 143px;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.3px;
             color: rgb(38, 48, 235);
-            outline: 0.5px solid black;
-            transition-property: outline-color;
+            
+            outline: 1px solid black;
             cursor: pointer;
         }
     }
