@@ -1,1 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+@use './app/app.scss';
+
+body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #636161;
+    display:flex;
+    flex-direction: column;
+    
+    min-height: 100vh;
+
+}

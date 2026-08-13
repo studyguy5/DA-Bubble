@@ -1,1 +1,18 @@
-<p>login-register-page-component works!</p>
+
+
+
+<div class="loginHeaderLogoLink">
+    <img src="./images/dabubble_logo.svg" alt="logo">
+    <div class="questonCreateAccount">
+        <p>Neu bei DABubble?</p>
+        <a routerLink="/register"href="#">Konto erstellen</a>
+    </div>
+</div>
+<main>
+    @if(activeMask() === 'loginMask'){
+        <app-login-mask-component></app-login-mask-component>
+    }
+    <!-- <div class="activeMask">
+        
+    </div> -->
+</main>
