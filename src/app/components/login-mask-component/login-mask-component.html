@@ -1,4 +1,22 @@
-<p>login-mask-component works!</p>
+
 <div class="loginMask">
-    
+    <div class="loginInnerMask">
+        <p>Anmeldung</p>
+        <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die<br> du bei der Arbeit verwendest.</p>
+        <form formGroup="loginGroup">
+            <input type="email" placeholder="E-Mail" formControlName="email">
+            <input type="password" placeholder="Password" formControlName="password">
+        </form>
+        <button class="forgotPassword" type="text">Passwort vergessen?</button>
+        <div class="visibleWall">
+            <hr>
+            <p>ODER</p>
+            <hr>
+        </div>
+        <button class="googleLogin" type="text">Anmelden mit Google</button>
+        <div class="signInGuestLoginButtonArea">
+            <button type="text">Anmelden</button>
+            <button type="text">Guest Login</button>
+        </div>
+    </div>
 </div>
