@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { UserService } from '../../../services/user-service';
 
 @Component({
   selector: 'app-channel-user-selection-component',
@@ -6,4 +7,52 @@ import { Component } from '@angular/core';
   templateUrl: './channel-user-selection-component.html',
   styleUrl: './channel-user-selection-component.scss',
 })
-export class ChannelUserSelectionComponent {}
+export class ChannelUserSelectionComponent {
+  channelIsOpen = true
+  collapsingListIsOpen = true
+  memberListIsOpen = false
+  memberListVisible = true
+  wasOpenBefore = false
+  // avatars: string[]
+  readonly DEFAULT_MALE_AVATAR = '/images/male_Avatar1.svg';
+  readonly DEFAULT_FEMALE_AVATAR = '/images/female_Avatar1.svg';
+  private avatarCache = new Map<string, number>();
+  constructor(public userService: UserService) {
+    // this.avatars = [
+    //   './images/male_Avatar1.svg',
+    //   './images/male_Avatar2.svg',
+    //   './images/female_Avatar1.svg',
+    //   './images/female_Avatar2.svg',
+    //   './images/male_Avatar3.svg',
+    //   './images/male_Avatar4.svg'
+    // ]
+    setTimeout(() => {
+      this.changeOpenDelay()
+    }, 200)
+  }
+
+  showChannels() {
+    this.channelIsOpen = !this.channelIsOpen
+    this.collapsingListIsOpen = !this.collapsingListIsOpen
+  }
+
+  showMemberList() {
+    this.memberListIsOpen = !this.memberListIsOpen
+    this.memberListVisible = !this.memberListVisible
+  }
+
+  changeOpenDelay() {
+    this.wasOpenBefore = !this.wasOpenBefore
+  }
+
+  // generateRandomAvatar(userName: string, gender: string) {
+  //   // debugger;
+
+  //   let randomAvatar = this.avatars.filter(avatar => {
+  //     return avatar.includes('/' + gender)
+  //   })
+  //   const randomSingleAvatar = randomAvatar.indexOf(randomAvatar[Math.floor(Math.random() * randomAvatar.length)]);
+  //   console.log(userName, randomSingleAvatar)
+  //   return this.avatars[randomSingleAvatar]
+  // }
+}

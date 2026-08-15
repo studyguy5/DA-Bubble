@@ -1,3 +1,56 @@
 <section class="mainUserChannelSelectionBox">
-    <h2>Users and co.</h2>
+    <div class="devSpaceTopDiv">
+        <img src="./images/devSpaceLogo.svg">
+        <h2>DevSpace</h2>
+        <div class="editsquare">
+            <img src="./icons/edit_square.svg">
+            <img src="./icons/edit_square_lila.svg">
+        </div>
+    </div>
+    <div class="channelsHeader">
+        <div (click)="showChannels()" class="ChannelListDiv">
+            <img src="./icons/channelArrowIcon.svg">
+            <img [class.rotate-90]="!this.channelIsOpen" src="./icons/channelsArrowDownLila.svg">
+            <img src="./icons/channelThreePointsIcon.svg">
+            <img src="./icons/channelsThreePointsLila.svg">
+            <h2>Channels</h2>
+        </div>
+        <div class="addChannel">
+            <img src="./icons/channelPlusIcon.svg">
+            <img src="./icons/plusIconLila.svg">
+        </div>
+    </div>
+    <div [class.withoutDelay]="this.wasOpenBefore" [class.channelListVisible]="this.collapsingListIsOpen" class="channelKollapsingList">
+        <div class="actualChannelsToChoose">
+            <p><img src="./icons/lilaRoute.svg"> Entwicklerteam</p>
+            
+        </div>
+        <div class="newChannelButton">
+            <p>+ Channel hinzufügen</p>
+        </div>
+
+    </div>
+    <div (click)="showMemberList()" class="directMessagesHeader">
+        <img src="./icons/channelArrowIcon.svg">
+        <img [class.member-rotate-90]="!this.memberListIsOpen" src="./icons/channelsArrowDownLila.svg">
+        <img src="./icons/peopleIcon_black.svg">
+        <img src="./icons/peopleIcon_lila.svg">
+        <h2>Direct Messages</h2>
+    </div>
+    <div [class.withoutDelay]="this.wasOpenBefore" [class.memberListVisible]="this.memberListVisible" class="memberListForDirectMessages">
+        @if(userService.userTable().length > 0){
+        @for(user of userService.userTable(); track user.id){
+        @if(user.gender === 'male'){
+            <div class="member">
+        <img [src]="user.avatar ? user.avatar : this.DEFAULT_MALE_AVATAR"> <p>{{user.userName}}</p>
+            </div>
+        }@else{
+            <div class="member">
+            <img [src]="user.avatar ? user.avatar : this.DEFAULT_FEMALE_AVATAR"> <p>{{user.userName}}</p>
+            </div>
+        }
+    }
+}
+        
+    </div>
 </section>

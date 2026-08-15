@@ -1,9 +1,315 @@
-.mainUserChannelSelectionBox{
-    width:366px;
-    height:940px;
-    background-color:rgba(255, 255, 255, 1);
+.mainUserChannelSelectionBox {
+    width: 366px;
+    height: 940px;
+    background-color: rgba(255, 255, 255, 1);
     border-radius: 30px;
+    padding: 32px 30px;
+    box-sizing: border-box;
     // margin-left: 30px;
     // margin-right: 30px;
     // box-sizing: border-box;
 }
+
+.devSpaceTopDiv {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    >img {
+        width: 60px;
+        height: 60px;
+    }
+
+    >h2 {
+        margin-right: 44px;
+    }
+
+    >.editsquare {
+        >img:first-child {
+            display: block;
+        }
+
+        >img:last-child {
+            display: none;
+        }
+    }
+
+    &:hover:not(.editsquare) {
+        cursor: pointer;
+        background-color: rgba(236, 238, 254, 1);
+        border-top-right-radius: 30px;
+        border-bottom-right-radius: 30px;
+
+        >.editsquare {
+            >img:first-child {
+                display: none;
+            }
+
+            >img:last-child {
+                display: block;
+            }
+        }
+
+        >h2 {
+            color: rgba(68, 77, 242, 1);
+        }
+    }
+}
+
+.channelsHeader {
+    display: flex;
+    align-items: center;
+    gap: 100px;
+    height: 46px;
+    margin-top: 25px;
+
+    >.ChannelListDiv {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        cursor: pointer;
+
+        >h2 {
+            margin: 0px;
+            margin-left: -5px;
+        }
+
+        >img:first-child {
+            rotate: -90deg;
+        }
+
+        >img:nth-child(2) {
+            rotate: -90deg;
+            display: none;
+        }
+
+        >img:nth-child(3) {
+            display: block;
+        }
+
+        >img:nth-child(4) {
+            display: none;
+        }
+
+        &:hover {
+            >img:first-child {
+                display: none;
+            }
+
+            >img:nth-child(2) {
+                display: block;
+                rotate: 0deg;
+            }
+
+            >img:nth-child(3) {
+                display: none;
+            }
+
+            >img:nth-child(4) {
+                display: block;
+            }
+
+            h2 {
+                color: rgba(68, 77, 242, 1);
+            }
+        }
+    }
+
+    >.addChannel {
+        cursor: pointer;
+
+        >img:first-child {
+            display: block;
+        }
+
+        >img:last-child {
+            display: none;
+        }
+
+        &:hover {
+            background-color: rgba(160, 164, 238, 0.267);
+            border-radius: 100px;
+
+            >img:first-child {
+                display: none;
+            }
+
+            >img:last-child {
+                display: block;
+            }
+        }
+    }
+}
+
+.rotate-90 {
+    transform: rotate(-90deg);
+    transition: 0.2s ease-in-out;
+}
+
+.mainUserChannelSelectionBox:has(.channelKollapsingList.channelListVisible) {
+    >.channelsHeader {
+        >.ChannelListDiv {
+            >img:nth-child(1) {
+                transform: rotate(90deg);
+            }
+}
+    }
+}
+
+.channelKollapsingList {
+    display: flex;
+    max-height: 0px;
+    margin-left:45px;
+    flex-direction: column;
+    gap: 15px;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+    // background-color:beige;
+    >.newChannelButton{
+        display:flex;
+        >p{
+            margin:0px;
+        }
+    }
+    >p {
+        width:fit-content;
+        border-radius:25px;
+        padding:5px 25px;
+        background-color:rgba(236, 238, 254, 1);
+        cursor: pointer;
+        color: rgba(68, 77, 242, 1);
+        font-size: 20px;
+        margin: 0px;
+        &:hover{
+            background-color:rgb(209, 204, 204, 0.5);
+        }
+    }
+    &:hover{
+        cursor:pointer;
+    }
+    >.actualChannelsToChoose{
+        display:flex;
+        gap:10px;
+        >p{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width:fit-content;
+            border-radius:25px;
+            padding:5px 25px;
+            background-color:rgb(209, 204, 204);
+            cursor: pointer;
+            color: rgba(68, 77, 242, 1);
+            font-size: 18px;
+            font-weight:bold;
+            margin: 0px;
+            &:hover{
+                background-color:rgb(209, 204, 204, 0.5);
+            }
+        }
+    }
+}
+
+.channelListVisible {
+    max-height: 220px;
+    width:261px;
+    transition: max-height 0.3s ease-in-out 0.3s;
+}
+
+.directMessagesHeader{
+    display:flex;
+    cursor: pointer;
+    gap:10px;
+    >img:nth-child(1){
+        rotate:-90deg;
+        margin-right:5px;
+    }
+    >img:nth-child(2){
+        display:none;
+    }
+    >img:nth-child(3){
+        display:block;
+    }
+    >img:nth-child(4){
+        display:none;
+    }
+    &:hover{
+        >img:nth-child(1){
+            display:none;
+        }
+        >img:nth-child(2){
+            display:block;
+            rotate:-90deg;
+            margin-right:5px;
+        }
+        >img:nth-child(3){
+            display:none;
+        }
+        >img:nth-child(4){
+            scale:0.96;
+            display:block;
+        }
+        >h2{
+            color:rgba(68, 77, 242, 1);
+        }
+    }
+}
+
+.memberListForDirectMessages{
+    display:flex;
+    flex-direction:column;
+    align-items: start;
+    margin-left:45px;
+    gap:10px;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    // background-color:bisque;
+    max-height: 0px;
+    transition: max-height 0.3s ease-in-out;
+    >p{
+        width:fit-content;
+        cursor: pointer;
+        color: rgba(68, 77, 242, 1);
+        font-size: 20px;
+        margin: 0px;
+        &:hover{
+            background-color:rgb(209, 204, 204, 0.5);
+        }
+    }
+}
+
+.memberListVisible{
+    display:flex;
+    align-items: start;
+    margin-left:45px;
+    max-height: 420px;
+    gap:13px;
+    overflow-y:auto;
+    scrollbar-width: thin;
+    transition: max-height 0.3s ease-in-out 0.3s;
+}
+
+.member-rotate-90 {
+    transform: rotate(90deg);
+    transition: 0.2s ease-in-out;
+}
+
+.mainUserChannelSelectionBox:has(.memberListForDirectMessages.memberListVisible) {
+    >.directMessagesHeader {
+        
+            >img:nth-child(1) {
+                transform: rotate(90deg);
+            }
+
+    }
+}
+
+.member{
+    display:flex;
+    justify-self: start;
+    gap:15px;
+    font-size:18px;
+}
+    .withoutDelay{
+        transition: max-height 0.3s ease-in-out 0s;
+    }
