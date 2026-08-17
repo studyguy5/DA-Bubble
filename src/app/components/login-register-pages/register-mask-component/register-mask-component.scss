@@ -1,0 +1,148 @@
+.registerMask{
+    max-width:600px;
+    width:100%;
+    max-height:669px;
+    height:100%;
+    border-radius:30px;
+    // border: 1px solid black;
+    background-color:rgba(255, 255, 255, 1);
+    filter:blur(0px 10px);
+    box-sizing:border-box;
+}
+.registerInnerMask{
+    display:flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    padding:15px;
+    box-sizing: border-box;
+    min-width:600px;
+    max-height:669px;
+    >p:first-child{
+        margin-top:35px;
+        margin-bottom:30px;
+        color: rgba(68, 77, 242, 1);
+        font-size:46px;
+    }
+    >p:nth-child(2){
+        margin-top:0px;
+        color: rgba(0, 0, 0, 1);
+        font-size:20px;
+    }
+    >.forgotPassword{
+        margin-top:40px;
+        margin-bottom:33px;
+        text-decoration: none;
+        background-color: transparent;
+        border:none;
+        padding: 5px 10px;
+        box-sizing: border-box;
+        &:hover{
+            background-color: rgba(236, 238, 254, 1);
+            border-radius: 20px;
+            padding: 5px 10px;
+            color:blue;
+            scale:1.02;
+        }
+    }
+
+    .googleLogin{
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        gap:20px;
+        background-color: rgba(236, 238, 254, 1);
+        outline: 1px solid rgba(236, 238, 254, 1);
+        color: rgba(68, 77, 242, 0.8);
+        border:none;
+        border-radius: 100px;
+        font-size:16px;
+        padding: 11px 145px;
+        transition: 0.3s;
+        margin-bottom: 43px;
+        &:hover{
+            transition: 0.3s ease-in-out;
+            padding:11px 143px;
+            letter-spacing: 0.3px;
+            color: rgb(38, 48, 235);
+            
+            outline: 1px solid black;
+            cursor: pointer;
+        }
+    }
+}
+
+form{
+    display:flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    padding:15px;
+    gap:40px;
+    width:100%;
+    max-width: 500px;
+    >input{
+        width:100%;
+        height:60px;
+        padding: 18px 32px;
+        border-radius: 100px;
+        border: none;
+        box-sizing: border-box;
+        background-color:rgba(236, 238, 254, 1);
+        &:hover{
+            outline: 1px solid black;
+            cursor: pointer;
+        }
+    }
+}
+
+.visibleWall{
+    display:flex;
+    height:30px;
+    box-sizing: border-box;
+    text-align: center;
+    align-items: center;
+    padding:15px;
+    gap:15px;
+    width:100%;
+    max-width: 500px;
+    margin-bottom:43px;
+    >hr{
+        width:100%;
+        height:1px;
+        background-color: rgba(173, 176, 217, 1);   
+    }
+    >p{
+        color: rgba(0, 0, 0, 1);
+        font-size:20px;
+    }
+    >hr{
+        width:100%;
+        height:1px;
+        background-color: rgba(173, 176, 217, 1);  
+    }
+}
+
+.registerAndChooseAvatarButton{
+    display:flex;
+    justify-content: end;
+    width:87%;
+    margin-bottom:22px;
+    gap:30px;
+    height:49px;
+    >button{
+        &:first-child{
+            background-color:rgba(68, 77, 242, 1);
+            color:white;
+            transition: 0.3s;
+            &:hover{
+                transition: 0.3s;
+                background-color:rgba(68, 77, 242, 0.7);
+                cursor: pointer;
+            }
+        }
+        
+        padding: 12px 25px;
+        border-radius: 25px;
+    }
+}

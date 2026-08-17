@@ -1,0 +1,19 @@
+
+
+<div class="registerMask">
+    <div class="registerInnerMask">
+        <p>Anmeldung</p>
+        <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die<br> du bei der Arbeit verwendest.</p>
+        <form [formGroup]="loginGroup">
+            <input type="text" placeholder="Name" formControlName="fullName">
+            <input type="email" placeholder="E-Mail" formControlName="email">
+            <input type="password" placeholder="Password" formControlName="password">
+        </form>
+        <button class="forgotPassword" type="text">Passwort vergessen?</button>
+        
+        <div class="registerAndChooseAvatarButton">
+            
+            <button [routerLink]="['home']" type="text">Weiter</button>
+        </div>
+    </div>
+</div>
