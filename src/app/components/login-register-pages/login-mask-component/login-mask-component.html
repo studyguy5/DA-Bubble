@@ -3,7 +3,7 @@
     <div class="loginInnerMask">
         <p>Anmeldung</p>
         <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die<br> du bei der Arbeit verwendest.</p>
-        <form formGroup="loginGroup">
+        <form [formGroup]="loginGroup">
             <input type="email" placeholder="E-Mail" formControlName="email">
             <input type="password" placeholder="Password" formControlName="password">
         </form>
@@ -15,7 +15,7 @@
         </div>
         <button class="googleLogin" type="text"><img src="./images/google_logo.svg" alt="google">Anmelden mit Google</button>
         <div class="signInGuestLoginButtonArea">
-            <button type="text">Anmelden</button>
+            <button (click)="submitRegisterData()" type="text">Anmelden</button>
             <button [routerLink]="['home']" type="text">Guest Login</button>
         </div>
     </div>

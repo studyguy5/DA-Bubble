@@ -21,7 +21,8 @@ let { data: Userprofile, error } = await this.supabase
   .from('profiles')
   .select('*')
   if(!Userprofile || error) return
-  this.userTable.set(Userprofile)
+  // debugger;
+  this.userTable.set(Userprofile as any)
   console.log('Data from supabase:', Userprofile)
   console.log('Data from Signal', this.userTable)
   }

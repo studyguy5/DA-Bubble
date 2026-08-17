@@ -13,10 +13,12 @@ export class ChannelUserSelectionComponent {
   memberListIsOpen = false
   memberListVisible = true
   wasOpenBefore = false
+  selectBoxIsOpen = true
+  isMinimized = false
   // avatars: string[]
   readonly DEFAULT_MALE_AVATAR = '/images/male_Avatar1.svg';
   readonly DEFAULT_FEMALE_AVATAR = '/images/female_Avatar1.svg';
-  private avatarCache = new Map<string, number>();
+  
   constructor(public userService: UserService) {
     // this.avatars = [
     //   './images/male_Avatar1.svg',
@@ -45,14 +47,8 @@ export class ChannelUserSelectionComponent {
     this.wasOpenBefore = !this.wasOpenBefore
   }
 
-  // generateRandomAvatar(userName: string, gender: string) {
-  //   // debugger;
-
-  //   let randomAvatar = this.avatars.filter(avatar => {
-  //     return avatar.includes('/' + gender)
-  //   })
-  //   const randomSingleAvatar = randomAvatar.indexOf(randomAvatar[Math.floor(Math.random() * randomAvatar.length)]);
-  //   console.log(userName, randomSingleAvatar)
-  //   return this.avatars[randomSingleAvatar]
-  // }
+  collapseSelectBox(){
+    this.selectBoxIsOpen = !this.selectBoxIsOpen
+    this.isMinimized = !this.isMinimized
+  }
 }

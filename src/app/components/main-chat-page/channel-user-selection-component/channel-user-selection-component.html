@@ -1,4 +1,4 @@
-<section class="mainUserChannelSelectionBox">
+<section [class.collapseSelectBox]="!this.selectBoxIsOpen" class="mainUserChannelSelectionBox">
     <div class="devSpaceTopDiv">
         <img src="./images/devSpaceLogo.svg">
         <h2>DevSpace</h2>
@@ -26,7 +26,9 @@
             
         </div>
         <div class="newChannelButton">
-            <p>+ Channel hinzufügen</p>
+            <img src="./icons/addChannelPlusIcon.svg">
+            <img src="./icons/addChannelPlusIconLila.svg">
+            <p> Channel hinzufügen</p>
         </div>
 
     </div>
@@ -42,15 +44,18 @@
         @for(user of userService.userTable(); track user.id){
         @if(user.gender === 'male'){
             <div class="member">
-        <img [src]="user.avatar ? user.avatar : this.DEFAULT_MALE_AVATAR"> <p>{{user.userName}}</p>
+        <img [src]="user.avatar_url ? user.avatar_url : this.DEFAULT_MALE_AVATAR"> <p>{{user.username}}</p>
             </div>
         }@else{
             <div class="member">
-            <img [src]="user.avatar ? user.avatar : this.DEFAULT_FEMALE_AVATAR"> <p>{{user.userName}}</p>
+            <img [src]="user.avatar_url ? user.avatar_url : this.DEFAULT_FEMALE_AVATAR"> <p>{{user.username}}</p>
             </div>
         }
     }
 }
         
+    </div>
+    <div (click)="collapseSelectBox()" class="optionToMinimizeDiv">
+        <p>Workspace-Menü schließen</p> <img [class.minimized]="this.isMinimized" src="./icons/minimizeIcon_Black.svg"><img [class.minimized]="this.isMinimized" src="./icons/minimizeIcon_Lila.svg">
     </div>
 </section>

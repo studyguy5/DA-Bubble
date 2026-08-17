@@ -5,14 +5,17 @@
     <img src="./images/dabubble_logo.svg" alt="logo">
     <div class="questonCreateAccount">
         <p>Neu bei DABubble?</p>
-        <a routerLink="/register"href="#">Konto erstellen</a>
+        <p class="createAccount" [routerLink]="['register']">Konto erstellen</p>
     </div>
 </div>
 <main>
-    @if(activeMask() === 'loginMask'){
+    <!-- @if(activeMask() === 'loginMask'){
         <app-login-mask-component></app-login-mask-component>
-    }
+    }@else if(activeMask() === 'registerMask'){
+        <app-register-mask-component></app-register-mask-component>
+    } -->
     <!-- <div class="activeMask">
         
     </div> -->
+    <router-outlet></router-outlet>
 </main>
