@@ -1,19 +1,29 @@
-
-
 <div class="registerMask">
     <div class="registerInnerMask">
-        <p>Anmeldung</p>
-        <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die<br> du bei der Arbeit verwendest.</p>
-        <form [formGroup]="loginGroup">
+        <div class="registerHeadlineButtonArea">
+            <div class="arrowBox">
+                <img src="./icons/goBackArrow.svg">
+                <img [routerLink]="['/login']" src="./icons/backButtonLila.svg">
+            </div>
+            <div class="headline">
+                <p>Konto erstellen</p>
+                <p>Mit deinem Namen und deiner E-Mail-Adresse hast<br> du dein neues DABubble-Konto.</p>
+            </div>
+        </div>
+        <form [formGroup]="registerGroup">
             <input type="text" placeholder="Name" formControlName="fullName">
             <input type="email" placeholder="E-Mail" formControlName="email">
             <input type="password" placeholder="Password" formControlName="password">
         </form>
-        <button class="forgotPassword" type="text">Passwort vergessen?</button>
-        
+        <div class="dataSecurityCheckBox">
+            <input type="checkbox">
+            <p class="forgotPassword" type="text">Ich stimme der <a href="#">Datenschutzerklärung </a>&nbsp;zu</p>
+
+        </div>
+
         <div class="registerAndChooseAvatarButton">
-            
-            <button [routerLink]="['home']" type="text">Weiter</button>
+
+            <button (click)="submitRegisterData()" type="text">Weiter</button>
         </div>
     </div>
 </div>

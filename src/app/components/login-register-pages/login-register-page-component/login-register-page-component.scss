@@ -20,6 +20,7 @@ main{
     display:flex;
     justify-content: center;
     margin-top: 100px;
+    position:relative;
 }
 
 .createAccount{
@@ -27,4 +28,33 @@ main{
     font-weight: bold;
     cursor: pointer;
     margin-left: 5px;
+}
+
+.hideRegisterLink{
+    display:none;
+}
+
+.ImpressumDataLinks{
+        display:flex;
+        justify-content: center;
+        position: absolute;
+        bottom: 60px;
+        width: 100%;
+        gap:16px;
+        >a{
+            color:rgba(68, 77, 242, 0.7);
+            outline: 1px solid transparent;
+            text-decoration: none;
+            padding:10px 15px;
+            border-radius: 25px;
+            transition: 0.2s ease-in-out;
+            font-size:18px;
+            &:hover{
+                transition: 0.2s ease-in-out;
+                outline: 1px solid rgba(168, 166, 166, 0.719);
+                // transition: 0.3s;
+                color: rgba(68, 77, 242, 1);
+                cursor: pointer;
+            }
+        }
 }

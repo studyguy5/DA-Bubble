@@ -1,0 +1,36 @@
+<div class="avatarMask">
+    <div class="avatarInnerMask">
+        <div class="avatarHeader">
+            <div class="arrowBox">
+                <img src="./icons/goBackArrow.svg">
+                <img src="./icons/backButtonLila.svg">
+            </div>
+            <p>Wähle einen Avatar</p>
+        </div>
+        <div class="choosenAvatarBox">
+            <img src="./images/avatarDefault.svg">
+            <p>Dein Name</p>
+        </div>
+        <div class="avatarHeadlineAndBox">
+            <p class="avatarsHeadline">Aus der Liste wählen</p>
+            <div class="avatarBox">
+                <button (click)="selectAvatar('./images/male_Avatar1.svg')" data-path="./images/male_Avatar1.svg"><img
+                        src="./images/male_Avatar1.svg" alt=""></button>
+                <button (click)="selectAvatar('./images/male_Avatar2.svg')"><img src="./images/male_Avatar2.svg"
+                        data-path="./images/male_Avatar2.svg" alt=""></button>
+                <button (click)="selectAvatar('./images/female_Avatar1.svg')"><img src="./images/female_Avatar1.svg"
+                        data-path="./images/female_Avatar1.svg" alt=""></button>
+                <button (click)="selectAvatar('./images/male_Avatar3.svg')"><img src="./images/male_Avatar3.svg"
+                        data-path="./images/male_Avatar3.svg" alt=""></button>
+                <button (click)="selectAvatar('./images/female_Avatar2.svg')"><img src="./images/female_Avatar2.svg"
+                        data-path="./images/female_Avatar2.svg" alt=""></button>
+                <button (click)="selectAvatar('./images/male_Avatar4.svg')"><img src="./images/male_Avatar4.svg"
+                        data-path="./images/male_Avatar4.svg" alt=""></button>
+            </div>
+        </div>
+        <div class="signUpButtonArea">
+
+            <button (click)="pushAvatarChoiseToSupabase()" type="text">Weiter</button>
+        </div>
+    </div>
+</div>

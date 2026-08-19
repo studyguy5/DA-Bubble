@@ -52,5 +52,11 @@ supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
     }
     
   }
+
+  preFillData() {
+    this.loginGroup.get('email')?.setValue('example45@example.com');
+    this.loginGroup.get('password')?.setValue('123456');
+  }
 }
+
 

@@ -3,6 +3,7 @@ import { LoginRegisterPageComponent } from './components/login-register-pages/lo
 import { MainChatpageComponent } from './components/main-chat-page/main-chatpage-component/main-chatpage-component';
 import { LoginMaskComponent } from './components/login-register-pages/login-mask-component/login-mask-component';
 import { RegisterMaskComponent } from './components/login-register-pages/register-mask-component/register-mask-component';
+import { SelectAvatarComponent } from './components/login-register-pages/select-avatar-component/select-avatar-component';
 
 export const routes: Routes = [
 
@@ -18,6 +19,10 @@ export const routes: Routes = [
                 path: 'register',
                 component: RegisterMaskComponent,
             },
+            {
+                path: 'selectAvatar',
+                component: SelectAvatarComponent
+            }
         ]
     },
     {

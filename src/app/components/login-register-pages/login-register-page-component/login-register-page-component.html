@@ -3,7 +3,7 @@
 
 <div class="loginHeaderLogoLink">
     <img src="./images/dabubble_logo.svg" alt="logo">
-    <div class="questonCreateAccount">
+    <div [class.hideRegisterLink]="this.showAvatar" class="questonCreateAccount">
         <p>Neu bei DABubble?</p>
         <p class="createAccount" [routerLink]="['register']">Konto erstellen</p>
     </div>
@@ -19,3 +19,7 @@
     </div> -->
     <router-outlet></router-outlet>
 </main>
+<div class="ImpressumDataLinks">
+    <a href="">Impressum</a>
+    <a href="">Datenschutz</a>
+</div>
