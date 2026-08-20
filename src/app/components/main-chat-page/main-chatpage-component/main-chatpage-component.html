@@ -14,8 +14,8 @@
         </div>
     </div>
     <div class="mainChatArea">
-        <app-channel-user-selection-component></app-channel-user-selection-component>
-        <app-direct-messages-component style="flex: 1; display:flex"></app-direct-messages-component>
+        <app-channel-user-selection-component (selectedUser)="getChoiceFromSelectionComponent($any($event))"></app-channel-user-selection-component>
+        <app-direct-messages-component [selectedUser]="$any(selectedUser())" style="flex: 1; display:flex"></app-direct-messages-component>
         <!-- <app-direct-messages-component style="flex: 1; display:flex"></app-direct-messages-component> -->
         <app-user-threads-component></app-user-threads-component>
     </div>

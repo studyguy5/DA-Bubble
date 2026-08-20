@@ -341,6 +341,13 @@
     justify-self: start;
     gap:15px;
     font-size:18px;
+    padding:0px 25px 0px 0px;
+    cursor: pointer;
+    &:hover{
+        border-radius:0px 25px 25px 0px;
+        background-color:rgba(236, 238, 254, 1);
+        color: rgba(68, 77, 242, 1);
+    }
 }
     .withoutDelay{
         transition: max-height 0.3s ease-in-out 0s;

@@ -2,7 +2,10 @@
     <div class="chatHeader">
         <div class="channelName">
             <img src="./icons/chatRouteIcon.svg">
-            <h2>Entwickler</h2>
+            @if(selectedUser(); as user){
+                <h2>{{user.username}}</h2>
+                
+            }
             <img src="./icons/chatHeaderArrowDownIcon.svg">
         </div>
         <div class="ChannelMemberViewAndInfo">

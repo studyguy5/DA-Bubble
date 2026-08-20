@@ -43,11 +43,11 @@
         @if(userService.userTable().length > 0){
         @for(user of userService.userTable(); track user.id){
         @if(user.gender === 'male'){
-            <div class="member">
+            <div (click)="selectUserAndEmitToParentComponent(user)" class="member">
         <img [src]="user.avatar_url ? user.avatar_url : this.DEFAULT_MALE_AVATAR"> <p>{{user.username}}</p>
             </div>
         }@else{
-            <div class="member">
+            <div (click)="selectUserAndEmitToParentComponent(user)" class="member">
             <img [src]="user.avatar_url ? user.avatar_url : this.DEFAULT_FEMALE_AVATAR"> <p>{{user.username}}</p>
             </div>
         }

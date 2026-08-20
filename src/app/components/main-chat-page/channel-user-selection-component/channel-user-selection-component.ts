@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../../services/user-service';
+import { output } from '@angular/core';
+import { User } from '../../../interfaces/interfaces';
 
 @Component({
   selector: 'app-channel-user-selection-component',
@@ -16,9 +18,13 @@ export class ChannelUserSelectionComponent {
   selectBoxIsOpen = true
   isMinimized = false
   // avatars: string[]
+
+
   readonly DEFAULT_MALE_AVATAR = '/images/male_Avatar1.svg';
   readonly DEFAULT_FEMALE_AVATAR = '/images/female_Avatar1.svg';
   
+  
+  selectedUser = output<User>()
   constructor(public userService: UserService) {
     // this.avatars = [
     //   './images/male_Avatar1.svg',
@@ -31,6 +37,11 @@ export class ChannelUserSelectionComponent {
     setTimeout(() => {
       this.changeOpenDelay()
     }, 200)
+  }
+  selectUserAndEmitToParentComponent(user: User) {
+    // debugger;
+    console.log(user)
+    this.selectedUser.emit(user)
   }
 
   showChannels() {
@@ -51,4 +62,5 @@ export class ChannelUserSelectionComponent {
     this.selectBoxIsOpen = !this.selectBoxIsOpen
     this.isMinimized = !this.isMinimized
   }
+
 }

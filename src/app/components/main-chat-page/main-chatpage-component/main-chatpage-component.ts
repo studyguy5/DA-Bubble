@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { ChannelUserSelectionComponent } from '../channel-user-selection-component/channel-user-selection-component';
 import { DirectMessagesComponent } from '../direct-messages-component/direct-messages-component';
 import { UserThreadsComponent } from '../user-threads-component/user-threads-component';
+import { User } from '@supabase/supabase-js';
 
 @Component({
   selector: 'app-main-chatpage-component',
@@ -13,16 +14,23 @@ import { UserThreadsComponent } from '../user-threads-component/user-threads-com
 })
 export class MainChatpageComponent {
 
+  selectedUser = signal<User | null>(null);
   constructor(@Inject(DOCUMENT) private document: Document) {
     this.document = document;
     this.addBodyClassForMain();
   }
-
+  
   addBodyClassForMain(){
     this.document.body.classList.add('mainUserPage');
+    
   }
   
   ngOnDestroy(){
     this.document.body.classList.remove('mainUserPage');
+  }
+
+  getChoiceFromSelectionComponent(selectedUser: User) {
+    this.selectedUser.set(selectedUser);
+    // console.log('input on mainChatpage', this.selectedUser());
   }
 }
