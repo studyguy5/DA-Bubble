@@ -396,3 +396,16 @@
     rotate:(180deg);
     transition: 0.3s ease-in-out;
 }
+
+.cdk-overlay-popover:has(.createChannelDialog) {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    // justify-content: start !important;
+    // align-items:start !important;
+}
+

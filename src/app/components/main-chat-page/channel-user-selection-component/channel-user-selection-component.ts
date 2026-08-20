@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { UserService } from '../../../services/user-service';
 import { output } from '@angular/core';
 import { User } from '../../../interfaces/interfaces';
+import { CreateChannelComponent } from '../create-channel-component/create-channel-component';
+import { Dialog, DialogConfig } from '@angular/cdk/dialog';
+
 
 @Component({
   selector: 'app-channel-user-selection-component',
@@ -25,7 +28,7 @@ export class ChannelUserSelectionComponent {
   
   
   selectedUser = output<User>()
-  constructor(public userService: UserService) {
+  constructor(public userService: UserService,@Inject(Dialog) private dialog: Dialog) {
     // this.avatars = [
     //   './images/male_Avatar1.svg',
     //   './images/male_Avatar2.svg',
@@ -34,10 +37,13 @@ export class ChannelUserSelectionComponent {
     //   './images/male_Avatar3.svg',
     //   './images/male_Avatar4.svg'
     // ]
+
     setTimeout(() => {
       this.changeOpenDelay()
     }, 200)
   }
+
+  
   selectUserAndEmitToParentComponent(user: User) {
     // debugger;
     console.log(user)
@@ -61,6 +67,23 @@ export class ChannelUserSelectionComponent {
   collapseSelectBox(){
     this.selectBoxIsOpen = !this.selectBoxIsOpen
     this.isMinimized = !this.isMinimized
+  }
+  
+  openDialog() {
+    
+    // debugger;
+    console.log('openDialog')
+    this.dialog.open(CreateChannelComponent,
+      {
+        width: '872px',
+        height: '539px',
+        panelClass: 'createChannelDialog',
+        data: {
+          title: 'Create Channel'
+        },
+        
+      }
+    )
   }
 
 }

@@ -22,13 +22,13 @@
     </div>
     <div [class.withoutDelay]="this.wasOpenBefore" [class.channelListVisible]="this.collapsingListIsOpen" class="channelKollapsingList">
         <div class="actualChannelsToChoose">
-            <p><img src="./icons/lilaRoute.svg"> Entwicklerteam</p>
+            <p ><img src="./icons/lilaRoute.svg"> Entwicklerteam</p>
             
         </div>
         <div class="newChannelButton">
             <img src="./icons/addChannelPlusIcon.svg">
             <img src="./icons/addChannelPlusIconLila.svg">
-            <p> Channel hinzufügen</p>
+            <p (click)="openDialog()"> Channel hinzufügen</p>
         </div>
 
     </div>

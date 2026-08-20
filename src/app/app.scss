@@ -4,3 +4,10 @@
 @forward './components/main-chat-page/channel-user-selection-component/channel-user-selection-component';
 @forward './components/main-chat-page/direct-messages-component/direct-messages-component';
 @forward './components/main-chat-page/user-threads-component/user-threads-component';
+
+// .cdk-overlay-popover, .cdk-global-overlay-wrapper:has(.createChannelDialog) {
+//   justify-content: flex-start !important;
+//   align-items: flex-start !important;
+// }
+// diese Klase bräuchtest du um den Dialog zu positionieren, weil du mit hier inline styles überschreiben musst
+// wenn der dialog mittig zentriert sein soll, dann passt die voreinstellung in den globalen styles
