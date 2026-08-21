@@ -221,6 +221,7 @@
     }
     >.actualChannelsToChoose{
         display:flex;
+        flex-direction: column;
         gap:10px;
         >p{
             display: flex;
@@ -401,7 +402,7 @@
     position: absolute;
     top: 0px;
     left: 0px;
-    border-radius: 20px;
+    // border-radius: 20px;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
     display: flex;

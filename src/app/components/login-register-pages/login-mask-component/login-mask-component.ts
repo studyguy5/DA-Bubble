@@ -7,7 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-login-mask-component',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './login-mask-component.html',
   styleUrl: './login-mask-component.scss',
 })
@@ -56,6 +56,47 @@ supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
   preFillData() {
     this.loginGroup.get('email')?.setValue('example45@example.com');
     this.loginGroup.get('password')?.setValue('123456');
+  }
+
+  async signInAsGuest() {
+    const { data: session, error: sessionError } = await this.supabase.auth.getSession()
+    if(sessionError || !session){  
+      console.log(sessionError);
+      throw sessionError
+    }
+    if(session) {
+      const { data: { user }, error: userError } = await this.supabase.auth.getUser();
+
+    if (!userError && user) {
+      console.log('Session ist gültig:', user.id);
+      console.warn('Lokale Session existiert, aber der User ist nicht mehr gültig.');
+      this.supabase.auth.signOut();
+      return;
+    }
+    }
+
+    const { data, error } = await this.supabase.auth.signInAnonymously();
+    if (error) {
+      console.log(error);
+      throw error
+    }
+    if (!data.user || !data.session) {
+    throw new Error('Supabase hat keinen anonymen User erzeugt.');
+  }
+
+  console.log('Anonymer Benutzer erstellt:', data.user.id);
+    
+  }
+
+  async continueAsGuest() {
+    debugger;
+    try {
+      this.signInAsGuest()
+      await this.router.navigate(['/home']);
+    } catch (error) {
+      console.log(error);
+    }
+    
   }
 }
 

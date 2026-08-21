@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { input, effect } from '@angular/core';
-import { User } from '../../../interfaces/interfaces';
+import { User, Channel } from '../../../interfaces/interfaces';
 
 @Component({
   selector: 'app-direct-messages-component',
@@ -11,16 +11,15 @@ import { User } from '../../../interfaces/interfaces';
 export class DirectMessagesComponent {
 
   selectedUser = input< User | null>(null)
+  selectedChannel = input<Channel | null>(null)
   constructor() {
     effect(() => {
-    console.log(
-      'DirectMessages bekommt:',
-      this.selectedUser()
-    );
+    console.log('DirectMessages bekommt:',this.selectedUser());
+    console.log('channel on direktMessages', this.selectedChannel());
+    
+    
   });
   }
   
-  loggaOut() {
-    console.log('input on direktMessages', this.selectedUser());
-  }
+  
 }

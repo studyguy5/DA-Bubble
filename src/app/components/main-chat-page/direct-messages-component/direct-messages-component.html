@@ -5,6 +5,8 @@
             @if(selectedUser(); as user){
                 <h2>{{user.username}}</h2>
                 
+            }@else if(selectedChannel(); as channel){
+                <h2>{{channel.name}}</h2>
             }
             <img src="./icons/chatHeaderArrowDownIcon.svg">
         </div>

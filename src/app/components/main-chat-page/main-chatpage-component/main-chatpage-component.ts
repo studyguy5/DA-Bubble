@@ -1,10 +1,13 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { ChannelUserSelectionComponent } from '../channel-user-selection-component/channel-user-selection-component';
 import { DirectMessagesComponent } from '../direct-messages-component/direct-messages-component';
 import { UserThreadsComponent } from '../user-threads-component/user-threads-component';
 import { User } from '@supabase/supabase-js';
+import { Channel } from '../../../interfaces/interfaces';
+import { UserService } from '../../../services/user-service';
+
 
 @Component({
   selector: 'app-main-chatpage-component',
@@ -14,8 +17,13 @@ import { User } from '@supabase/supabase-js';
 })
 export class MainChatpageComponent {
 
+  currentUser: any;
+
+  userService = inject(UserService);
   selectedUser = signal<User | null>(null);
+  selectedChannel = signal<Channel | null>(null);
   constructor(@Inject(DOCUMENT) private document: Document) {
+    
     this.document = document;
     this.addBodyClassForMain();
   }
@@ -24,6 +32,16 @@ export class MainChatpageComponent {
     this.document.body.classList.add('mainUserPage');
     
   }
+
+  async ngOnInit() {
+    this.currentUser =
+      await this.userService.getCurrentSignedInUser();
+      console.log('current user', this.currentUser)
+  }
+
+  // getUserNameWithId(user: User) {
+  //   const data = this.supabase.auth.user();
+  // }
   
   ngOnDestroy(){
     this.document.body.classList.remove('mainUserPage');
@@ -31,6 +49,12 @@ export class MainChatpageComponent {
 
   getChoiceFromSelectionComponent(selectedUser: User) {
     this.selectedUser.set(selectedUser);
+    this.selectedChannel.set(null);
+    // console.log('input on mainChatpage', this.selectedUser());
+  }
+  getChoiceFromChannelSelectionComponent(selectedChannel: Channel) {
+    this.selectedChannel.set(selectedChannel);
+    this.selectedUser.set(null);
     // console.log('input on mainChatpage', this.selectedUser());
   }
 }

@@ -7,15 +7,22 @@
             <img src="./icons/search-Icon.svg">
         </div>
         <div class="profileAndSettings">
-            <p>Max Mustermann</p>
+            @if(currentUser && currentUser !== null){
+                {{ currentUser}}
+            }@else {
+                {{'Guest'}}
+            }
+                
+            
+            <p></p>
             <img src="./images/profileImageExample.svg">
             <img src="./icons/settingsArrowDown.svg">
             <img src="/icons/arrowDownLila.svg">
         </div>
     </div>
     <div class="mainChatArea">
-        <app-channel-user-selection-component (selectedUser)="getChoiceFromSelectionComponent($any($event))"></app-channel-user-selection-component>
-        <app-direct-messages-component [selectedUser]="$any(selectedUser())" style="flex: 1; display:flex"></app-direct-messages-component>
+        <app-channel-user-selection-component (selectedChannel)="getChoiceFromChannelSelectionComponent($any($event))" (selectedUser)="getChoiceFromSelectionComponent($any($event))"></app-channel-user-selection-component>
+        <app-direct-messages-component [selectedChannel]="$any(selectedChannel())" [selectedUser]="$any(selectedUser())" style="flex: 1; display:flex"></app-direct-messages-component>
         <!-- <app-direct-messages-component style="flex: 1; display:flex"></app-direct-messages-component> -->
         <app-user-threads-component></app-user-threads-component>
     </div>

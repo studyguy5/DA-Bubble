@@ -22,6 +22,9 @@
     </div>
     <div [class.withoutDelay]="this.wasOpenBefore" [class.channelListVisible]="this.collapsingListIsOpen" class="channelKollapsingList">
         <div class="actualChannelsToChoose">
+            @for(channel of userService.channelTable(); track channel.uuid){
+            <p (click)="selectChannelAndEmitToParentComponent(channel)"><img src="./icons/lilaRoute.svg"> {{channel.name}}</p>    
+            }
             <p ><img src="./icons/lilaRoute.svg"> Entwicklerteam</p>
             
         </div>

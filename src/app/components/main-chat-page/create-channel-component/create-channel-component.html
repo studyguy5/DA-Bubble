@@ -1,1 +1,15 @@
-<p>create-channel-component works!</p>
+<div class="createChannelMainFrame">
+    <div class="headlineDescription">
+        <h2>Channel erstellen</h2>
+        <span class="descriptionText">Channels dienen deinem Team zur Kommunikation. Am besten sollten sie themenbezogen sein<br> #marketing zum Beispiel</span>
+    </div>
+    <div class="createChannelForm">
+        <form [formGroup]="channelGroup">
+            <label for="">Channel-Name</label>
+            <input type="text" placeholder="# z.B. marketing" formControlName="channelName">
+            <label for="">Beschreibung (optional)</label>
+            <input type="text" placeholder="z.B Appointment Coordination" formControlName="channelDescription">
+        </form>
+        <button (click)="pushDataIntoSupabase()" class="pushChannel">Erstellen</button>
+    </div>
+</div>

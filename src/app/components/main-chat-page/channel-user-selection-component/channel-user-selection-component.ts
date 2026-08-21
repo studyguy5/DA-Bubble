@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { UserService } from '../../../services/user-service';
 import { output } from '@angular/core';
-import { User } from '../../../interfaces/interfaces';
+import { User, Channel } from '../../../interfaces/interfaces';
 import { CreateChannelComponent } from '../create-channel-component/create-channel-component';
 import { Dialog, DialogConfig } from '@angular/cdk/dialog';
 
@@ -28,6 +28,7 @@ export class ChannelUserSelectionComponent {
   
   
   selectedUser = output<User>()
+  selectedChannel = output<Channel>()
   constructor(public userService: UserService,@Inject(Dialog) private dialog: Dialog) {
     // this.avatars = [
     //   './images/male_Avatar1.svg',
@@ -48,6 +49,12 @@ export class ChannelUserSelectionComponent {
     // debugger;
     console.log(user)
     this.selectedUser.emit(user)
+  }
+
+  selectChannelAndEmitToParentComponent(selectedChannel:Channel){
+    // debugger;
+    console.log(selectedChannel)
+    this.selectedChannel.emit(selectedChannel)
   }
 
   showChannels() {
