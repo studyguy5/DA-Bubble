@@ -44,7 +44,7 @@
     </div>
     <div [class.withoutDelay]="this.wasOpenBefore" [class.memberListVisible]="this.memberListVisible" class="memberListForDirectMessages">
         @if(userService.userTable().length > 0){
-        @for(user of userService.userTable(); track user.id){
+        @for(user of userService.userTable(); track user){
         @if(user.gender === 'male'){
             <div (click)="selectUserAndEmitToParentComponent(user)" class="member">
         <img [src]="user.avatar_url ? user.avatar_url : this.DEFAULT_MALE_AVATAR"> <p>{{user.username}}</p>

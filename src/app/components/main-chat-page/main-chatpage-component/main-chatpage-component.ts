@@ -7,6 +7,7 @@ import { UserThreadsComponent } from '../user-threads-component/user-threads-com
 import { User } from '@supabase/supabase-js';
 import { Channel } from '../../../interfaces/interfaces';
 import { UserService } from '../../../services/user-service';
+import { ChangeDetectorRef } from '@angular/core';
 
 
 @Component({
@@ -17,12 +18,12 @@ import { UserService } from '../../../services/user-service';
 })
 export class MainChatpageComponent {
 
-  currentUser: any;
+  currentUser: string | null = null;
 
   userService = inject(UserService);
   selectedUser = signal<User | null>(null);
   selectedChannel = signal<Channel | null>(null);
-  constructor(@Inject(DOCUMENT) private document: Document) {
+  constructor(@Inject(DOCUMENT) private document: Document, private changeDetectorRef: ChangeDetectorRef) {
     
     this.document = document;
     this.addBodyClassForMain();
@@ -34,8 +35,10 @@ export class MainChatpageComponent {
   }
 
   async ngOnInit() {
+    // debugger;
     this.currentUser =
       await this.userService.getCurrentSignedInUser();
+      this.changeDetectorRef.detectChanges();
       console.log('current user', this.currentUser)
   }
 

@@ -1,0 +1,52 @@
+<div class="ChannelInfoMainFrame">
+    <div class="headlineDescriptionForInfoFrame">
+        @if(channel()){
+        <h2>#&nbsp;{{channel()?.name}}</h2>
+        <img src="./icons/blackCloseIcon.svg">
+        }@else {
+        <h2>Hello World</h2>
+        }
+    </div>
+    <div class="ChannelInfoForm">
+        <form [formGroup]="channelInfoGroup">
+            
+            <div id="channelName" class="channelNameheaderandSaveLineNormalMode">
+                <div [class.hide]="this.editModeOn" class="channelNameInfo">
+                    <div [class.hide]="this.editModeOn" class="nameEditHeader">
+                        <h2 [class.hide]="this.editModeOn">Channel-Name</h2>
+                        <button [class.hide]="this.editModeOn" (click)="editChannelName()">Bearbeiten</button>
+                    </div>
+                    #&nbsp;{{channel()?.name}}
+                </div>
+            </div>
+
+            <div  class="editModeHeadline">
+                <label for="">Channel-Name</label>
+                <button >Speichern</button>
+            </div>
+                <input id="nameInput" class="nameInput" type="text" placeholder="#&nbsp;{{channel()?.name}}"
+                formControlName="channelInfoName">
+            
+            <div class="channelDescriptionInfoNormalMode">
+                <div class="descriptionEditHeader">
+                    <h2>Beschreibung</h2>
+                    <button (click)="editChannelDescription()">Bearbeiten</button>
+                </div>
+                <p [class.hide]="this.editModeDescriptionOn">{{channel()?.description}}</p>
+                <input class="descriptionInput" type="text" placeholder="z.B Appointment Coordination"formControlName="channelInfoDescription">
+                <hr>
+                <h3>Erstellt von:</h3>
+                @if(channel()?.created_by){
+                    
+                    {{channel()?.created_by}}
+                }
+            </div>
+            <!-- am besten setzt du channel Name auch mit dem selben konzept um, da man so die animation besser hinbekommt  ==================================-->
+            <!-- <div class="channelDescriptionheaderandSaveLine">
+                <label for="">Beschreibung (optional)</label>
+                <a href="">Speichern</a>
+            </div> -->
+        </form>
+        <button class="pushChannel">Erstellen</button>
+    </div>
+</div>

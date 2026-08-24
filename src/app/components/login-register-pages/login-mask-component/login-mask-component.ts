@@ -66,13 +66,14 @@ supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
     }
     if(session) {
       const { data: { user }, error: userError } = await this.supabase.auth.getUser();
-
-    if (!userError && user) {
-      console.log('Session ist gültig:', user.id);
-      console.warn('Lokale Session existiert, aber der User ist nicht mehr gültig.');
-      this.supabase.auth.signOut();
-      return;
-    }
+      console.log('user and userError', user, userError)
+      return
+    // if (!userError && user) {
+    //   console.log('Session ist gültig:', user.id);
+    //   console.warn('Lokale Session existiert, aber der User ist nicht mehr gültig.');
+    //   this.supabase.auth.signOut(); // diese Zeile löscht die lokale Session, also den token aus dem local storage, überlegen ob richtig!!
+    //   return;
+    // }
     }
 
     const { data, error } = await this.supabase.auth.signInAnonymously();
