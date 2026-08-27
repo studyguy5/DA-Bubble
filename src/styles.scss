@@ -1,5 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @use './app/app.scss';
+@use './fonts.scss';
+
 
 body{
     margin: 0;
@@ -14,6 +16,19 @@ body{
 }
 
 .cdk-overlay-pane.createChannelDialog{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    
+    
+    background-color: rgba(255, 255, 255, 1);
+    z-index: 1000;
+    
+}
+
+.cdk-overlay-pane.addMemberToChannelDialog{
     display:flex;
     flex-direction: column;
     align-items: center;

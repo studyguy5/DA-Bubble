@@ -28,10 +28,7 @@ supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
     const email = this.loginGroup.getRawValue().email || '';
     const password = this.loginGroup.getRawValue().password || '';
     console.log('ausgeloggte UserDaten',email, password);
-    // const payload = {
-    //   email: email,
-    //   password: password
-    // }
+    
     const { data, error } = await this.supabase.auth.signUp(
       {
         email: email,
@@ -68,12 +65,6 @@ supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
       const { data: { user }, error: userError } = await this.supabase.auth.getUser();
       console.log('user and userError', user, userError)
       return
-    // if (!userError && user) {
-    //   console.log('Session ist gültig:', user.id);
-    //   console.warn('Lokale Session existiert, aber der User ist nicht mehr gültig.');
-    //   this.supabase.auth.signOut(); // diese Zeile löscht die lokale Session, also den token aus dem local storage, überlegen ob richtig!!
-    //   return;
-    // }
     }
 
     const { data, error } = await this.supabase.auth.signInAnonymously();

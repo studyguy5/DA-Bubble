@@ -2,7 +2,7 @@
     <div class="headlineDescriptionForInfoFrame">
         @if(channel()){
         <h2>#&nbsp;{{channel()?.name}}</h2>
-        <img src="./icons/blackCloseIcon.svg">
+        <img (click)="closeDialog()" src="./icons/blackCloseIcon.svg">
         }@else {
         <h2>Hello World</h2>
         }
@@ -11,21 +11,20 @@
         <form [formGroup]="channelInfoGroup">
             
             <div id="channelName" class="channelNameheaderandSaveLineNormalMode">
-                <div [class.hide]="this.editModeOn" class="channelNameInfo">
-                    <div [class.hide]="this.editModeOn" class="nameEditHeader">
-                        <h2 [class.hide]="this.editModeOn">Channel-Name</h2>
-                        <button [class.hide]="this.editModeOn" (click)="editChannelName()">Bearbeiten</button>
+                <div class="channelNameInfo">
+                    <div  class="nameEditHeader">
+                        <h2>Channel-Name</h2>
+                        <button (click)="editChannelName()">Bearbeiten</button>
                     </div>
-                    #&nbsp;{{channel()?.name}}
+                   <p>#&nbsp;{{channel()?.name}}</p>
+                    <input id="nameInput" class="nameInput" type="text" placeholder="#&nbsp;{{channel()?.name}}"formControlName="channelInfoName">
                 </div>
             </div>
 
-            <div  class="editModeHeadline">
+            <!-- <div  class="editModeHeadline">
                 <label for="">Channel-Name</label>
                 <button >Speichern</button>
-            </div>
-                <input id="nameInput" class="nameInput" type="text" placeholder="#&nbsp;{{channel()?.name}}"
-                formControlName="channelInfoName">
+            </div> -->
             
             <div class="channelDescriptionInfoNormalMode">
                 <div class="descriptionEditHeader">
@@ -47,6 +46,6 @@
                 <a href="">Speichern</a>
             </div> -->
         </form>
-        <button class="pushChannel">Erstellen</button>
+        <button class="pushChannel">Channel Verlassen</button>
     </div>
 </div>

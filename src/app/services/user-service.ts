@@ -27,7 +27,7 @@ let { data: Userprofile, error } = await this.supabase
   // debugger;
   this.userTable.set(Userprofile as any)
   console.log('Data from supabase:', Userprofile)
-  console.log('Data from Signal', this.userTable)
+  // console.log('Data from Signal', this.userTable)
   }
 
   async getAllChannels(){

@@ -3,6 +3,7 @@ import { input, effect } from '@angular/core';
 import { User, Channel } from '../../../interfaces/interfaces';
 import { Dialog, DialogConfig } from '@angular/cdk/dialog';
 import { ChannelInfoComponent } from '../channel-info-component/channel-info-component';
+import { AddMemberToChannelComponent } from '../add-member-to-channel-component/add-member-to-channel-component';
 
 @Component({
   selector: 'app-direct-messages-component',
@@ -26,7 +27,7 @@ export class DirectMessagesComponent {
 
   openInfoDialog() {
     const channel = this.selectedChannel();
-
+    console.log(channel)
     if (!channel) {
       console.warn('Kein Channel ausgewählt – Dialog wird nicht geöffnet.');
       return;
@@ -46,6 +47,22 @@ export class DirectMessagesComponent {
       }
     )
   }
+
+  openAddMemberToChannelDialog() {
+   const channel = this.selectedChannel();
+  this.dialog.open(AddMemberToChannelComponent,
+        {
+          width: '572px',
+          height: '316px',
+          panelClass: 'addMemberToChannelDialog',
+          data: {
+            title: 'add member to channel',
+            channel: channel
+          },
+  
+        }
+      )
+    }
 
 
 
