@@ -39,7 +39,7 @@ let { data: Userprofile, error } = await this.supabase
       // debugger;
       this.channelTable.set(channel as any)
       console.log('Data from supabase:', channel)
-      console.log('Data from Signal', this.channelTable)
+      // console.log('Data from Signal', this.channelTable)
   }
 
   async getCurrentSignedInUser(){
@@ -52,8 +52,13 @@ let { data: Userprofile, error } = await this.supabase
     .from('profiles')
     .select('username')
     .eq('uuid', user?.id);
-    console.log('profiles', profiles)
+    // console.log('profiles', profiles)
     if(!profiles || error) return
     return profiles[0].username
+  }
+
+  selectUserInProfileOverview(user: User){
+    console.log('selected user in profile overview', user)
+    this.userTable.set([user])
   }
 }

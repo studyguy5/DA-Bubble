@@ -1,1 +1,29 @@
-<p>add-member-to-channel-component works!</p>
+<div class="addMemberDialogMainFrame">
+    <div class="addMemberDialogHeader">
+        <p>Leute hinzufügen</p>
+        <img src="./icons/blackCloseIcon.svg" (click)="closeDialog()">
+    </div>
+    <div class="nameAndInputFieldBox">
+        <p>#&nbsp;{{data.channel.name}}</p>
+        <div class="inputWrapper">
+            <input class="memberInputField" (input)="searchingForMembers($event)" type="text" placeholder="Suche" formControl="memberList">
+        </div>
+    </div>
+    <div [class.open]="this.open" class="MemberDropdownList">
+        @if(searchInput != '' && open && filterResult?.length > 0){
+        @for(item of filterResult; track item.uuid){
+
+        <div (click)="selectMemberToAdd(item)" class="searchResult">
+            <img [src]="item.avatar_url">
+            <p>{{item.username}}</p>
+
+        </div>
+        }
+        }@else if(searchInput == '' && !open){
+
+        }
+    </div>
+    <div class="addButtonDiv">
+        <button (click)="addMemberToChannelInSupabase()" >Hinzufügen</button>
+    </div>
+</div>

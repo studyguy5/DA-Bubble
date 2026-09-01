@@ -1,0 +1,20 @@
+<div class="memberOverviewWrapper">
+    <div class="memberOverviewHeader">
+        <p>Mitglieder</p>
+        <img src="./icons/blackCloseIcon.svg" (click)="closeDialog()">
+    </div>
+    <div class="memberOverviewList">
+        @if(memberWithAvatar.length != null){
+
+        @for(member of memberWithAvatar(); track member.uuid){
+        <div (click)="openProfileOverviewDialog(member.uuid)" class="memberOverviewItem">
+            <img [src]="member.avatar_url">
+            <p>{{member.username}}</p>
+        </div>
+        }
+        <div class="addMemberPoint">
+            <img src="./icons/addMemberToChannelIcon.svg">
+            <p>Mitglieder hinzufügen</p>
+        </div>
+        }
+    </div>

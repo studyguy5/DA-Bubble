@@ -8,7 +8,7 @@ import { User } from '@supabase/supabase-js';
 import { Channel } from '../../../interfaces/interfaces';
 import { UserService } from '../../../services/user-service';
 import { ChangeDetectorRef } from '@angular/core';
-
+import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-main-chatpage-component',
@@ -17,7 +17,8 @@ import { ChangeDetectorRef } from '@angular/core';
   styleUrl: './main-chatpage-component.scss',
 })
 export class MainChatpageComponent {
-
+  
+  @ViewChild(ChannelUserSelectionComponent) channelUserSelection!: ChannelUserSelectionComponent;
   currentUser: string | null = null;
 
   userService = inject(UserService);
@@ -42,9 +43,6 @@ export class MainChatpageComponent {
       console.log('current user', this.currentUser)
   }
 
-  // getUserNameWithId(user: User) {
-  //   const data = this.supabase.auth.user();
-  // }
   
   ngOnDestroy(){
     this.document.body.classList.remove('mainUserPage');
@@ -60,4 +58,10 @@ export class MainChatpageComponent {
     this.selectedUser.set(null);
     // console.log('input on mainChatpage', this.selectedUser());
   }
+
+
+selectUserFromDialog(user: any) {
+  if(!this.channelUserSelection as any) return
+  this.channelUserSelection.selectUserAndEmitToParentComponent(user);
+}
 }

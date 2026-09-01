@@ -1,29 +1,50 @@
 <section class="mainDirectChannelMessageBox">
     <div class="chatHeader">
         <div class="channelName">
-            <img src="./icons/chatRouteIcon.svg">
             @if(selectedUser(); as user){
+                <img class="avatar" [src]="user.avatar_url ? user.avatar_url : this.DEFAULT_MALE_AVATAR">
                 <h2 (click)="openInfoDialog()">{{user.username}}</h2>
                 
             }@else if(selectedChannel(); as channel){
-                <h2 (click)="openInfoDialog()">{{channel.name}}</h2>
+                <img class="routeblack" src="./icons/chatRouteIcon.svg">
+                <img class="routeLila" src="./icons/routeLila.svg">
+            <h2 (click)="openInfoDialog()">{{channel.name}}</h2>
+            <img class="arrowDonw" src="./icons/chatHeaderArrowDownIcon.svg">
+            <img class="lilaArrowDown" src="./icons/lilaArrowDown.svg">
             }
-            <img src="./icons/chatHeaderArrowDownIcon.svg">
         </div>
+        @if(members(); as membersArray){
+        @if(membersArray.length > 0){
+
+
         <div class="ChannelMemberViewAndInfo">
-            <img src="./images/male_Avatar1.svg">
+            @if(members(); as member){
+            <div (click)="openMemberOverviewDialog()" class="memberListAndCountWrapper">
+                <div class="memberList">
+                    @for(member of members(); track member.user_id){
+                    <img [src]="member.avatar_url ? member.avatar_url : this.DEFAULT_MALE_AVATAR">
+                    }
+                </div>
+                <div class="memberCount">
+                    <p>{{members().length}}</p>
+                </div>
+            </div>
+            }
+            <!-- <img src="./images/male_Avatar1.svg">
             <img src="./images/male_Avatar2.svg">
             <img src="./images/male_Avatar2.svg">
             <img src="./images/male_Avatar2.svg">
             <img src="./images/male_Avatar2.svg">
-            <img src="./images/male_Avatar2.svg">
-            <p>3</p>
-            <div (click)="openAddMemberToChannelDialog()" class="addMeberIconDiv">
+            <img src="./images/male_Avatar2.svg"> -->
+            <div #addMemberDiv (click)="openAddMemberToChannelDialog()" class="addMeberIconDiv">
                 <img class="blackAddIcon" src="./icons/addMemberToChannelIcon.svg">
                 <img class="lilaAddIcon" src="./icons/lilaAddIcon2.svg">
             </div>
         </div>
+        }
+        }
     </div>
+
     <div class="innerMessageWrapper">
 
     </div>

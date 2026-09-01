@@ -282,6 +282,26 @@
             scale:0.96;
             display:block;
         }
+        >img:nth-child(5){
+            scale:0.96;
+            display:block;
+        }
+        >img:nth-child(6){
+            scale:0.96;
+            display:block;
+        }
+        >img:nth-child(7){
+            scale:0.96;
+            display:block;
+        }
+        >img:nth-child(8){
+            scale:0.96;
+            display:block;
+        }
+        >img:nth-child(9){
+            scale:0.96;
+            display:block;
+        }
         >h2{
             color:rgba(68, 77, 242, 1);
         }
@@ -400,14 +420,11 @@
 }
 
 .cdk-overlay-popover:has(.createChannelDialog) {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    // border-radius: 20px;
+    position: relative;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
     display: flex;
-    // justify-content: start !important;
-    // align-items:start !important;
 }
+
+
 

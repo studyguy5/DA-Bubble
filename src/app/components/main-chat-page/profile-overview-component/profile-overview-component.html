@@ -1,0 +1,25 @@
+@if(data){
+
+<div class="profileOverviewWrapper">
+    <div class="profileOverviewHeader">
+        <p>Profil</p>
+        <img src="./icons/blackCloseIcon.svg" (click)="closeDialog()">
+    </div>
+    <div class="profileOverviewContent">
+        <img [src]="data.channel.avatar_url">
+        <div class="UserNameAndstatus">
+            <p><b>{{data.channel.username}}</b></p>
+            <p>{{data.channel.status}} status comming soon</p>
+        </div>
+        <div class="emailWrapper">
+            <div class="EmailHeader">
+                <p><img src="./icons/mailIconBlack.svg"></p>
+                <p><b>E-Mail-Adresse</b></p>
+            </div>
+            <p>{{data.channel.email}}</p>
+        </div>
+    </div>
+    <button (click)="openDirektMessageWithThisUser(data)">Nachricht senden</button>
+</div>
+
+}

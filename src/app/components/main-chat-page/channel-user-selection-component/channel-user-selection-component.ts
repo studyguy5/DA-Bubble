@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, effect } from '@angular/core';
 import { UserService } from '../../../services/user-service';
 import { output } from '@angular/core';
 import { User, Channel } from '../../../interfaces/interfaces';
@@ -21,38 +21,44 @@ export class ChannelUserSelectionComponent {
   selectBoxIsOpen = true
   isMinimized = false
   // avatars: string[]
-
+  initChannel: Channel | null = null
 
   readonly DEFAULT_MALE_AVATAR = '/images/male_Avatar1.svg';
   readonly DEFAULT_FEMALE_AVATAR = '/images/female_Avatar1.svg';
-  
-  
+
+
   selectedUser = output<User>()
   selectedChannel = output<Channel>()
-  constructor(public userService: UserService,@Inject(Dialog) private dialog: Dialog) {
-    // this.avatars = [
-    //   './images/male_Avatar1.svg',
-    //   './images/male_Avatar2.svg',
-    //   './images/female_Avatar1.svg',
-    //   './images/female_Avatar2.svg',
-    //   './images/male_Avatar3.svg',
-    //   './images/male_Avatar4.svg'
-    // ]
+  constructor(public userService: UserService, @Inject(Dialog) private dialog: Dialog) {
+    effect(() => {
 
+      this.selectFirstChannelAtStart()
+    })
     setTimeout(() => {
       this.changeOpenDelay()
+
     }, 200)
+
   }
 
-  
+  async selectFirstChannelAtStart() {
+    // debugger;
+    for (const channel of this.userService.channelTable()) {
+      if (channel) {
+        console.log(channel)
+        this.selectChannelAndEmitToParentComponent(channel)
+      }
+    }
+  }
+
   selectUserAndEmitToParentComponent(user: User) {
     // debugger;
     console.log(user)
     this.selectedUser.emit(user)
   }
 
-  selectChannelAndEmitToParentComponent(selectedChannel:Channel){
-    // debugger;
+  selectChannelAndEmitToParentComponent(selectedChannel: Channel) {
+
     console.log(selectedChannel)
     this.selectedChannel.emit(selectedChannel)
   }
@@ -71,13 +77,13 @@ export class ChannelUserSelectionComponent {
     this.wasOpenBefore = !this.wasOpenBefore
   }
 
-  collapseSelectBox(){
+  collapseSelectBox() {
     this.selectBoxIsOpen = !this.selectBoxIsOpen
     this.isMinimized = !this.isMinimized
   }
-  
+
   openDialog() {
-    
+
     // debugger;
     console.log('openDialog')
     this.dialog.open(CreateChannelComponent,
@@ -88,7 +94,7 @@ export class ChannelUserSelectionComponent {
         data: {
           title: 'Create Channel'
         },
-        
+
       }
     )
   }
