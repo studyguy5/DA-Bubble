@@ -49,13 +49,13 @@
 
     </div>
     <div class="chatInputField">
-        <textarea type="textArea" placeholder="Nachricht schreiben"></textarea>
+        <textarea id="messageInput" type="textArea" placeholder="Nachricht schreiben"></textarea>
         <div class="toolDiv">
             <div class="textAreaToolsLeft">
                 <img src="./icons/smileyIcon.svg">
                 <img src="./icons/atIcon.svg">
             </div>
-            <div class="sendTextArea">
+            <div (click)="checkIfChannelOrUserSelected()" class="sendTextArea">
                 <img src="./icons/sendButtonIcon.svg">
             </div>
         </div>

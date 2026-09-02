@@ -34,7 +34,8 @@ let { data: Userprofile, error } = await this.supabase
 
     let { data: channel, error } = await this.supabase
       .from('chat_rooms')
-      .select('*')
+      .select('message_type, name, description, created_by, uuid, created_at')
+      .eq('message_type', 'channel')
       if(!channel || error) return
       // debugger;
       this.channelTable.set(channel as any)
@@ -44,7 +45,7 @@ let { data: Userprofile, error } = await this.supabase
 
   async getCurrentSignedInUser(){
     const { data: { user }, error: userError } = await this.supabase.auth.getUser();
-    console.log('user and userError', user, userError)
+    console.log('user and userError', user)
     if(!user || userError) return
 
 

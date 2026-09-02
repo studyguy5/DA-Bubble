@@ -6,6 +6,19 @@ export interface User {
     gender: string;
 }
 
+export interface Message {
+    uuid: string;
+    chat_room_id: string;
+    author_id: string;
+    content: string;
+    created_at: string;
+}
+
+export interface ChatRoomMember {
+    uuid: string;
+    chat_room_id: string;
+}
+
 export interface Channel {
     uuid: string;
     created_at: string;
