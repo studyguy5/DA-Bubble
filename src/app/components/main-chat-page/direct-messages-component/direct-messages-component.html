@@ -14,7 +14,7 @@
             }
         </div>
         @if(members(); as membersArray){
-        @if(membersArray.length > 0){
+        @if(membersArray.length > 0 && selectedChannel(); as channel){
 
 
         <div class="ChannelMemberViewAndInfo">
@@ -26,16 +26,11 @@
                     }
                 </div>
                 <div class="memberCount">
-                    <p>{{members().length}}</p>
+                    <p>{{members()?.length}}</p>
                 </div>
             </div>
             }
-            <!-- <img src="./images/male_Avatar1.svg">
-            <img src="./images/male_Avatar2.svg">
-            <img src="./images/male_Avatar2.svg">
-            <img src="./images/male_Avatar2.svg">
-            <img src="./images/male_Avatar2.svg">
-            <img src="./images/male_Avatar2.svg"> -->
+            
             <div #addMemberDiv (click)="openAddMemberToChannelDialog()" class="addMeberIconDiv">
                 <img class="blackAddIcon" src="./icons/addMemberToChannelIcon.svg">
                 <img class="lilaAddIcon" src="./icons/lilaAddIcon2.svg">
@@ -45,8 +40,30 @@
         }
     </div>
 
-    <div class="innerMessageWrapper">
-
+    <div [class.firstMessage]="userChat().length === 1" [class.multipleMessages]="userChat().length > 1" class="innerMessageWrapper">
+        @if(userChat(); as messages){
+            @for(message of messages; track message.uuid){
+                <div class="messageWrapper">
+                    <div class="topLineAndTimestamp">
+                        <hr>
+                        <p>{{message.created_at | date: 'dd.MM.yy'}}</p>
+                        <hr>
+                    </div>
+                    <div class="messageReactionsAndProfileWrapper">
+                        <div class="ProfileNameMessageReactionBox">
+                            <p class="profileName">{{(allMembers().find(member => member.uuid == message.author_id)?.username) ? 
+                                (allMembers().find(member => member.uuid == message.author_id)?.username) : 'User'}}</p>
+                            <p class="content">{{message.content}}</p>
+                        </div>
+                        <div class="AvatarBox">
+                            <img [src]="(members()?.find(member => member.user_id == message.author_id)?.avatar_url) ? 
+                            (members()?.find(member => member.user_id == message.author_id)?.avatar_url) : this.DEFAULT_MALE_AVATAR">
+                        </div>
+                        
+                    </div>
+                </div>
+            }
+        }
     </div>
     <div class="chatInputField">
         <textarea id="messageInput" type="textArea" placeholder="Nachricht schreiben"></textarea>

@@ -43,12 +43,13 @@ export class ChannelUserSelectionComponent {
 
   async selectFirstChannelAtStart() {
     // debugger;
-    for (const channel of this.userService.channelTable()) {
-      if (channel) {
+    const channel = this.userService.channelTable()[1]
+    
+      
         console.log('automatische Selection',channel)
         this.selectChannelAndEmitToParentComponent(channel)
-      }
-    }
+      
+    
   }
 
   selectUserAndEmitToParentComponent(user: User) {

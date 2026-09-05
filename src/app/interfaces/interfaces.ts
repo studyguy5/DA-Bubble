@@ -15,8 +15,14 @@ export interface Message {
 }
 
 export interface ChatRoomMember {
+    user_id: any;
     uuid: string;
     chat_room_id: string;
+}
+
+export interface Members {
+    username: string;
+    uuid: string;
 }
 
 export interface Channel {

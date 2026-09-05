@@ -84,7 +84,12 @@ supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
     debugger;
     try {
       this.signInAsGuest()
-      await this.router.navigate(['/home']);
+      const { data: session, error: sessionError } = await this.supabase.auth.getSession()
+      if(sessionError || !session){
+        console.log(sessionError);
+        throw sessionError
+      }
+        await this.router.navigate(['/home']);
     } catch (error) {
       console.log(error);
     }
