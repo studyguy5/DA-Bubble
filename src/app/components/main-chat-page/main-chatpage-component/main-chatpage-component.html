@@ -6,8 +6,8 @@
             <input type="text" placeholder="Dev-Space durchsuchen">
             <img src="./icons/search-Icon.svg">
         </div>
-        <div class="profileAndSettings">
-            @if(currentUser && currentUser !== null){
+        <div #profileLogoutMiniMenu (click)="openProfileLogoutMiniMenu()" class="profileAndSettings">
+            @if(currentUser && currentUser !== null && currentUser !== 'null') {
                 {{ currentUser }}
             }@else {
                 {{'Guest'}}

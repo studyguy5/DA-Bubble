@@ -4,11 +4,14 @@ import { DOCUMENT } from '@angular/common';
 import { ChannelUserSelectionComponent } from '../channel-user-selection-component/channel-user-selection-component';
 import { DirectMessagesComponent } from '../direct-messages-component/direct-messages-component';
 import { UserThreadsComponent } from '../user-threads-component/user-threads-component';
+import { ProfileLogoutMiniComponent } from '../profile-logout-mini-component/profile-logout-mini-component';
 import { User } from '@supabase/supabase-js';
 import { Channel } from '../../../interfaces/interfaces';
 import { UserService } from '../../../services/user-service';
 import { ChangeDetectorRef } from '@angular/core';
 import { ViewChild } from '@angular/core';
+import { Dialog } from '@angular/cdk/dialog';
+import { Overlay } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-main-chatpage-component',
@@ -19,12 +22,13 @@ import { ViewChild } from '@angular/core';
 export class MainChatpageComponent {
   
   @ViewChild(ChannelUserSelectionComponent) channelUserSelection!: ChannelUserSelectionComponent;
+  @ViewChild('profileLogoutMiniMenu', { static: false }) profileLogoutMiniMenu!: Element;
   currentUser: string | null = null;
 
   userService = inject(UserService);
   selectedUser = signal<User | null>(null);
   selectedChannel = signal<Channel | null>(null);
-  constructor(@Inject(DOCUMENT) private document: Document, private changeDetectorRef: ChangeDetectorRef) {
+  constructor(@Inject(DOCUMENT) private document: Document, private changeDetectorRef: ChangeDetectorRef, @Inject(Dialog) private dialog: Dialog, private overlay: Overlay) {
     
     this.document = document;
     this.addBodyClassForMain();
@@ -36,9 +40,9 @@ export class MainChatpageComponent {
   }
 
   async ngOnInit() {
-    // debugger;
-    this.currentUser =
-      await this.userService.getCurrentSignedInUser();
+    debugger;
+    
+    this.currentUser = await this.userService.getCurrentSignedInUser();
       this.changeDetectorRef.detectChanges();
       console.log('current user', this.currentUser)
   }
@@ -63,5 +67,32 @@ export class MainChatpageComponent {
 selectUserFromDialog(user: any) {
   if(!this.channelUserSelection as any) return
   this.channelUserSelection.selectUserAndEmitToParentComponent(user);
+}
+
+
+openProfileLogoutMiniMenu(){
+
+  this.dialog.open(ProfileLogoutMiniComponent,
+    
+    {
+      positionStrategy: this.overlay.position()
+      .flexibleConnectedTo(this.profileLogoutMiniMenu)
+      .withPositions([{
+        originX: 'center',
+        originY: 'center',
+        overlayX: 'start',
+        overlayY: 'top',
+        offsetY: 50,
+        offsetX: -10
+      }])
+      .withPush(true),
+      width: '282px',
+      height: '181px',
+      panelClass: 'profileLogoutMiniDialog',
+      data: {
+        title: 'profileLogoutMiniDialog'
+      },
+    }
+  )
 }
 }

@@ -360,9 +360,10 @@
 .member{
     display:flex;
     justify-self: start;
+    width:95%;
     gap:15px;
     font-size:18px;
-    padding:0px 25px 0px 0px;
+    padding:0px 0px 0px 0px;
     font-family: 'Nunito_regular';
     cursor: pointer;
     &:hover{

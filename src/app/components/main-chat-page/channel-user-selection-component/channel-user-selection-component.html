@@ -47,11 +47,11 @@
         @for(user of userService.userTable(); track user){
         @if(user.gender === 'male'){
             <div (click)="selectUserAndEmitToParentComponent(user)" class="member">
-        <img [src]="user.avatar_url ? user.avatar_url : this.DEFAULT_MALE_AVATAR"> <p>{{user.username}}</p>
+        <img [src]="user.avatar_url === 'null' ? this.DEFAULT_MALE_AVATAR : user.avatar_url"> <p>{{user.username === 'null' ? 'User' : user.username}}</p>
             </div>
         }@else{
             <div (click)="selectUserAndEmitToParentComponent(user)" class="member">
-            <img [src]="user.avatar_url ? user.avatar_url : this.DEFAULT_FEMALE_AVATAR"> <p>{{user.username}}</p>
+            <img [src]="user.avatar_url === 'null' ? this.DEFAULT_FEMALE_AVATAR : user.avatar_url"> <p>{{user.username === 'null' ? 'User' : user.username}}</p>
             </div>
         }
     }

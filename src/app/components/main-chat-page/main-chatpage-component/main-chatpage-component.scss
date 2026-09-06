@@ -76,3 +76,15 @@ body.mainUserPage{
     padding:0px 20px;
     position:relative;
 }
+
+.cdk-overlay-popover:has(.profileLogoutMiniDialog) {
+    position: relative !important;
+    flex-direction: column;
+    align-items: unset !important;
+    justify-content: unset !important;
+    // border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+
+}

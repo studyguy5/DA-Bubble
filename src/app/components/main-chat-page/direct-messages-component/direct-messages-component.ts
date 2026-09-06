@@ -5,11 +5,11 @@ import { Dialog, DialogConfig } from '@angular/cdk/dialog';
 import { Overlay } from '@angular/cdk/overlay';
 import { ChannelInfoComponent } from '../channel-info-component/channel-info-component';
 import { AddMemberToChannelComponent } from '../add-member-to-channel-component/add-member-to-channel-component';
-import { createClient } from '@supabase/supabase-js';
+import { createClient, RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { environment } from '../../../../environment/environment';
 import { MemberOverviewComponent } from '../member-overview-component/member-overview-component';
-import { ProfileOverviewComponent } from '../profile-overview-component/profile-overview-component';
-import { V } from '@angular/cdk/keycodes';
+// import { ProfileOverviewComponent } from '../profile-overview-component/profile-overview-component';
+// import { V } from '@angular/cdk/keycodes';
 import { DatePipe } from '@angular/common';
 import { UserService } from '../../../services/user-service';
 
@@ -42,6 +42,7 @@ export class DirectMessagesComponent {
   ) {
     effect(() => {
       this.channel = this.selectedChannel();
+      const user = this.selectedUser();
       this.uuid = this.channel?.uuid;
       setTimeout(() => {
 
@@ -50,7 +51,7 @@ export class DirectMessagesComponent {
 
       }, 200)
     })
-
+    this.subscribeToChanges()
     this.getProfiles()
   }
 
@@ -152,6 +153,7 @@ export class DirectMessagesComponent {
 
   async showMessagesFromSelectedChannelOrUser() {
     // debugger;
+    console.log('showMessagesFromSelectedChannelOrUser')
     const channel = this.selectedChannel();
     let user: any = await this.supabase.auth.getUser();
     const participant: any = this.selectedUser();
@@ -181,14 +183,9 @@ export class DirectMessagesComponent {
   }
 
   async getMessagesFromSelectedUSER(author_id: string, participant_uuid: string | null) {
-
-
     const messages: any = await this.userService.getMessagesFromSelectedUser(author_id, participant_uuid)
     this.userChat.set([] as Message[]);
-
     console.log('Nachrichten:', messages);
-    
-
     this.userChat.set(messages ?? [] as Message[]);
 
   }
@@ -196,18 +193,14 @@ export class DirectMessagesComponent {
 
 
   async getSelectedMEMBERS(uuid: any | null) {
-    // let member = this.members()
     const membersWithAvatar = await this.userService.getSelectedMembers(uuid)
-    
     this.members.set(membersWithAvatar as any)
-
-
     return membersWithAvatar
   }
 
 
   checkIfChannelOrUserSelected() {
-    // debugger;
+    debugger;
     if (this.selectedUser()) {
       this.sendMessageToSelectedUser()
       console.log('send message to user', this.selectedUser())
@@ -232,7 +225,8 @@ export class DirectMessagesComponent {
     let input = document.getElementById('messageInput') as HTMLTextAreaElement;
     if (!input) return
     let message = input.value
-    debugger;
+    // debugger;
+    input.value = ''
     const privateRoom = await this.checkIfUserRoomEXISTS()
     if (!privateRoom) {
       await this.createPrivateRoomAndSendMessage(message)
@@ -246,9 +240,7 @@ export class DirectMessagesComponent {
 
   async checkIfUserRoomEXISTS() {
     const participant: any = this.selectedUser();
-    // const currentUser = await this.supabase.auth.getUser();
     const privateRooms = await this.userService.checkIfUserRoomExists(participant)
-    
     return privateRooms
   }
   
@@ -257,18 +249,30 @@ export class DirectMessagesComponent {
 
 
   async selectPrivateRoomAndSendMESSAGE(privateRoomId: string, messageText: string) {
-    // const user = this.selectedUser();
     this.userService.selectPrivateRoomAndSendMessage(privateRoomId, messageText)
     
 
   }
 
   async createPrivateRoomAndSendMessage(messageText: string) {
-    
     const currentUser = await this.supabase.auth.getUser()
     const user = this.selectedUser()
     this.userService.createPrivateRoomAndSendMessage(messageText, user)
     
+  }
+
+  subscribeToChanges() {
+    
+    const channels = this.supabase.channel('custom-all-channel')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'messages' },
+      (payload) => {
+        this.showMessagesFromSelectedChannelOrUser()
+        console.log('Change received!', payload)
+      }
+    )
+    .subscribe()
   }
 
 

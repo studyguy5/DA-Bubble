@@ -2,8 +2,8 @@
     <div class="chatHeader">
         <div class="channelName">
             @if(selectedUser(); as user){
-                <img class="avatar" [src]="user.avatar_url ? user.avatar_url : this.DEFAULT_MALE_AVATAR">
-                <h2 (click)="openInfoDialog()">{{user.username}}</h2>
+                <img class="avatar" [src]="user.avatar_url === 'null'? this.DEFAULT_MALE_AVATAR : user.avatar_url">
+                <h2 (click)="openInfoDialog()">{{user.username === 'null' ? 'User' : user.username}}</h2>
                 
             }@else if(selectedChannel(); as channel){
                 <img class="routeblack" src="./icons/chatRouteIcon.svg">

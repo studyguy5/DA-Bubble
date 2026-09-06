@@ -18,6 +18,12 @@ export class UserService {
     this.getCurrentSignedInUser()
   }
 
+  logoutService() {
+    // debugger
+    this.supabase.auth.signOut()
+    
+  }
+
   async getAllUsers() {
 
     let { data: Userprofile, error } = await this.supabase
@@ -45,7 +51,7 @@ export class UserService {
 
   async getCurrentSignedInUser() {
     const { data: { user }, error: userError } = await this.supabase.auth.getUser();
-    console.log('user and userError', user)
+    console.log('user', user)
     if (!user || userError) return
 
 
@@ -87,7 +93,7 @@ export class UserService {
       console.error('Fehler beim Abrufen der Channel Nachrichten:', error);
       return;
     }
-    console.log('Nachrichten für den ausgewählten Channel:', data);
+    // console.log('Nachrichten für den ausgewählten Channel:', data);
     return data
   }
   chat_room_id: any
@@ -116,6 +122,7 @@ export class UserService {
       ?.map(room => room.chat_room_id)
       .filter(id => roomB?.some(room => room.chat_room_id === id));
       if(!roomId || roomId.length === 0){
+        console.log('roomId456', roomId)
         return
       }
      
@@ -125,23 +132,25 @@ export class UserService {
       .select('*')
       .in('uuid', this.chat_room_id)
       .eq('message_type', 'private')
-      if(chatRoom !== null){
-        return this.messages = null
-      }
+      console.log('chatRoom', chatRoom)
+      // if(!chatRoom || roomIdError){
+      //   console.log('roomIdError', roomIdError)
+      //   return
+      // }
     
-
+      let uuid: any = chatRoom?.map((item: any) => item.uuid)
     const { data: messages, error: messagesError } = await this.supabase
       .from('messages')
       .select('*')
-      .in('chat_room_id', this.chat_room_id)
+      .in('chat_room_id', uuid)
       .order('created_at', { ascending: true })
     if (!messages || messagesError) {
       console.error('Fehler beim Laden der Nachrichten:', messagesError);
     }
     console.log('Nachrichten:', messages);
     this.messages = messages
-    // this.userChat.set(messages as Message[]);
-    return this.messages
+    
+    return this.messages ?? []
   }
 
   async getSelectedMembers(uuid: any | null) {
@@ -226,12 +235,14 @@ export class UserService {
       }
       if (existingRoom) {
         const sharedRoomIds = existingRoom.map(member => member.chat_room_id);
+        const userAndParticipant = [...new Set(sharedRoomIds.filter((member: any) => member.user_id === currentUser.data.user?.id).map((member: any) => member.chat_room_id)
+          .filter((member: any) => existingRoom.some((member2: any) => member2.user_id === participant?.uuid && member2.chat_room_id === member)))];
         if(sharedRoomIds.length === 0) return
         const {data: privateRoom, error: privateRoomError} = await this.supabase
           .from('chat_rooms')
           .select('uuid')
           .eq('message_type', 'private')
-          .in('uuid', sharedRoomIds);
+          .in('uuid', userAndParticipant);
         if (privateRoomError) {
           console.log('error', privateRoomError)
           return
@@ -314,4 +325,9 @@ export class UserService {
       throw new Error('Failed to send message: ' + messageError.message);
     }
   }
+
+
+  
+
+
 }

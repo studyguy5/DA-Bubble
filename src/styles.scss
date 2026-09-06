@@ -64,6 +64,24 @@ body{
     
 }
 
+.cdk-overlay-pane.profileLogoutMiniDialog{
+    display:flex;
+    position:absolute !important;
+    // flex-direction: column;
+    // align-items: center;
+    // justify-content: center;
+    border-top-right-radius: 0px;
+    border-top-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    top:200px;
+    // left:845px !important;
+    
+    background-color: rgba(255, 255, 255, 1);
+    z-index: 1000;
+    
+}
+
 .cdk-overlay-pane.ProfileOverviewDialog{
     display:flex;
     position:absolute !important;
