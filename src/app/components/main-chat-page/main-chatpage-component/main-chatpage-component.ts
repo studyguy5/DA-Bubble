@@ -40,7 +40,7 @@ export class MainChatpageComponent {
   }
 
   async ngOnInit() {
-    debugger;
+    // debugger;
     
     this.currentUser = await this.userService.getCurrentSignedInUser();
       this.changeDetectorRef.detectChanges();
@@ -95,4 +95,6 @@ openProfileLogoutMiniMenu(){
     }
   )
 }
+
+
 }

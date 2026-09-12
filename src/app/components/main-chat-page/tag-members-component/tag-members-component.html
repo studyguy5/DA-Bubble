@@ -1,0 +1,14 @@
+
+@if(memberWithAvatar(); as memberWithAvatar){
+    @if(memberWithAvatar.length > 0){
+        <div class="memberWrapper">
+            @for(member of memberWithAvatar; track member.uuid){
+            <div  class="memberOverviewItem">
+                <img [src]="member.avatar_url">
+                <p>{{member.username}}</p>
+            </div>
+            }
+
+        </div>
+    }
+}

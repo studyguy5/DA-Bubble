@@ -1,10 +1,11 @@
 import { Component, Inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { input, effect, signal, Input } from '@angular/core';
 import { User, Channel, ChannelMember, Message, ChatRoomMember, Members } from '../../../interfaces/interfaces';
-import { Dialog, DialogConfig } from '@angular/cdk/dialog';
+import { Dialog  } from '@angular/cdk/dialog';
 import { Overlay } from '@angular/cdk/overlay';
 import { ChannelInfoComponent } from '../channel-info-component/channel-info-component';
 import { AddMemberToChannelComponent } from '../add-member-to-channel-component/add-member-to-channel-component';
+import { TagMembersComponent } from '../tag-members-component/tag-members-component';
 import { createClient, RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { environment } from '../../../../environment/environment';
 import { MemberOverviewComponent } from '../member-overview-component/member-overview-component';
@@ -12,6 +13,8 @@ import { MemberOverviewComponent } from '../member-overview-component/member-ove
 // import { V } from '@angular/cdk/keycodes';
 import { DatePipe } from '@angular/common';
 import { UserService } from '../../../services/user-service';
+import getCaretCoordinates from 'textarea-caret';
+import { OverlayRef, FlexibleConnectedPositionStrategy } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-direct-messages-component',
@@ -24,6 +27,7 @@ export class DirectMessagesComponent {
 
   @Input() selectUserFromDialog: (user: any) => void = () => { };
   @ViewChild('addMemberDiv', { static: false }) anchorDiv!: ElementRef;
+  @ViewChild('tagMembersDiv', { static: false }) anchorDiv2!: ElementRef;
   @ViewChild(MemberOverviewComponent) memberOverviewComponent!: MemberOverviewComponent;
   uuid: any
   channel: any
@@ -35,6 +39,7 @@ export class DirectMessagesComponent {
   allMembers = signal<Members[]>([])
   userChat = signal<Message[]>([])
   selectedChannel = input<Channel | null>(null)
+  positionStrategy?: FlexibleConnectedPositionStrategy;
 
   constructor(
     @Inject(Dialog) private dialog: Dialog,
@@ -108,6 +113,91 @@ export class DirectMessagesComponent {
     )
   }
 
+  openTagMembersDialog() {
+    let input = document.getElementById('messageInput') as HTMLTextAreaElement;
+    
+    
+    let position1: any = input.selectionStart ?? 0
+    position1 = input.value.slice(0, position1)
+    const adIndex = position1.lastIndexOf('@')
+    const relevantPart = adIndex >= 0 ? position1.slice(adIndex +1) : position1
+    console.log('relevantPart', relevantPart)
+    // hier dann mit dem relevantPart die Members auf die eingabe filtern =================================================================================
+    if (!input) return
+    let position: any = input.selectionStart ?? 0
+    let before = input.value.slice(0, position)
+    const coords = getCaretCoordinates(input, position)
+    
+    // x-Position des Cursors relativ zum Viewport
+    const inputRect = input.getBoundingClientRect();
+    const cursorX = inputRect.left + coords.left;
+    const cursorY = inputRect.top + coords.top;
+    // const difference = (this.anchorDiv2.nativeElement.offsetWidth / 2) - cursorX
+    // Anchor-Element horizontal an die Cursor-Position setzen
+    // Aktuelle Position des anchorDiv2 Elements
+    const anchorRect = this.anchorDiv2.nativeElement.getBoundingClientRect();
+  const anchorX = anchorRect.left +310;
+  const anchorY = anchorRect.top +10;
+  anchorRect.width = `0px`;
+  anchorRect.height = `0px`;
+
+  // Offset berechnen: Differenz zwischen Cursor und Anchor
+  const offsetX = cursorX - anchorX;
+  const offsetY = cursorY - anchorY;
+  
+  const membersWithAvatar = this.getSelectedMEMBERS(this.uuid)
+  const channel = this.selectedChannel();
+  console.log('anchorDiv', this.anchorDiv2)
+  const newposition = this.overlay.position().flexibleConnectedTo(this.anchorDiv2).withPositions([{
+    originX: 'center',
+    originY: 'bottom',
+    overlayX: 'center',
+    overlayY: 'bottom',
+    offsetY: offsetY,
+    offsetX: offsetX
+  }])
+  
+  // Dialog ist schon offen → nur Position updaten
+  // Wenn Dialog schon offen ist → Position updaten
+  if (this.dialog.openDialogs.length > 0 && this.positionStrategy) {
+    this.positionStrategy.withPositions([{
+      originX: 'center',
+      originY: 'bottom',
+      overlayX: 'center',
+      overlayY: 'bottom',
+      offsetY: offsetY,
+      offsetX: offsetX,
+    }]);
+    this.positionStrategy.apply()
+    return; // Position updated sich automatisch
+  
+
+}else{
+  
+  this.dialog.closeAll()
+  this.positionStrategy = newposition;
+  this.dialog.open(TagMembersComponent,
+      {
+        positionStrategy: this.positionStrategy
+          // .withFlexibleDimensions(true)
+          // .withViewportMargin(0)
+          .withPush(true),
+        width: '325px',
+        height: 'fit-content',
+        panelClass: 'tagMembersDialog',
+        data: {
+          title: 'View Members',
+          channel: channel,
+          onSelectUser: (user: any) =>
+            this.selectUserFromDialog?.(user)
+        },
+      }
+    )
+  
+    
+  }
+  }
+
   openAddMemberToChannelDialog() {
     const channel = this.selectedChannel();
     if (!channel) {
@@ -148,7 +238,7 @@ export class DirectMessagesComponent {
     const profile = await this.userService.getProfileNames()
     this.allMembers.set(profile as any)
   }
-  
+
 
 
   async showMessagesFromSelectedChannelOrUser() {
@@ -216,7 +306,7 @@ export class DirectMessagesComponent {
   async sendMessageToSelectedCHANNEL() {
     const channel = this.selectedChannel();
     const data = this.userService.sendMessageToSelectedChannel(channel);
-    
+
   }
 
 
@@ -243,14 +333,14 @@ export class DirectMessagesComponent {
     const privateRooms = await this.userService.checkIfUserRoomExists(participant)
     return privateRooms
   }
-  
+
 
 
 
 
   async selectPrivateRoomAndSendMESSAGE(privateRoomId: string, messageText: string) {
     this.userService.selectPrivateRoomAndSendMessage(privateRoomId, messageText)
-    
+
 
   }
 
@@ -258,23 +348,59 @@ export class DirectMessagesComponent {
     const currentUser = await this.supabase.auth.getUser()
     const user = this.selectedUser()
     this.userService.createPrivateRoomAndSendMessage(messageText, user)
-    
+
   }
 
   subscribeToChanges() {
-    
+
     const channels = this.supabase.channel('custom-all-channel')
-    .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'messages' },
-      (payload) => {
-        this.showMessagesFromSelectedChannelOrUser()
-        console.log('Change received!', payload)
-      }
-    )
-    .subscribe()
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'messages' },
+        (payload) => {
+          this.showMessagesFromSelectedChannelOrUser()
+          console.log('Change received!', payload)
+        }
+      )
+      .subscribe()
   }
 
 
+  searchForMembersInTextField() {
+    // debugger
+    console.log('>>> searchForMembersInTextField called');
+    let input = document.getElementById('messageInput') as HTMLTextAreaElement;
+    if (!input) return
+    let value = input.value
+    let position: any = input.selectionStart ?? 0
+    let before = input.value.slice(0, position)
+    const coords = getCaretCoordinates(input, position)
+    const match = /([@#])([\w]*)$/.exec(before);
+    console.log('match:', match);
+
+  //   if (match) {
+  //   // const coords = getCaretCoordinates(input, position);
+  //   const inputRect = input.getBoundingClientRect();
+  //   const cursorX = inputRect.left + coords.left;
+  //   const cursorY = inputRect.top + coords.top;
+
+  //   const anchor = this.anchorDiv2.nativeElement as HTMLElement;
+  //   anchor.style.left = `${cursorX}px`;
+  //   anchor.style.top = `${cursorY}px`;
+  // }
+
+    if (match) {
+      this.openTagMembersDialog()
+      setTimeout(() => {
+        input.focus();
+
+      }, 100)
+    } else {
+      this.dialog.closeAll()
+    }
+    // console.log('send message', message)
+
+
+  }
 
 }

@@ -42,8 +42,10 @@
 
     <div [class.firstMessage]="userChat().length === 1" [class.multipleMessages]="userChat().length > 1" class="innerMessageWrapper">
         @if(userChat(); as messages){
-            @for(message of messages; track message.uuid){
-                <div class="messageWrapper">
+            @if(userChat().length > 0){
+                
+                @for(message of messages; track message.uuid){
+                    <div class="messageWrapper">
                     <div class="topLineAndTimestamp">
                         <hr>
                         <p>{{message.created_at | date: 'dd.MM.yy'}}</p>
@@ -63,10 +65,24 @@
                     </div>
                 </div>
             }
+        }@else if(userChat().length < 1 || userChat() == undefined || userChat() == []){
+            @if(selectedUser(); as user){
+                       
+                <div class="welcomeMessageWrapper">
+                    <div class="ImageAndName">
+                        <img [src]="user.avatar_url ? user.avatar_url : this.DEFAULT_MALE_AVATAR">
+                        <p>{{user.username}}</p>
+                    </div>
+                    <p>Diese Unterhaltung findet nur zwischen dir und <b>@{{user.username}}</b> statt</p>
+                </div>
+            }
         }
+        }
+                        
+    
     </div>
-    <div class="chatInputField">
-        <textarea id="messageInput" type="textArea" placeholder="Nachricht schreiben"></textarea>
+    <div #tagMembersDiv class="chatInputField">
+        <textarea (input)="searchForMembersInTextField()" id="messageInput" type="textArea" placeholder="Nachricht schreiben"></textarea>
         <div class="toolDiv">
             <div class="textAreaToolsLeft">
                 <img src="./icons/smileyIcon.svg">

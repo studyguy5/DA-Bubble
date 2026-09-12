@@ -1,0 +1,235 @@
+.OwnprofileOverviewWrapper {
+    display: flex;
+    flex-direction: column;
+    overflow:hidden;
+    padding: 40px 40px;
+    box-sizing: border-box;
+
+    >button {
+        align-self: center;
+        margin-top: 45px;
+        width: 100%;
+        max-width: 164px;
+        height: 49px;
+        background-color: blue;
+        color: white;
+        border-radius: 20px;
+        border: none;
+        font-size: 16px;
+        font-family: 'Nunito_600';
+    }
+
+    >.OwnprofileOverviewHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        box-sizing: border-box;
+        height: 40px;
+        margin-bottom: 38px;
+
+        >p {
+            margin: 0px;
+            font-size: 24px;
+            font-style: 600;
+            font-weight: bold;
+            font-family: 'Nunito_600';
+        }
+
+        >img {
+            &:hover {
+                cursor: pointer;
+                background-color: grey;
+                border-radius: 25px;
+            }
+        }
+    }
+
+    >.OwnprofileOverviewContent {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        >img {
+            text-align: center;
+            margin: 0 auto;
+            width: 200px;
+            height: 200px;
+            border-radius: 100px;
+        }
+
+        >.OwnUserNameAndEditMode {
+            gap: 15px;
+            width: 100%;
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 38px;
+            margin-bottom: 15px;
+
+            >.standard {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                >.realUsername {
+                    font-size: 32px;
+                }
+                >.editButton {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height:25px;
+                }
+                >p {
+                    display: flex;
+                    flex-direction: column;
+                    margin: 0px;
+                    justify-self: start;
+                }
+            }
+
+            >.editView {
+                display: none;
+                justify-content: start;
+                // width:46% !important;
+                gap: 15px;
+                width: 100%;
+                >.profileIcon {
+                    display: flex;
+                }
+
+                >.editNameLabel {
+                    font-size: 20px;
+                    display: flex;
+                    // transition: transform 0.3s ease-in-out;
+                    // transform: translateX(0px);
+                }
+                >p {
+                    display: flex;
+                    flex-direction: column;
+                    margin: 0px;
+                    // justify-self: start;
+                }
+            }
+
+        }
+
+        >.status {
+            width: 100%;
+            display: flex;
+            justify-content: start;
+            margin-top: 0px;
+            margin-bottom: 45px;
+
+            >p {
+                display: flex;
+                margin: 0px;
+                font-size: 20px;
+                font-style: 600;
+                font-weight: bold;
+                font-family: 'Nunito_600';
+            }
+
+            >.editNameInputField {
+                display: none;
+                width: 100%;
+                height: 52px;
+                padding: 15px 20px;
+                box-sizing: border-box;
+                border-radius: 20px;
+                border: 1px solid black;
+                font-size: 16px;
+                font-family: 'Nunito_600';
+            }
+        }
+
+        >.cancelSaveArea{
+            display:none;
+            justify-content: space-between;
+            width: 306px;
+            // margin-top:38px;
+            >button{
+                width:141px;
+                height:49px;
+                padding:17px 15px;
+                color: white;
+                border-radius: 25px;
+                border: none;
+                cursor: pointer;
+                &:first-child{
+                    background-color: white;
+                    border: 1px solid rgba(68, 77, 242, 1);
+                    color: rgba(68, 77, 242, 1);
+                    
+                    &:hover{
+                        background-color: rgba(68, 77, 242, 0.8);
+                    }
+                }
+                &:nth-child(2){
+                    background-color: rgba(68, 77, 242, 1);
+                    &:hover{
+                        background-color: rgba(68, 77, 242, 0.8);
+                    }
+                }
+            }
+        }
+
+        >.OwnemailWrapper {
+            width: 100%;
+            height: 70px;
+
+            >p {
+                margin-left: 50px;
+                font-size: 16px;
+                font-style: 600;
+                font-weight: bold;
+                font-family: 'Nunito_600';
+            }
+
+            >.OwnEmailHeader {
+                display: flex;
+                width: 100%;
+                justify-content: start;
+                align-items: start;
+                height: 30px;
+                gap: 20px;
+
+                >p {
+                    font-size: 20px;
+                    margin-bottom: 15px;
+                    margin-top: 0px;
+
+                }
+            }
+        }
+    }
+}
+
+.visible {
+    display: flex !important;
+    opacity: 1;
+    transition:
+        display 2.2s ease-in-out,
+        opacity 2.2s ease-in-out;
+    transition-behavior: allow-discrete;
+
+    @starting-style {
+        opacity: 0;
+
+    }
+}
+
+.invisible {
+    opacity: 0;
+    display: none !important;
+    transition:
+    opacity 0.01s ease-in-out,
+    display 0.15s ease-in-out 0.1s;
+    transition-behavior: allow-discrete;
+
+    @starting-style {
+        opacity: 1;
+    }
+}

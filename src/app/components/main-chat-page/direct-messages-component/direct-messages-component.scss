@@ -266,6 +266,7 @@
 
 .innerMessageWrapper {
     overflow-y: scroll;
+    position: relative;
     scrollbar-width: thin;
     display:flex;
     flex-direction: column;
@@ -318,6 +319,49 @@
                 color:white;
                 background-color: rgba(68, 77, 242, 1);
                 border-radius: 20px 0px 20px 20px;
+            }
+        }
+    }
+}
+
+.welcomeMessageWrapper{
+    display:flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position:absolute;
+    bottom:60px;
+    left:45px;
+    // margin-top:350px;
+    gap:10px;
+    >.ImageAndName{
+        display:flex;
+        align-items: baseline;
+        height:50px;
+        gap:15px;
+        >img{
+            border-radius: 100px;
+        }
+        >p{
+            font-family: 'Nunito_600';
+            font-size: 24px;
+            margin:0px;
+            
+        }
+    }
+    >p{
+        height:27px;
+        >b{
+            box-sizing: border-box;
+            padding: 0px 5px;
+            font-size: 20px;
+            font-weight:lighter;
+            color:rgb(83, 90, 241);
+            &:hover{
+                cursor: pointer;
+                color:rgb(17, 26, 206);
+                font-weight:bolder;
+                padding:0px 4.3px;
+                // transition: all 0.3s ease-in-out;
             }
         }
     }

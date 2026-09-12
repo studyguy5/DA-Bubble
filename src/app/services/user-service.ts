@@ -33,7 +33,7 @@ export class UserService {
     // debugger;
     this.userTable.set(Userprofile as any)
     console.log('Data from supabase:', Userprofile)
-    // console.log('Data from Signal', this.userTable)
+    return Userprofile
   }
 
   async getAllChannels() {

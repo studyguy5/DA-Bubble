@@ -34,11 +34,11 @@ export interface Channel {
     created_by: string;
 }
 
-// export interface Member {
-//     user_id: string;
-//     chat_room_id: string;
-//     avatar_url: string;
-// }
+export interface ProfileInfos {
+    username: string;
+    avatar_url: string;
+    email: string;
+}
 
 export interface ChannelMember {
   user_id: string;

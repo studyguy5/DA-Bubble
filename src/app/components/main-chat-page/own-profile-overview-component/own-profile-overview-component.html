@@ -1,1 +1,40 @@
-<p>own-profile-overview-component works!</p>
+
+<div class="OwnprofileOverviewWrapper">
+    <div class="OwnprofileOverviewHeader">
+        <p>Profil</p>
+        <img src="./icons/blackCloseIcon.svg" (click)="closeDialog()">
+    </div>
+    <div class="OwnprofileOverviewContent">
+            @if(profileInfos().length > 0){
+            <img [src]="profileInfos().at(0)?.avatar_url === 'null' ? this.DEFAULT_MALE_AVATAR : profileInfos().at(0)?.avatar_url">
+            <div class="OwnUserNameAndEditMode">
+                <div [class.invisible]="this.editMode" class="standard">
+                    <p  class="realUsername">{{profileInfos().at(0)?.username === 'null' ? 'User' : profileInfos().at(0)?.username}}</p>
+                    <button  (click)="showEditModeForUserName()" class="editButton"> Bearbeiten</button>
+                </div>
+                <div [class.visible]="this.editMode" class="editView">
+                    <img  class="profileIcon" src="./icons/peopleIcon_black.svg">
+                    <p class="editNameLabel">Vollständiger Name</p>
+                </div>
+            </div>
+            <div class="status">
+                <p [class.invisible]="this.editMode">status comming soon</p>
+                <input [class.visible]="this.editMode" class="editNameInputField" type="text" placeholder="Name" [formControl]="fullName">
+            </div>
+            <div [class.visible]="this.editMode" class="cancelSaveArea">
+                <button  class="cancelButton">Abbrechen</button>
+                <button (click)="showEditModeForUserName()"  class="saveButton">Speichern</button>
+            </div>
+            <div [class.invisible]="this.editMode" class="OwnemailWrapper">
+                <div class="OwnEmailHeader">
+                    <p><img src="./icons/mailIconBlack.svg"></p>
+                    <p><b>E-Mail-Adresse</b></p>
+                </div>
+                
+                <p>{{profileInfos().at(0)?.email === 'null' || profileInfos().at(0)?.email === null ? 'example@host.com' : profileInfos().at(0)?.email}}</p>
+            </div>
+        }
+    </div>
+    <!-- <button (click)="openDirektMessageWithThisUser(data)">Nachricht senden</button> -->
+</div>
+
