@@ -1,8 +1,40 @@
 
-@if(memberWithAvatar(); as memberWithAvatar){
-    @if(memberWithAvatar.length > 0){
+@if(filteredChannels().length < 1 && this.channelData.symbol === '#'){
+    <div class="memberWrapper">
+    @for(channel of allchannels(); track channel.uuid){
+            
+            <div  class="memberOverviewItem">
+                <img [src]="">
+                <p>{{channel.name}}</p>
+            </div>
+            
+        }
+    </div>
+}@else if(filteredChannels().length > 0 && this.channelData.symbol === '#'){
+    <div class="memberWrapper">
+    @for(channel of filteredChannels(); track channel.uuid){
+            
+            <div  class="memberOverviewItem">
+                <img [src]="">
+                <p>{{channel.name}}</p>
+            </div>
+            
+        }
+    </div>
+}@else if(filteredMembers().length < 1 && this.channelData.symbol !== '#'){
+
         <div class="memberWrapper">
-            @for(member of memberWithAvatar; track member.uuid){
+        @for(member of memberWithAvatar(); track member.uuid){
+            <div  class="memberOverviewItem">
+                <img [src]="member.avatar_url">
+                <p>{{member.username}}</p>
+            </div>
+        }
+        </div>
+}@else if(filteredMembers(); as filteredMembers){
+    @if(filteredMembers.length > 0){
+        <div class="memberWrapper">
+            @for(member of filteredMembers; track member.uuid){
             <div  class="memberOverviewItem">
                 <img [src]="member.avatar_url">
                 <p>{{member.username}}</p>
@@ -10,5 +42,9 @@
             }
 
         </div>
+        
     }
+    
+    
+    
 }

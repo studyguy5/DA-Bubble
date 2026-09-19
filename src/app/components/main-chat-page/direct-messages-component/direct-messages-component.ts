@@ -1,7 +1,7 @@
 import { Component, Inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { input, effect, signal, Input } from '@angular/core';
 import { User, Channel, ChannelMember, Message, ChatRoomMember, Members } from '../../../interfaces/interfaces';
-import { Dialog  } from '@angular/cdk/dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { Overlay } from '@angular/cdk/overlay';
 import { ChannelInfoComponent } from '../channel-info-component/channel-info-component';
 import { AddMemberToChannelComponent } from '../add-member-to-channel-component/add-member-to-channel-component';
@@ -15,6 +15,7 @@ import { DatePipe } from '@angular/common';
 import { UserService } from '../../../services/user-service';
 import getCaretCoordinates from 'textarea-caret';
 import { OverlayRef, FlexibleConnectedPositionStrategy } from '@angular/cdk/overlay';
+import { EmojiPickerComponent } from '../emoji-picker-component/emoji-picker-component';
 
 @Component({
   selector: 'app-direct-messages-component',
@@ -31,7 +32,7 @@ export class DirectMessagesComponent {
   @ViewChild(MemberOverviewComponent) memberOverviewComponent!: MemberOverviewComponent;
   uuid: any
   channel: any
-
+  filteredMembers = signal<Members[]>([])
   members = signal<ChannelMember[] | null>([])
 
   supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
@@ -40,7 +41,7 @@ export class DirectMessagesComponent {
   userChat = signal<Message[]>([])
   selectedChannel = input<Channel | null>(null)
   positionStrategy?: FlexibleConnectedPositionStrategy;
-
+  // emoji = signal<string>('')
   constructor(
     @Inject(Dialog) private dialog: Dialog,
     private overlay: Overlay, private userService: UserService
@@ -50,14 +51,84 @@ export class DirectMessagesComponent {
       const user = this.selectedUser();
       this.uuid = this.channel?.uuid;
       setTimeout(() => {
-
         this.showMessagesFromSelectedChannelOrUser()
-
-
       }, 200)
+      // hier testen, ob der setTimeout die Verzögerung verursacht =====================================
     })
     this.subscribeToChanges()
     this.getProfiles()
+    
+  }
+
+  openEmojiPickerDialog() {
+    let input = document.getElementById('messageInput') as HTMLTextAreaElement;
+    if (!input) return
+    let position: any = input.selectionStart ?? 0
+    const coords = getCaretCoordinates(input, position)
+
+    // x-Position des Cursors relativ zum Viewport
+    const inputRect = input.getBoundingClientRect(); // method returns the size of an element and its position relative to the viewport.
+    const cursorX = inputRect.left + coords.left;
+    const cursorY = inputRect.top + coords.top;
+    const anchorRect = this.anchorDiv2.nativeElement.getBoundingClientRect(); // chat div
+    const anchorX = anchorRect.left;
+    const anchorY = anchorRect.top;
+    anchorRect.width = `0px`;
+    anchorRect.height = `0px`;
+
+    const offsetX = cursorX - anchorX -450;
+    const offsetY = cursorY - anchorY;
+
+    const newposition = this.overlay.position().flexibleConnectedTo(this.anchorDiv2).withPositions([{
+      originX: 'center',
+      originY: 'bottom',
+      overlayX: 'center',
+      overlayY: 'bottom',
+      offsetY: offsetY,
+      offsetX: offsetX
+    }])
+    // Dialog ist schon offen → nur Position updaten
+    // Wenn Dialog schon offen ist → Position updaten
+    if (this.dialog.openDialogs.length > 0 && this.positionStrategy) {
+      // debugger
+      
+      this.positionStrategy.withPositions([{
+        originX: 'center',
+        originY: 'bottom',
+        overlayX: 'center',
+        overlayY: 'bottom',
+        offsetY: offsetY,
+        offsetX: offsetX
+      }]),
+      
+      this.positionStrategy.apply()
+    }else{
+      this.positionStrategy = newposition;
+      let ref = this.dialog.open(EmojiPickerComponent,
+        {
+          autoFocus: '#messageInput',
+          restoreFocus: true,
+          positionStrategy: this.positionStrategy
+            // .withFlexibleDimensions(true)
+            .withViewportMargin(20)
+            .withPush(true),
+          width: '344px',
+          height: '400px',
+          panelClass: 'EmojiPickerDialog',
+          data: {
+            title: 'Create Channel'
+          }
+        
+        }
+      
+      )
+      ref.closed.subscribe((emoji: any) => {
+        if(emoji){
+          input.value += emoji.unicode
+        }
+      })
+      input.focus();
+      } 
   }
 
   openInfoDialog() {
@@ -113,89 +184,140 @@ export class DirectMessagesComponent {
     )
   }
 
-  openTagMembersDialog() {
+  async memberListHelperFunction() {
+    let uuid = this.channel.uuid
+    const { data, error } = await this.supabase
+      .from('chat_room_members')
+      .select('user_id, chat_room_id')
+      .eq('chat_room_id', uuid)
+    if (!data || error) return
+
+    return data ?? []
+  }
+
+  membersWithAvatarForDialog = signal<Members[]>([])
+  async searchingForMembers() {
+    // this.cd.detectChanges();
+    const data = await this.memberListHelperFunction()
+    console.log('memberList Data', data)
+    let memberIds = data?.map((item: any) => item.user_id)
+    const { data: avatarUrl, error: avatarError } = await this.supabase
+      .from('profiles')
+      .select('avatar_url, username, uuid, email')
+      .in('uuid', memberIds as any)
+      .order('username', { ascending: true });
+
+
+
+    // this.memberWithAvatar.set(avatarUrl as any)
+    this.membersWithAvatarForDialog.set(avatarUrl as any)
+    console.log('memberWithAvatar normal wurde gesetzt', this.membersWithAvatarForDialog())
+
+
+    // debugger
+    // console.log('filtered', this.channelData.filteredMembers)
+    console.log('incoming Data', this.membersWithAvatarForDialog())
+
+    if (!avatarUrl || avatarError) return
+
+    return avatarUrl
+  }
+  filtered: any = []
+  async openTagMembersDialog() {
     let input = document.getElementById('messageInput') as HTMLTextAreaElement;
-    
-    
+    const allchannels = this.userService.channelTable()
     let position1: any = input.selectionStart ?? 0
     position1 = input.value.slice(0, position1)
-    const adIndex = position1.lastIndexOf('@')
-    const relevantPart = adIndex >= 0 ? position1.slice(adIndex +1) : position1
+    const atIndex = position1.lastIndexOf('@')
+    const routeIndex = position1.lastIndexOf('#')
+    
+    const relevantPart = atIndex >= 0 ? position1.slice(atIndex + 1) : routeIndex >= 0 ? position1.slice(routeIndex + 1) : position1
+    
     console.log('relevantPart', relevantPart)
-    // hier dann mit dem relevantPart die Members auf die eingabe filtern =================================================================================
+    const Memberdata = await this.searchingForMembers()
+    // this.filtered = relevantPart
+    console.log('filtered member', this.filtered)
+    this.filteredMembers.set(this.filtered)
+    // basic Member Anzeige hier raus verlagern, damit es bei der eingabe von @ sofort erscheint und nicht erst gefetched werden muss ================
     if (!input) return
     let position: any = input.selectionStart ?? 0
     let before = input.value.slice(0, position)
     const coords = getCaretCoordinates(input, position)
-    
+
     // x-Position des Cursors relativ zum Viewport
-    const inputRect = input.getBoundingClientRect();
+    const inputRect = input.getBoundingClientRect(); // method returns the size of an element and its position relative to the viewport.
     const cursorX = inputRect.left + coords.left;
     const cursorY = inputRect.top + coords.top;
     // const difference = (this.anchorDiv2.nativeElement.offsetWidth / 2) - cursorX
     // Anchor-Element horizontal an die Cursor-Position setzen
     // Aktuelle Position des anchorDiv2 Elements
     const anchorRect = this.anchorDiv2.nativeElement.getBoundingClientRect();
-  const anchorX = anchorRect.left +310;
-  const anchorY = anchorRect.top +10;
-  anchorRect.width = `0px`;
-  anchorRect.height = `0px`;
+    const anchorX = anchorRect.left + 310;
+    const anchorY = anchorRect.top + 10;
+    anchorRect.width = `0px`;
+    anchorRect.height = `0px`;
 
-  // Offset berechnen: Differenz zwischen Cursor und Anchor
-  const offsetX = cursorX - anchorX;
-  const offsetY = cursorY - anchorY;
-  
-  const membersWithAvatar = this.getSelectedMEMBERS(this.uuid)
-  const channel = this.selectedChannel();
-  console.log('anchorDiv', this.anchorDiv2)
-  const newposition = this.overlay.position().flexibleConnectedTo(this.anchorDiv2).withPositions([{
-    originX: 'center',
-    originY: 'bottom',
-    overlayX: 'center',
-    overlayY: 'bottom',
-    offsetY: offsetY,
-    offsetX: offsetX
-  }])
-  
-  // Dialog ist schon offen → nur Position updaten
-  // Wenn Dialog schon offen ist → Position updaten
-  if (this.dialog.openDialogs.length > 0 && this.positionStrategy) {
-    this.positionStrategy.withPositions([{
+    // Offset berechnen: Differenz zwischen Cursor und Anchor
+    const offsetX = cursorX - anchorX;
+    const offsetY = cursorY - anchorY;
+
+    const membersWithAvatar = this.getSelectedMEMBERS(this.uuid)
+    const channel = this.selectedChannel();
+    console.log('anchorDiv', this.anchorDiv2)
+    const newposition = this.overlay.position().flexibleConnectedTo(this.anchorDiv2).withPositions([{
       originX: 'center',
       originY: 'bottom',
       overlayX: 'center',
       overlayY: 'bottom',
       offsetY: offsetY,
-      offsetX: offsetX,
-    }]);
-    this.positionStrategy.apply()
-    return; // Position updated sich automatisch
-  
+      offsetX: offsetX
+    }])
 
-}else{
-  
-  this.dialog.closeAll()
-  this.positionStrategy = newposition;
-  this.dialog.open(TagMembersComponent,
-      {
-        positionStrategy: this.positionStrategy
-          // .withFlexibleDimensions(true)
-          // .withViewportMargin(0)
-          .withPush(true),
-        width: '325px',
-        height: 'fit-content',
-        panelClass: 'tagMembersDialog',
-        data: {
-          title: 'View Members',
-          channel: channel,
-          onSelectUser: (user: any) =>
-            this.selectUserFromDialog?.(user)
-        },
-      }
-    )
-  
-    
-  }
+    // Dialog ist schon offen → nur Position updaten
+    // Wenn Dialog schon offen ist → Position updaten
+    if (this.dialog.openDialogs.length > 0 && this.positionStrategy) {
+      this.dialog.openDialogs[0].componentInstance.updateInputValue(relevantPart);
+      this.positionStrategy.withPositions([{
+        originX: 'center',
+        originY: 'bottom',
+        overlayX: 'center',
+        overlayY: 'bottom',
+        offsetY: offsetY,
+        offsetX: offsetX
+      }]),
+      
+      this.positionStrategy.apply()
+      return; // Position updated sich automatisch
+
+
+    } else {
+
+      this.dialog.closeAll()
+      this.positionStrategy = newposition;
+      this.dialog.open(TagMembersComponent,
+        {
+          autoFocus: '#messageInput',
+          restoreFocus: true,
+          positionStrategy: this.positionStrategy
+            // .withFlexibleDimensions(true)
+            // .withViewportMargin(0)
+            .withPush(true),
+          width: '325px',
+          height: 'fit-content',
+          panelClass: 'tagMembersDialog',
+          data: {
+            title: 'View Members',
+            channel: channel, // aktueller Channel
+            members: Memberdata, // alle Members
+            query: relevantPart, // input Buchstaben bei @ oder #
+            allchannel: allchannels, // alle Channels
+            symbol: atIndex >= 0 ? '@' : routeIndex >= 0 ? '#' : ''
+          },
+        }
+      )
+
+
+    }
   }
 
   openAddMemberToChannelDialog() {
@@ -367,8 +489,6 @@ export class DirectMessagesComponent {
 
 
   searchForMembersInTextField() {
-    // debugger
-    console.log('>>> searchForMembersInTextField called');
     let input = document.getElementById('messageInput') as HTMLTextAreaElement;
     if (!input) return
     let value = input.value
@@ -376,29 +496,16 @@ export class DirectMessagesComponent {
     let before = input.value.slice(0, position)
     const coords = getCaretCoordinates(input, position)
     const match = /([@#])([\w]*)$/.exec(before);
-    console.log('match:', match);
-
-  //   if (match) {
-  //   // const coords = getCaretCoordinates(input, position);
-  //   const inputRect = input.getBoundingClientRect();
-  //   const cursorX = inputRect.left + coords.left;
-  //   const cursorY = inputRect.top + coords.top;
-
-  //   const anchor = this.anchorDiv2.nativeElement as HTMLElement;
-  //   anchor.style.left = `${cursorX}px`;
-  //   anchor.style.top = `${cursorY}px`;
-  // }
+    
 
     if (match) {
       this.openTagMembersDialog()
-      setTimeout(() => {
-        input.focus();
-
-      }, 100)
+      input.focus();
+      
     } else {
       this.dialog.closeAll()
     }
-    // console.log('send message', message)
+    
 
 
   }

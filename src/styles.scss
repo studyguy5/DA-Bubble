@@ -136,6 +136,22 @@ body{
     
 }
 
+.cdk-overlay-pane.EmojiPickerDialog{
+    display:flex;
+    position:absolute !important;
+    // border-top-right-radius: 20px;
+    // border-top-left-radius: 20px;
+    // border-bottom-right-radius: 20px;
+    // border-bottom-left-radius: 20px;
+    bottom:145px;
+    // left:845px !important;
+    border: 1px solid black;
+    background-color: rgba(255, 255, 255, 1);
+    z-index: 1000;
+}
+
+
+
 .cdk-overlay-backdrop-showing {
     opacity: 1;
 }

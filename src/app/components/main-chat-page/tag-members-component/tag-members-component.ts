@@ -5,8 +5,11 @@ import { signal } from '@angular/core';
 import { DialogRef } from '@angular/cdk/dialog';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../../environment/environment';
+import { computed } from '@angular/core';
+import { UserService } from '../../../services/user-service';
 
 import { I } from '@angular/cdk/keycodes';
+import { Channel } from '../../../interfaces/interfaces';
 
 interface ProfileMember {
   username: string;
@@ -17,8 +20,14 @@ interface ProfileMember {
 interface MemberOverviewDialogData {
   title: string;
   channel: any;
-  onSelectUser?: any;
+  inputValue: string
+  members: ProfileMember[]
+  allchannel: any
+  symbol: string
 }
+
+
+
 @Component({
   selector: 'app-tag-members-component',
   imports: [],
@@ -27,43 +36,68 @@ interface MemberOverviewDialogData {
 })
 export class TagMembersComponent {
 supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
+memberWithAvatar = signal<ProfileMember[]>([])
+allchannels = signal<Channel[]>([])
+inputValue = signal('');
+// filteredMembers = signal<ProfileMember[]>([])
   constructor(@Inject(DIALOG_DATA) public channelData: MemberOverviewDialogData, @Inject(DialogRef) public dialogRef: DialogRef<TagMembersComponent>) {
-    this.searchingForMembers()
+    this.memberWithAvatar.set(channelData.members)
+    console.log('Data from direct message', this.channelData.symbol)
+    this.checkSymbol()
   } 
-   
-
-  memberWithAvatar = signal<ProfileMember[]>([])
-  async memberListHelperFunction() {
-    let uuid = this.channelData.channel.uuid
-    const { data, error } = await this.supabase
-      .from('chat_room_members')
-      .select('user_id, chat_room_id')
-      .eq('chat_room_id', uuid)
-    if (!data || error) return
-
-    return data ?? []
-  }
   filterResult: any
-  async searchingForMembers() {
-      // this.cd.detectChanges();
-    const data = await this.memberListHelperFunction()
-    console.log('memberList Data', data)
-    let memberIds = data?.map((item: any) => item.user_id)
-    const { data: avatarUrl, error: avatarError } = await this.supabase
-    .from('profiles')
-    .select('avatar_url, username, uuid, email')
-    .in('uuid', memberIds as any)
-    .order('username', { ascending: true });
-    this.memberWithAvatar.set(avatarUrl as any)
-    console.log('incoming Data', this.memberWithAvatar())
 
-    if(!avatarUrl || avatarError) return
+  checkSymbol() {
+    // debugger
+    if(this.channelData.symbol === '#') {
+      this.setChannels()
+      console.log('channels are setted')
+    }
+  }
+
+    filteredChannels: any = computed(() => {
+      const search = this.inputValue().toLowerCase().trim();
+      console.log('channel for Filtering', search);
+      const channels = this.allchannels();
+      
+      if (!search) {
+        return channels;
+      }
+  
+      return channels.filter((channel: any) =>
+        channel.name.toLowerCase().includes(search)
+      )
+    })
+
+    filteredMembers: any = computed(() => {
+      const search = this.inputValue().toLowerCase().trim();
+      if(search !== null){
+        console.log('search is not null', search)
+      }
+    const members = this.memberWithAvatar();
+    // console.log('filteredMembers WOOOO', this.filteredMembers());
+
+    if (!search) {
+      return members;
+    }
+
+    return members.filter(member =>
+      member.username.toLowerCase().includes(search)
+    )
+  });
+
+  setChannels() {
+    if(!this.channelData.allchannel) return
+    this.allchannels.set(this.channelData.allchannel)
+    console.log('channels are setted 445')
   }
 
   closeDialog() {
     this.dialogRef.close();
   }
+  
+  updateInputValue(value: string): void {
+    this.inputValue.set(value);
+  }
 
-  // showData() {
-  // }
 }

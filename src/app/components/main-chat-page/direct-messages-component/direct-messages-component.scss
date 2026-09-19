@@ -222,6 +222,42 @@
         width: 100%;
         display: flex;
         justify-content: space-between;
+        >.textAreaToolsLeft{
+            min-width:85px;
+            display:flex;
+            justify-content: space-between;
+            gap:21px;
+            >.emojiIcon{
+                width:24px;
+                height:24px;
+                color: #686868;
+                padding: 2px;
+                transition: all 0.3s ease;
+                &:hover{
+                    cursor: pointer;
+                    scale:1.2;
+                    color: rgba(68, 77, 242, 1);
+                    background-color: rgb(204, 202, 202);
+                    border-radius: 100px;
+                    padding: 2px;
+                }
+            }
+            .atIcon{
+                width:24px;
+                height:24px;
+                color: #686868;
+                padding: 2px;
+                transition: all 0.3s ease;
+                &:hover{
+                    cursor: pointer;
+                    scale:1.2;
+                    color: rgba(68, 77, 242, 1);
+                    background-color: rgb(204, 202, 202);
+                    border-radius: 100px;
+                    padding: 2px;
+                }
+            }
+        }
     }
 
     >textArea {
@@ -263,6 +299,8 @@
     display: flex;
 
 }
+
+
 
 .innerMessageWrapper {
     overflow-y: scroll;
