@@ -309,7 +309,7 @@
     display:flex;
     flex-direction: column;
     min-height:0px;
-    max-height:657px;
+    max-height:715px; // 657px
     justify-content: center;
 }
 
@@ -321,20 +321,24 @@
 .messageWrapper {
     display: flex;
     flex-direction: column;
-    // position: relative;
-    // top:50%;
     gap: 10px;
     padding:10px 35px;
     box-sizing: border-box;
+    position:relative;
     >.topLineAndTimestamp{
         display:flex;
         align-items: center;
         >hr{
             border-color: solid black;
             border-width: 0.1px;
-            // height:1px;
             width:100%;
-            // color:black;
+            
+        }
+        >p{
+            padding: 5px 10px;
+            margin:0px;
+            border-radius: 20px;
+            border: 1px solid rgba(173, 176, 217, 1);
         }
     }
     >.messageReactionsAndProfileWrapper{
@@ -350,6 +354,41 @@
             >.profileName{
                 margin:0px;
             }
+            >.nameAndTimeBox{
+                display:flex;
+                align-items: center;
+                gap:50px;
+                >p{
+                    margin:0px;
+                }
+                >.actionBox{
+                    display:flex;
+                    position:absolute;
+                    opacity:1;
+                    top:30px;
+                    left:30px;
+                    gap:10px;
+                    width:250px;
+                    height:40px;
+                    background-color: rgb(163, 133, 133);
+                    border-radius: 20px;
+                    justify-content: center;
+                    align-items: center;
+                    >p{
+                        margin:0px;
+                    }
+                    >img:first-child{
+                        &:hover{
+                            cursor: pointer;
+                            // scale:1.2;
+                            // color: rgba(68, 77, 242, 1);
+                            background-color: rgb(204, 202, 202);
+                            border-radius: 100px;
+                            // padding: 2px;
+                        }
+                    }
+                }
+            }
             >.content{
                 margin-top: 0px;
                 margin-bottom: 0px;
@@ -357,6 +396,12 @@
                 color:white;
                 background-color: rgba(68, 77, 242, 1);
                 border-radius: 20px 0px 20px 20px;
+            }
+            >.reactionsAndSmileyBox{
+                display:flex;
+                >p{
+                    margin:0px;
+                }
             }
         }
     }

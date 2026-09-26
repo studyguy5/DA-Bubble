@@ -56,7 +56,7 @@ export class LoginMaskComponent {
   }
 
   async signInAsGuest() {
-    debugger
+    // debugger
     const { data: session, error: sessionError } = await this.supabase.auth.getSession() // bereits anonyme session holen, ließt eine bereits vorhandene session aus dem localen storage
 
     if (sessionError) {
