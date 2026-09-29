@@ -367,11 +367,14 @@
                     opacity:1;
                     top:30px;
                     left:30px;
-                    gap:10px;
-                    width:250px;
-                    height:40px;
+                    gap:5px;
+                    width:255px;
+                    height:46px;
                     background-color: rgb(163, 133, 133);
-                    border-radius: 20px;
+                    border-top-left-radius: 20px;
+                    border-top-right-radius: 20px;
+                    border-bottom-left-radius: 20px;
+                    border-bottom-right-radius: 0px;
                     justify-content: center;
                     align-items: center;
                     >p{
@@ -382,9 +385,43 @@
                             cursor: pointer;
                             // scale:1.2;
                             // color: rgba(68, 77, 242, 1);
-                            background-color: rgb(204, 202, 202);
+                            background-color: rgba(236, 238, 254, 1);
                             border-radius: 100px;
                             // padding: 2px;
+                        }
+                    }
+                    >img:nth-child(2){
+                        &:hover{
+                            cursor: pointer;
+                            background-color: rgba(236, 238, 254, 1);
+                            border-radius: 100px;
+                        }
+                    }
+                    >.smileyIcon{
+                        &:hover{
+                            scale:1.08;
+                            color:rgba(68, 77, 242, 1);
+                            cursor: pointer;
+                            background-color: rgba(236, 238, 254, 1);
+                            border-radius: 100px;
+                        }
+                    }
+                    >.threadsIcon{
+                        &:hover{
+                            scale:1.08;
+                            color:rgba(68, 77, 242, 1);
+                            cursor: pointer;
+                            background-color: rgba(236, 238, 254, 1);
+                            border-radius: 100px;
+                        }
+                    }
+                    >.editIcon{
+                        &:hover{
+                            scale:1.08;
+                            color:rgba(68, 77, 242, 1);
+                            cursor: pointer;
+                            background-color: rgba(236, 238, 254, 1);
+                            border-radius: 100px;
                         }
                     }
                 }

@@ -45,3 +45,8 @@ export interface ChannelMember {
   chat_room_id: string;
   avatar_url: string;
 }
+
+export interface Emoji {
+  emoji: string;
+  message_id: string
+}

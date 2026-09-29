@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, Inject, ViewChild, ElementRef, AfterViewInit, computed } from '@angular/core';
 import { input, effect, signal, Input } from '@angular/core';
 import { User, Channel, ChannelMember, Message, ChatRoomMember, Members } from '../../../interfaces/interfaces';
 import { Dialog } from '@angular/cdk/dialog';
@@ -13,6 +13,8 @@ import { MemberOverviewComponent } from '../member-overview-component/member-ove
 // import { V } from '@angular/cdk/keycodes';
 import { DatePipe } from '@angular/common';
 import { UserService } from '../../../services/user-service';
+import { Emoji } from '../../../interfaces/interfaces';
+import { UserReactionService } from '../../../services/user-reaction-service';
 import getCaretCoordinates from 'textarea-caret';
 import { OverlayRef, FlexibleConnectedPositionStrategy } from '@angular/cdk/overlay';
 import { EmojiPickerComponent } from '../emoji-picker-component/emoji-picker-component';
@@ -41,10 +43,12 @@ export class DirectMessagesComponent {
   userChat = signal<Message[]>([])
   selectedChannel = input<Channel | null>(null)
   positionStrategy?: FlexibleConnectedPositionStrategy;
-  // emoji = signal<string>('')
+  emoji = signal<Emoji[]>([])
+
+
   constructor(
     @Inject(Dialog) private dialog: Dialog,
-    private overlay: Overlay, private userService: UserService
+    private overlay: Overlay, private userService: UserService, private userReactionService: UserReactionService
   ) {
     effect(() => {
       this.channel = this.selectedChannel();
@@ -57,7 +61,41 @@ export class DirectMessagesComponent {
     })
     this.subscribeToChanges()
     this.getProfiles()
+    this.getAllReactions()
+  }
+
+  count = 0
+  async getAllReactions(){
+    let reactions = await this.userReactionService.getReactions()
+    this.emoji.set(reactions as any)
     
+    console.log('reactions', reactions)
+    }
+  
+
+  countEach = computed(() => {
+    const counts = new Map<string, { emoji: string; anzahl: number }[]>();
+
+    for (const reaction of this.emoji()) {
+      if (!reaction.message_id || !reaction.emoji) continue;
+
+      const messageReactions = counts.get(reaction.message_id) ?? []; // message id als key
+      const existingReaction = messageReactions.find(item => item.emoji === reaction.emoji); //emoji suchen
+
+      if (existingReaction) {
+        existingReaction.anzahl += 1;
+      } else {
+        messageReactions.push({ emoji: reaction.emoji, anzahl: 1 });
+      }
+
+      counts.set(reaction.message_id, messageReactions);
+    }
+
+    return counts;
+  })
+
+  postEmojiToSupabase(emoji: string, message_uuid: string) {
+    this.userReactionService.pushReactions(emoji, message_uuid)
   }
 
   openEmojiPickerDialog() {
@@ -484,8 +522,19 @@ export class DirectMessagesComponent {
           console.log('Change received!', payload)
         }
       )
-      .subscribe()
+      .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'message_reactions' },
+          (payload) => {
+            this.getAllReactions()
+            console.log('Change received!', payload)
+          }
+        )
+        .subscribe()
   }
+
+
+  
 
 
   searchForMembersInTextField() {
