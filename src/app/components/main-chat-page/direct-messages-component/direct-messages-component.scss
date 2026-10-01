@@ -318,11 +318,28 @@
     margin-top: auto,
     
 }
+
+.messageWrapper{
+    &:hover{ 
+        >.messageReactionsAndProfileWrapper{
+            background-color: rgba(236, 238, 254, 1);
+            >.ProfileNameMessageReactionBox{
+                >.nameAndTimeBox{
+                        .actionBox{
+                            opacity:1;
+                        }
+                    
+                }
+            }
+        }
+    }
+}
+
 .messageWrapper {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding:10px 35px;
+    padding:10px 0px;
     box-sizing: border-box;
     position:relative;
     >.topLineAndTimestamp{
@@ -345,6 +362,48 @@
         display:flex;
         justify-content: flex-end;
         gap:30px;
+        padding: 0px 35px;
+
+        
+        >.editMessageBox{
+            display:none;
+            flex-direction: column;
+            align-items: start;
+            // justify-content: center;
+            gap:10px;
+            // position:absolute;
+            // top:84px;
+            // left:260px;
+            width:698px;
+            height:180px;
+            border: 1px solid rgba(173, 176, 217, 1);
+            background-color: rgb(233, 230, 230);
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            opacity:1;
+            transition: opacity 0.3s ease-in-out;
+            >.editToolBox{
+                display:flex;
+                justify-content: space-between;
+                align-items: center;
+                width:100%;
+            }
+            #editMessageInput{
+                width:100%;
+                max-width:698px;
+                max-height:130px;
+                height:100%;
+                border: none;
+                resize: none;
+                outline: none;
+                border-radius: 20px;
+                padding:10px 20px;
+                box-sizing: border-box;
+                font-size: 18px;
+            }
+        }
         >.ProfileNameMessageReactionBox{
             display:flex;
             flex-direction: column;
@@ -364,7 +423,7 @@
                 >.actionBox{
                     display:flex;
                     position:absolute;
-                    opacity:1;
+                    opacity:0;
                     top:30px;
                     left:30px;
                     gap:5px;
@@ -416,6 +475,7 @@
                         }
                     }
                     >.editIcon{
+                        position:relative;
                         &:hover{
                             scale:1.08;
                             color:rgba(68, 77, 242, 1);
@@ -425,6 +485,27 @@
                         }
                     }
                 }
+            }
+
+            .editMessage{
+                position:absolute;
+                top:84px;
+                left:260px;
+                width:255px;
+                height:46px;
+                background-color: rgb(163, 133, 133);
+                border-top-left-radius: 0px;
+                border-top-right-radius: 20px;
+                border-bottom-left-radius: 20px;
+                border-bottom-right-radius: 20px;
+                display:flex;
+                opacity:0;
+                justify-content: center;
+                align-items: center;
+                transition: opacity 0.3s ease-in-out;
+            }
+            .editMessageVisible{
+                opacity:1;
             }
             >.content{
                 margin-top: 0px;
@@ -436,7 +517,30 @@
             }
             >.reactionsAndSmileyBox{
                 display:flex;
+                gap:13px;
+                >.emojiBoxWithCounter{
+                    display:flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap:10px;
+                    background-color: rgba(236, 238, 254, 0);
+                    border: 1px solid rgba(173, 176, 217, 1);
+                    border-radius: 30px;
+                    padding: 3px 10px;
+                    box-sizing: border-box;
+                    
+                    >p{
+                        margin:0px;
+                    }
+                    >img{
+                        width:35px;
+                        height:35px;
+                    }
+                }
                 >p{
+                    display:flex;
+                    align-items: center;
+                    
                     margin:0px;
                 }
             }

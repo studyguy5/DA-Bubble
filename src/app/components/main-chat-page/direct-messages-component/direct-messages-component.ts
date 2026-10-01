@@ -18,6 +18,7 @@ import { UserReactionService } from '../../../services/user-reaction-service';
 import getCaretCoordinates from 'textarea-caret';
 import { OverlayRef, FlexibleConnectedPositionStrategy } from '@angular/cdk/overlay';
 import { EmojiPickerComponent } from '../emoji-picker-component/emoji-picker-component';
+import twemoji from '@twemoji/api';
 
 @Component({
   selector: 'app-direct-messages-component',
@@ -36,7 +37,7 @@ export class DirectMessagesComponent {
   channel: any
   filteredMembers = signal<Members[]>([])
   members = signal<ChannelMember[] | null>([])
-
+  twemoji = twemoji
   supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
   selectedUser = input<User | null>(null)
   allMembers = signal<Members[]>([])
@@ -56,7 +57,7 @@ export class DirectMessagesComponent {
       this.uuid = this.channel?.uuid;
       setTimeout(() => {
         this.showMessagesFromSelectedChannelOrUser()
-      }, 200)
+      }, 10)
       // hier testen, ob der setTimeout die Verzögerung verursacht =====================================
     })
     this.subscribeToChanges()
@@ -97,8 +98,8 @@ export class DirectMessagesComponent {
   postEmojiToSupabase(emoji: string, message_uuid: string) {
     this.userReactionService.pushReactions(emoji, message_uuid)
   }
-
-  openEmojiPickerDialog() {
+  asReaction: boolean = false
+  openEmojiPickerDialog(asReaction: boolean, message_uuid?: string) {
     let input = document.getElementById('messageInput') as HTMLTextAreaElement;
     if (!input) return
     let position: any = input.selectionStart ?? 0
@@ -161,8 +162,12 @@ export class DirectMessagesComponent {
       
       )
       ref.closed.subscribe((emoji: any) => {
-        if(emoji){
+        debugger
+        if(emoji && !asReaction){
           input.value += emoji.unicode
+        }else if(emoji && asReaction && message_uuid){
+          
+          this.postEmojiToSupabase(emoji.unicode, message_uuid)
         }
       })
       input.focus();
@@ -559,4 +564,66 @@ export class DirectMessagesComponent {
 
   }
 
+  openEditMessageDialog(message: any, event: MouseEvent) {
+    // debugger;
+    const editMessageDiv = document.querySelectorAll('.editMessage') as NodeListOf<HTMLDivElement>;
+    console.log('editMessageDiv', editMessageDiv)
+    if (!editMessageDiv.length) return;
+    const target = event.target as HTMLElement;
+      const messageRow = target.closest('.actionBox') as HTMLElement;
+      let rightRow = messageRow.nextElementSibling as HTMLDivElement;
+      rightRow?.classList.add('editMessageVisible');
+    if (rightRow) {
+      rightRow.classList.add('editMessageVisible');
+      setTimeout(() => {
+        rightRow.classList.remove('editMessageVisible');
+      }, 2000);
+    }
+
+}
+
+editMessage(message: any, event: MouseEvent) {
+  const eventTarget = event.target as HTMLElement;
+  const messageRow = eventTarget.closest('.messageWrapper') as HTMLElement;
+  
+  //anzeigen und input befüllen
+  const editMessageBox: any = messageRow.querySelector('.editMessageBox') as HTMLDivElement;
+  editMessageBox.style.display = 'flex';
+
+
+  // input befüllen und fokus setzen
+  // debugger;s
+  const editinput = document.getElementById('editMessageInput') as HTMLInputElement;
+  editinput.value = message
+  console.log('editinput', editinput.value)
+  
+  editinput.focus();
+  //main box rechts ausblenden
+  if (!editinput || !editinput || !messageRow || !editMessageBox) return;
+  const target = event.target as HTMLElement;
+  const closeMessageBox = target.parentElement?.parentElement?.parentElement as HTMLElement;
+  closeMessageBox.style.display = 'none'; //hauptteil ausblenden
+
+
+  const saveButton = document.getElementById('saveEditButton') as HTMLButtonElement;
+  saveButton.onclick = async () => {
+    const newContent = editinput.value;
+    if (newContent.trim() === '') {
+      alert('Message cannot be empty');
+      return;
+    }
+    // const { data, error } = await this.supabase
+    //   .from('messages')
+    //   .update({ content: newContent })
+    //   .eq('uuid', message.uuid);
+    // if (error) {
+    //   console.error('Error updating message:', error);
+    // } else {
+    //   console.log('Message updated:', data);
+    //   closeMessageBox.style.display = 'flex';
+    //   editMessageBox.style.display = 'none';
+    //   this.showMessagesFromSelectedChannelOrUser();
+    // }
+  }
+}
 }
