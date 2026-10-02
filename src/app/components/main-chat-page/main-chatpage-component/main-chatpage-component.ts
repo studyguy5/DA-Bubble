@@ -58,9 +58,11 @@ export class MainChatpageComponent {
     // console.log('input on mainChatpage', this.selectedUser());
   }
   getChoiceFromChannelSelectionComponent(selectedChannel: Channel) {
+    // console.log('input on mainChatpage', selectedChannel);
     this.selectedChannel.set(selectedChannel);
+    // console.log('PARENT SIGNAL', this.selectedChannel()?.uuid);
     this.selectedUser.set(null);
-    // console.log('input on mainChatpage', this.selectedUser());
+    // console.log('PARENT SIGNAL DANACH', this.selectedChannel()?.uuid);
   }
 
 

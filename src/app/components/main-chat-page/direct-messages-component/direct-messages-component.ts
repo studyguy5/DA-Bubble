@@ -13,6 +13,7 @@ import { MemberOverviewComponent } from '../member-overview-component/member-ove
 // import { V } from '@angular/cdk/keycodes';
 import { DatePipe } from '@angular/common';
 import { UserService } from '../../../services/user-service';
+import { EditMessageService } from '../../../services/edit-message-service';
 import { Emoji } from '../../../interfaces/interfaces';
 import { UserReactionService } from '../../../services/user-reaction-service';
 import getCaretCoordinates from 'textarea-caret';
@@ -49,16 +50,18 @@ export class DirectMessagesComponent {
 
   constructor(
     @Inject(Dialog) private dialog: Dialog,
-    private overlay: Overlay, private userService: UserService, private userReactionService: UserReactionService
+    private overlay: Overlay, private userService: UserService, private userReactionService: UserReactionService, private editMessageService: EditMessageService
   ) {
+    this.channel = this.selectedChannel();
+    console.log('KLICK', this.channel?.uuid);
     effect(() => {
-      this.channel = this.selectedChannel();
-      const user = this.selectedUser();
-      this.uuid = this.channel?.uuid;
-      setTimeout(() => {
+      console.log('EFFECT-AUSWAHL', {
+    channel: this.channel?.uuid,
+    
+  });
+        
         this.showMessagesFromSelectedChannelOrUser()
-      }, 10)
-      // hier testen, ob der setTimeout die Verzögerung verursacht =====================================
+      
     })
     this.subscribeToChanges()
     this.getProfiles()
@@ -99,8 +102,12 @@ export class DirectMessagesComponent {
     this.userReactionService.pushReactions(emoji, message_uuid)
   }
   asReaction: boolean = false
-  openEmojiPickerDialog(asReaction: boolean, message_uuid?: string) {
+  openEmojiPickerDialog(asReaction: boolean, message_uuid?: string, event?: MouseEvent) {
+    
     let input = document.getElementById('messageInput') as HTMLTextAreaElement;
+    let targetElement = event?.target as HTMLElement;
+    const rightTextArea: any = targetElement.closest('.messageWrapper')?.querySelector('#editMessageInput') as HTMLTextAreaElement;
+    
     if (!input) return
     let position: any = input.selectionStart ?? 0
     const coords = getCaretCoordinates(input, position)
@@ -162,9 +169,11 @@ export class DirectMessagesComponent {
       
       )
       ref.closed.subscribe((emoji: any) => {
-        debugger
-        if(emoji && !asReaction){
+        
+        if(emoji && !asReaction && rightTextArea === null){
           input.value += emoji.unicode
+        }else if(emoji && !asReaction && rightTextArea){
+          rightTextArea.value += emoji.unicode
         }else if(emoji && asReaction && message_uuid){
           
           this.postEmojiToSupabase(emoji.unicode, message_uuid)
@@ -407,40 +416,42 @@ export class DirectMessagesComponent {
 
 
   async showMessagesFromSelectedChannelOrUser() {
-    // debugger;
+    // funktion optimieren, da zu langsam
     console.log('showMessagesFromSelectedChannelOrUser')
     const channel = this.selectedChannel();
     let user: any = await this.supabase.auth.getUser();
     const participant: any = this.selectedUser();
-    if (!channel) {
-      console.warn('Kein Channel ausgewählt – Nachrichten werden nicht angezeigt.');
-    } else {
+    if (channel) {
+      await Promise.all([
+        this.getSelectedMEMBERS(channel.uuid),
+        this.getMessagesFromSelectedCHANNEL(channel.uuid)
+      ])
       user = null
-      this.getSelectedMEMBERS(channel.uuid)
-      this.getMessagesFromSelectedCHANNEL(channel.uuid)
-      return
+    } 
+    if(!channel) {
+      console.warn('Kein Channel ausgewählt – Nachrichten werden nicht angezeigt.');
+      
     }
 
-    if (!user) {
-      console.warn('Kein Benutzer ausgewählt – Nachrichten werden nicht angezeigt.');
-    } else {
+    if (participant) {
+
       this.members.set(null);
-      this.getMessagesFromSelectedUSER(user.data.user?.id, participant?.uuid)
+      await this.getMessagesFromSelectedUSER(user.data.user?.id, participant?.uuid)
+    } else {
+      console.warn('Kein Benutzer ausgewählt – Nachrichten werden nicht angezeigt.');
     }
   }
 
   async getMessagesFromSelectedCHANNEL(uuid: string) {
-    // debugger;
     const messages = await this.userService.getMessagesFromSelectedChannel(uuid)
     this.userChat.set(messages as Message[]);
     console.log('Nachrichten für den ausgewählten Channel:', messages);
-
+    
   }
-
+  
   async getMessagesFromSelectedUSER(author_id: string, participant_uuid: string | null) {
     const messages: any = await this.userService.getMessagesFromSelectedUser(author_id, participant_uuid)
-    this.userChat.set([] as Message[]);
-    console.log('Nachrichten:', messages);
+    console.log('messages from UserService:', messages);
     this.userChat.set(messages ?? [] as Message[]);
 
   }
@@ -605,13 +616,13 @@ editMessage(message: any, event: MouseEvent) {
   closeMessageBox.style.display = 'none'; //hauptteil ausblenden
 
 
-  const saveButton = document.getElementById('saveEditButton') as HTMLButtonElement;
-  saveButton.onclick = async () => {
-    const newContent = editinput.value;
-    if (newContent.trim() === '') {
-      alert('Message cannot be empty');
-      return;
-    }
+  
+  // saveButton.onclick = async () => {
+  //   const newContent = editinput.value;
+  //   if (newContent.trim() === '') {
+  //     alert('Message cannot be empty');
+  //     return;
+  //   }
     // const { data, error } = await this.supabase
     //   .from('messages')
     //   .update({ content: newContent })
@@ -625,5 +636,34 @@ editMessage(message: any, event: MouseEvent) {
     //   this.showMessagesFromSelectedChannelOrUser();
     // }
   }
+  pusheditedMessageAndPush(messageId: string, event: MouseEvent) {
+    // debugger;
+    let target = event.target as HTMLElement;
+    let next = target.parentElement?.parentElement?.parentElement as HTMLElement;
+    let input = next.querySelector('#editMessageInput') as HTMLInputElement
+    input.value = input.value.trim()
+    if (input.value === '') {
+      alert('Message cannot be empty');
+      return;
+    }
+    this.editMessageService.pushEditedMessage(messageId, input.value.trim())
+    this.showMessagesFromSelectedChannelOrUser()
+    this.closeEditMessageBox(event)
+  }
+
+  closeEditMessageBox(event: MouseEvent) {
+    const eventTarget = event.target as HTMLElement;
+    const messageRow = eventTarget.closest('.messageWrapper') as HTMLElement;
+    if (!messageRow) return;
+    const editMessageBox: any = messageRow.querySelector('.editMessageBox') as HTMLDivElement;
+    const profileOverviewBox: any = messageRow.querySelector('.ProfileNameMessageReactionBox') as HTMLDivElement;
+    const actionBox = messageRow.querySelector('.actionBox') as HTMLDivElement;
+    if (!editMessageBox || !actionBox || !profileOverviewBox) return;
+    profileOverviewBox.style.transition = 'opacity 0.3s ease-in-out';
+    actionBox.style.transition = 'opacity 0.3s ease-in-out';
+    profileOverviewBox.style.display = 'flex';
+    editMessageBox.style.display = 'none';
+    actionBox.style.display = 'flex';
+  }
 }
-}
+

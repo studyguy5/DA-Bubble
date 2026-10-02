@@ -46,8 +46,8 @@ export class ChannelUserSelectionComponent {
     const channel = this.userService.channelTable()[1]
     
       
-        // console.log('automatische Selection',channel)
-        this.selectChannelAndEmitToParentComponent(channel)
+        console.log('automatische Selection',channel)
+      this.selectChannelAndEmitToParentComponent(channel)
       
     
   }

@@ -50,13 +50,14 @@
             <div class="topLineAndTimestamp">
                 <hr>
                 <p>{{message.created_at | date: 'dd.MM.yy'}}</p>
+                <!-- <p>Debug – Nachrichten im Signal: {{ userChat().length }}</p> -->
                 <hr>
             </div>
             <div class="messageReactionsAndProfileWrapper">
                 <div class="editMessageBox">
                     <textarea id="editMessageInput" placeholder="Nachricht bearbeiten" [value]="message.content"></textarea>
                     <div class="editToolBox">
-                        <svg (click)="openEmojiPickerDialog(asReaction = false, message.uuid)" class="smileyIcon"
+                        <svg (click)="openEmojiPickerDialog(asReaction = false, message.uuid, $event)" class="smileyIcon"
                                 width="40" height="40" viewBox="0 0 40 40" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <mask id="mask0_178682_16898" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="8"
@@ -71,8 +72,8 @@
                             </svg>
                         
                         <div class="deleteSaveButtons">
-                            <button>Löschen</button>
-                            <button>Speichern</button>
+                            <button class="editMessageCancel">Löschen</button>
+                            <button (click)="pusheditedMessageAndPush(message.uuid, $event)" class="editMessageSave">Speichern</button>
                         </div>
                     </div>
                 </div>
