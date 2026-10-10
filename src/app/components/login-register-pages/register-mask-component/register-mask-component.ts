@@ -76,3 +76,12 @@ export class RegisterMaskComponent {
 
   }
 }
+// Login Daten zum testen===========================================
+// Name: Peter
+// E-Mail: peter@example.com
+// Password: testZwei
+
+// Login Daten zum testen===========================================
+// Name: Manu
+// E-Mail: manu@example.com
+// Password: testDrei

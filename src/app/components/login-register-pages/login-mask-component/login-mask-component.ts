@@ -40,7 +40,7 @@ export class LoginMaskComponent {
 
     );
     if (error || !data) {
-      console.log(error);
+      console.log('bb', error);
       throw error
     }
     if (data) {

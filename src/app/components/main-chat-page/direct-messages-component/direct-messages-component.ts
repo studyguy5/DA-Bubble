@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild, ElementRef, AfterViewInit, computed } from '@angular/core';
+import { Component, Inject, ViewChild, viewChild,  ElementRef, AfterViewInit, computed } from '@angular/core';
 import { input, effect, signal, Input } from '@angular/core';
 import { User, Channel, ChannelMember, Message, ChatRoomMember, Members } from '../../../interfaces/interfaces';
 import { Dialog } from '@angular/cdk/dialog';
@@ -47,14 +47,14 @@ export class DirectMessagesComponent {
   positionStrategy?: FlexibleConnectedPositionStrategy;
   emoji = signal<Emoji[]>([])
 
-
+  threadsComponent = input< any | null>(null)
   constructor(
     @Inject(Dialog) private dialog: Dialog,
     private overlay: Overlay, private userService: UserService, private userReactionService: UserReactionService, private editMessageService: EditMessageService
   ) {
-    this.channel = this.selectedChannel();
     console.log('KLICK', this.channel?.uuid);
     effect(() => {
+      this.channel = this.selectedChannel();
       console.log('EFFECT-AUSWAHL', {
     channel: this.channel?.uuid,
     
@@ -66,14 +66,34 @@ export class DirectMessagesComponent {
     this.subscribeToChanges()
     this.getProfiles()
     this.getAllReactions()
+    this.addExtraClassForThreadsComponent()
+    this.currentUser()
+  }
+
+  ownMessage:string = ''
+  async currentUser(): Promise<any> {
+    let myself = await this.supabase.auth.getUser();
+    if (myself.data?.user?.id) {
+      this.ownMessage = myself.data?.user?.id
+      console.log('currentUser', this.ownMessage)
+      
+    }
+  }
+
+  addExtraClassForThreadsComponent() {
+    // debugger;
+    console.log('threadsComponent input value from child', JSON.stringify(this.threadsComponent()))
+    // if (this.threadsComponent()) {
+    //   const channelname = document.querySelector('.channelName');
+    //   channelname?.classList.add('threadsComponentActive');
+    // }
+    return
   }
 
   count = 0
   async getAllReactions(){
     let reactions = await this.userReactionService.getReactions()
     this.emoji.set(reactions as any)
-    
-    console.log('reactions', reactions)
     }
   
 
@@ -102,10 +122,11 @@ export class DirectMessagesComponent {
     this.userReactionService.pushReactions(emoji, message_uuid)
   }
   asReaction: boolean = false
-  openEmojiPickerDialog(asReaction: boolean, message_uuid?: string, event?: MouseEvent) {
+  openEmojiPickerDialog(asReaction: boolean, event?: MouseEvent, message_uuid?: string) {
     
     let input = document.getElementById('messageInput') as HTMLTextAreaElement;
     let targetElement = event?.target as HTMLElement;
+    
     const rightTextArea: any = targetElement.closest('.messageWrapper')?.querySelector('#editMessageInput') as HTMLTextAreaElement;
     
     if (!input) return
@@ -614,27 +635,6 @@ editMessage(message: any, event: MouseEvent) {
   const target = event.target as HTMLElement;
   const closeMessageBox = target.parentElement?.parentElement?.parentElement as HTMLElement;
   closeMessageBox.style.display = 'none'; //hauptteil ausblenden
-
-
-  
-  // saveButton.onclick = async () => {
-  //   const newContent = editinput.value;
-  //   if (newContent.trim() === '') {
-  //     alert('Message cannot be empty');
-  //     return;
-  //   }
-    // const { data, error } = await this.supabase
-    //   .from('messages')
-    //   .update({ content: newContent })
-    //   .eq('uuid', message.uuid);
-    // if (error) {
-    //   console.error('Error updating message:', error);
-    // } else {
-    //   console.log('Message updated:', data);
-    //   closeMessageBox.style.display = 'flex';
-    //   editMessageBox.style.display = 'none';
-    //   this.showMessagesFromSelectedChannelOrUser();
-    // }
   }
   pusheditedMessageAndPush(messageId: string, event: MouseEvent) {
     // debugger;
@@ -665,5 +665,14 @@ editMessage(message: any, event: MouseEvent) {
     editMessageBox.style.display = 'none';
     actionBox.style.display = 'flex';
   }
+messageInput = viewChild<ElementRef<HTMLTextAreaElement>>('messageInput');
+  addATSymbolToTextArea(){
+    console.log('textarea:', this.messageInput());
+    let input = this.messageInput()?.nativeElement;
+    if (!input) return
+    input.value += '@'
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.focus();
+}
 }
 

@@ -1,21 +1,30 @@
 <section class="mainDirectChannelMessageBox">
-    <div class="chatHeader">
-        <div class="channelName">
+    <div class="chatHeader" [class.chatHeaderForThreads]="threadsComponent()">
+        <div class="channelName" [class.threadsComponentActive]="threadsComponent()">
+            @if(threadsComponent() === 'threadsComponent'){
+                <div class="threadsName">
+                    <p>Threads</p>
+                    <p>#EntwicklerTeam</p>
+                </div>
+            }
             @if(selectedUser(); as user){
-            <img class="avatar" [src]="user.avatar_url === 'null'? this.DEFAULT_MALE_AVATAR : user.avatar_url">
+                <img class="avatar" [src]="user.avatar_url === 'null'? this.DEFAULT_MALE_AVATAR : user.avatar_url">
             <h2 (click)="openInfoDialog()">{{user.username === 'null' ? 'User' : user.username}}</h2>
 
             }@else if(selectedChannel(); as channel){
-            <img class="routeblack" src="./icons/chatRouteIcon.svg">
+                <img class="routeblack" src="./icons/chatRouteIcon.svg">
             <img class="routeLila" src="./icons/routeLila.svg">
             <h2 (click)="openInfoDialog()">{{channel.name}}</h2>
             <img class="arrowDonw" src="./icons/chatHeaderArrowDownIcon.svg">
             <img class="lilaArrowDown" src="./icons/lilaArrowDown.svg">
             }
         </div>
+        @if(threadsComponent(); as threadsComponent){
+            <div class="threadsCloseButton"><img src="./icons/blackCloseIcon.svg"></div>
+
+        }
         @if(members(); as membersArray){
         @if(membersArray.length > 0 && selectedChannel(); as channel){
-
 
         <div class="ChannelMemberViewAndInfo">
             @if(members(); as member){
@@ -53,11 +62,11 @@
                 <!-- <p>Debug – Nachrichten im Signal: {{ userChat().length }}</p> -->
                 <hr>
             </div>
-            <div class="messageReactionsAndProfileWrapper">
+            <div [class.foreignMessage]="message.author_id !== this.ownMessage" class="messageReactionsAndProfileWrapper">
                 <div class="editMessageBox">
                     <textarea id="editMessageInput" placeholder="Nachricht bearbeiten" [value]="message.content"></textarea>
                     <div class="editToolBox">
-                        <svg (click)="openEmojiPickerDialog(asReaction = false, message.uuid, $event)" class="smileyIcon"
+                        <svg (click)="openEmojiPickerDialog(asReaction = false, $event, message.uuid)" class="smileyIcon"
                                 width="40" height="40" viewBox="0 0 40 40" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <mask id="mask0_178682_16898" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="8"
@@ -79,14 +88,14 @@
                 </div>
                 <div class="ProfileNameMessageReactionBox">
                     <div class="nameAndTimeBox">
-                        <div class="actionBox">
+                        <div [class.foreignMessage]="message.author_id !== this.ownMessage" class="actionBox">
                             <img (click)="postEmojiToSupabase( './icons/check_green.svg', message.uuid)"
                                 src="./icons/check_green.svg">
                             <img (click)="postEmojiToSupabase( './icons/thumbs_up.svg', message.uuid)"
                                 src="./icons/thumbs_up.svg">
 
 
-                            <svg (click)="openEmojiPickerDialog(asReaction = true, message.uuid)" class="smileyIcon"
+                            <svg (click)="openEmojiPickerDialog(asReaction = true, $event, message.uuid)" class="smileyIcon"
                                 width="40" height="40" viewBox="0 0 40 40" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <mask id="mask0_178682_16898" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="8"
@@ -115,7 +124,7 @@
                             </svg>
 
   
-                            <svg (click)="openEditMessageDialog(message, $event)" class="editIcon" width="40" height="40" viewBox="0 0 40 40" fill="none"
+                            <svg [class.notEditable]="message.author_id !== this.ownMessage" (click)="openEditMessageDialog(message, $event)" class="editIcon" width="40" height="40" viewBox="0 0 40 40" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <mask id="mask0_1823_21564" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="8"
                                     y="8" width="24" height="24">
@@ -131,14 +140,16 @@
 
                         </div>
                         <div (click)="editMessage(message.content, $event)" class="editMessage"><p>Nachricht bearbeiten</p></div>
-                        <p class="time">{{message.created_at | date: 'HH:mm'}}</p>
+                        <p [class.visible]="message.author_id === this.ownMessage" class="time">{{message.created_at | date: 'HH:mm'}}</p>
                         <p class="profileName">{{(allMembers().find(member => member.uuid ==
                             message.author_id)?.username) !== 'null' ?
                             (allMembers().find(member => member.uuid == message.author_id)?.username) :
                             (allMembers().find(member => member.uuid == message.author_id)?.username) === 'null' ?
                             'User' : 'User'}}</p>
+                        <p [class.visible]="message.author_id !== this.ownMessage" class="time">{{message.created_at | date: 'HH:mm'}}</p>
+
                     </div>
-                    <p class="content">{{message.content}}</p>
+                    <p [class.foreignMessage]="message.author_id !== this.ownMessage" class="content">{{message.content}}</p>
                     <div class="reactionsAndSmileyBox">
                         @if(emoji(); as emoji){
 
@@ -185,12 +196,12 @@
 
     </div>
     <div #tagMembersDiv class="chatInputField">
-        <textarea (input)="searchForMembersInTextField()" id="messageInput" type="textArea"
+        <textarea (input)="searchForMembersInTextField()" #messageInput id="messageInput" type="textArea"
             placeholder="Nachricht schreiben"></textarea>
         <div class="toolDiv">
             <div class="textAreaToolsLeft">
 
-                <svg class="emojiIcon" (click)="openEmojiPickerDialog(asReaction = false)" width="24" height="24"
+                <svg class="emojiIcon" (click)="openEmojiPickerDialog(asReaction = false, $event)" width="24" height="24"
                     viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <mask id="mask0_178158_8899" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0"
                         width="24" height="24">
@@ -203,7 +214,7 @@
                     </g>
                 </svg>
 
-                <svg class="atIcon" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                <svg (click)="addATSymbolToTextArea()" class="atIcon" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
                     <mask id="mask0_178158_8903" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0"
                         width="24" height="24">

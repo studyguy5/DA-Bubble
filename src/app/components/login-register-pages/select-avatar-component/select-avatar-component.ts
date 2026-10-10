@@ -43,7 +43,7 @@ path: string
     })
     .eq('uuid', user.id)
     console.log('data', data)
-    // this.router.navigate(['home'])
+    this.router.navigate(['home'])
   }
   
 }

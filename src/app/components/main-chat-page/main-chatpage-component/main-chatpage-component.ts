@@ -15,7 +15,7 @@ import { Overlay } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-main-chatpage-component',
-  imports: [ChannelUserSelectionComponent, UserThreadsComponent, DirectMessagesComponent],
+  imports: [ChannelUserSelectionComponent,  DirectMessagesComponent],
   templateUrl: './main-chatpage-component.html',
   styleUrl: './main-chatpage-component.scss',
 })
@@ -28,10 +28,17 @@ export class MainChatpageComponent {
   userService = inject(UserService);
   selectedUser = signal<User | null>(null);
   selectedChannel = signal<Channel | null>(null);
+  threadsComponent = signal< string| null>(null);
   constructor(@Inject(DOCUMENT) private document: Document, private changeDetectorRef: ChangeDetectorRef, @Inject(Dialog) private dialog: Dialog, private overlay: Overlay) {
     
     this.document = document;
     this.addBodyClassForMain();
+    this.fillTreadsSignal();
+  }
+
+  fillTreadsSignal(){
+    this.threadsComponent.set('threadsComponent');
+    console.log('threadsComponent signal value from parent', this.threadsComponent())
   }
   
   addBodyClassForMain(){

@@ -2,7 +2,8 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    width: 989px;
+    width: 100%;
+    min-width:min( 485px, 100%);
     height: 940px;
     background-color: rgba(255, 255, 255, 1);
     border-radius: 30px;
@@ -35,6 +36,9 @@
         align-items: center;
         gap: 10px;
         cursor: pointer;
+        >.threadsName{
+            display:flex;
+        }
         &:hover {
             // .arrowDonw {
             //     transform: rotate(180deg);
@@ -202,8 +206,9 @@
 
 .chatInputField {
     width: 100%;
-    max-width: 919px;
+    max-width: 95%;
     margin: 0 auto;
+    flex:1;
     margin-bottom: 40px;
     // height:145px;
     background-color: rgba(255, 255, 255, 1);
@@ -322,7 +327,7 @@
 .messageWrapper{
     &:hover{ 
         >.messageReactionsAndProfileWrapper{
-            background-color: rgba(236, 238, 254, 1);
+            background-color: rgb(254, 236, 236);
             >.ProfileNameMessageReactionBox{
                 >.nameAndTimeBox{
                         .actionBox{
@@ -360,10 +365,14 @@
     }
     >.messageReactionsAndProfileWrapper{
         display:flex;
-        justify-content: flex-end;
+        flex-direction: row-reverse;
+        justify-content: flex-start;
         gap:30px;
         padding: 0px 35px;
-
+        &.foreignMessage{
+            justify-content: flex-end;
+            flex-direction: row-reverse;
+        }
         
         >.editMessageBox{
             display:none;
@@ -473,12 +482,13 @@
         >.ProfileNameMessageReactionBox{
             display:flex;
             flex-direction: column;
-            align-items:flex-end;
+            // align-items:flex-end;
             justify-content: start;
             gap:8px;
         
             >.profileName{
                 margin:0px;
+                font-weight: bold;
             }
             >.nameAndTimeBox{
                 display:flex;
@@ -486,6 +496,12 @@
                 gap:50px;
                 >p{
                     margin:0px;
+                }
+                >.time{
+                    display:none;
+                    &.visible{
+                        display:flex;
+                    }
                 }
                 >.actionBox{
                     display:flex;
@@ -503,6 +519,15 @@
                     border-bottom-right-radius: 0px;
                     justify-content: center;
                     align-items: center;
+                    &.foreignMessage{
+                        top:30px;
+                        right:30px;
+                        left:unset;
+                        border-top-left-radius: 20px;
+                        border-top-right-radius: 20px;
+                        border-bottom-left-radius: 0px;
+                        border-bottom-right-radius: 20px;
+                    }
                     >p{
                         margin:0px;
                     }
@@ -543,6 +568,9 @@
                     }
                     >.editIcon{
                         position:relative;
+                        &.notEditable{
+                            display:none;
+                        }
                         &:hover{
                             scale:1.08;
                             color:rgba(68, 77, 242, 1);
@@ -582,6 +610,9 @@
                 color:white;
                 background-color: rgba(68, 77, 242, 1);
                 border-radius: 20px 0px 20px 20px;
+                &.foreignMessage{
+                    border-radius: 0px 20px 20px 20px;
+                }
             }
             >.reactionsAndSmileyBox{
                 display:flex;
@@ -657,4 +688,36 @@
             }
         }
     }
+
+}
+.threadsComponentActive{
+    gap: 10px;
+    &:hover{
+        color:black !important;
+        cursor: default !important;
+    }
+    >.threadsName{
+        gap: 10px;
+        >p:nth-child(2){
+            color: rgba(68, 77, 242, 1);
+        }
+    }
+}
+
+.threadsCloseButton{
+    width: 30px;
+    height: 30px;
+    border-radius: 100px;
+    // background-color: rgba(236, 238, 254, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    &:hover{
+        background-color: rgba(229, 231, 247, 0.925);
+    }
+}
+
+.chatHeaderForThreads{
+    height: 104px;
 }
