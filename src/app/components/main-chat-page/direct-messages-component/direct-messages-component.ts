@@ -226,7 +226,7 @@ export class DirectMessagesComponent {
     )
   }
   openMemberOverviewDialog() {
-    const membersWithAvatar = this.getSelectedMEMBERS(this.uuid)
+    // const membersWithAvatar = this.getSelectedMEMBERS(this.uuid)
     const channel = this.selectedChannel();
     console.log('anchorDiv', this.anchorDiv)
     this.dialog.open(MemberOverviewComponent,
@@ -239,7 +239,7 @@ export class DirectMessagesComponent {
             overlayX: 'end',
             overlayY: 'bottom',
             offsetY: 0,
-            offsetX: -35
+            offsetX: 0
           }])
           // .withFlexibleDimensions(true)
           // .withViewportMargin(0)

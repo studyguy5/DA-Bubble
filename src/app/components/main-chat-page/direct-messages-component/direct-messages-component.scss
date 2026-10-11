@@ -365,8 +365,8 @@
     }
     >.messageReactionsAndProfileWrapper{
         display:flex;
-        flex-direction: row-reverse;
-        justify-content: flex-start;
+        flex-direction: row;
+        justify-content: flex-end;
         gap:30px;
         padding: 0px 35px;
         &.foreignMessage{

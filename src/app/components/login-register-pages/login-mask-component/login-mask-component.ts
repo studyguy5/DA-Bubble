@@ -29,13 +29,10 @@ export class LoginMaskComponent {
     const password = this.loginGroup.getRawValue().password || '';
     console.log('ausgeloggte UserDaten', email, password);
 
-    const { data, error } = await this.supabase.auth.signUp(
+    const { data, error } = await this.supabase.auth.signInWithPassword(
       {
         email: email,
         password: password,
-        options: {
-          emailRedirectTo: 'http://localhost:4200/verify-email',
-        },
       }
 
     );

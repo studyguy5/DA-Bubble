@@ -2,7 +2,7 @@ import { Injectable, signal, OnInit } from '@angular/core';
 import { User, Channel } from '../interfaces/interfaces';
 import { createClient, RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { environment } from '../../environment/environment'
-
+import { effect } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
@@ -13,9 +13,34 @@ export class UserService {
   userTable = signal<User[]>([])
   channelTable = signal<Channel[]>([])
   constructor() {
-    this.getAllUsers()
-    this.getAllChannels()
+    effect(() => {
+      
+      this.getAllUsers()
+      this.getAllChannels()
+    })
     this.getCurrentSignedInUser()
+    this.subscribeToChanges()
+  }
+
+  subscribeToChanges() {
+    const channels = this.supabase.channel('custom-all-channel')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'profiles' },
+        (payload) => {
+          this.getAllUsers()
+          console.log('Change received!', payload)
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'chat_rooms' },
+        (payload) => {
+          this.getAllChannels()
+          console.log('Change received!', payload)
+        }
+      )
+      .subscribe()
   }
 
   logoutService() {
