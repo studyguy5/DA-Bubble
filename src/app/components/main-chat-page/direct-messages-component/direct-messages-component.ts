@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild, viewChild,  ElementRef, AfterViewInit, computed } from '@angular/core';
+import { Component, Inject, ViewChild, viewChild,  ElementRef, AfterViewInit, computed, inject  } from '@angular/core';
 import { input, effect, signal, Input } from '@angular/core';
 import { User, Channel, ChannelMember, Message, ChatRoomMember, Members } from '../../../interfaces/interfaces';
 import { Dialog } from '@angular/cdk/dialog';
@@ -16,10 +16,13 @@ import { UserService } from '../../../services/user-service';
 import { EditMessageService } from '../../../services/edit-message-service';
 import { Emoji } from '../../../interfaces/interfaces';
 import { UserReactionService } from '../../../services/user-reaction-service';
+import { UserChatThreadService } from '../../../services/user-chat-thread-service';
 import getCaretCoordinates from 'textarea-caret';
 import { OverlayRef, FlexibleConnectedPositionStrategy } from '@angular/cdk/overlay';
 import { EmojiPickerComponent } from '../emoji-picker-component/emoji-picker-component';
 import twemoji from '@twemoji/api';
+import { JsonPipe } from '@angular/common';
+import { output } from '@angular/core';
 
 @Component({
   selector: 'app-direct-messages-component',
@@ -42,12 +45,15 @@ export class DirectMessagesComponent {
   supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
   selectedUser = input<User | null>(null)
   allMembers = signal<Members[]>([])
-  userChat = signal<Message[]>([])
+  // userChat = signal<Message[]>([])
   selectedChannel = input<Channel | null>(null)
   positionStrategy?: FlexibleConnectedPositionStrategy;
   emoji = signal<Emoji[]>([])
 
   threadsComponent = input< any | null>(null)
+  // threadsMessages = output<Message[]|null>()
+  mode = input<'main' | 'thread'>('main')
+  // mode = input<string>('')
   constructor(
     @Inject(Dialog) private dialog: Dialog,
     private overlay: Overlay, private userService: UserService, private userReactionService: UserReactionService, private editMessageService: EditMessageService
@@ -56,11 +62,11 @@ export class DirectMessagesComponent {
     effect(() => {
       this.channel = this.selectedChannel();
       console.log('EFFECT-AUSWAHL', {
-    channel: this.channel?.uuid,
-    
-  });
         
-        this.showMessagesFromSelectedChannelOrUser()
+        channel: this.channel?.uuid,
+      });
+      
+      this.showMessagesFromSelectedChannelOrUser()
       
     })
     this.subscribeToChanges()
@@ -69,7 +75,8 @@ export class DirectMessagesComponent {
     this.addExtraClassForThreadsComponent()
     this.currentUser()
   }
-
+  
+  public directChat = inject(UserChatThreadService)
   ownMessage:string = ''
   async currentUser(): Promise<any> {
     let myself = await this.supabase.auth.getUser();
@@ -79,7 +86,7 @@ export class DirectMessagesComponent {
       
     }
   }
-
+  
   addExtraClassForThreadsComponent() {
     // debugger;
     console.log('threadsComponent input value from child', JSON.stringify(this.threadsComponent()))
@@ -465,7 +472,7 @@ export class DirectMessagesComponent {
 
   async getMessagesFromSelectedCHANNEL(uuid: string) {
     const messages = await this.userService.getMessagesFromSelectedChannel(uuid)
-    this.userChat.set(messages as Message[]);
+    this.directChat.userChat.set(messages as any)
     console.log('Nachrichten für den ausgewählten Channel:', messages);
     
   }
@@ -473,7 +480,7 @@ export class DirectMessagesComponent {
   async getMessagesFromSelectedUSER(author_id: string, participant_uuid: string | null) {
     const messages: any = await this.userService.getMessagesFromSelectedUser(author_id, participant_uuid)
     console.log('messages from UserService:', messages);
-    this.userChat.set(messages ?? [] as Message[]);
+    this.directChat.userChat.set(messages ?? [] as Message[])
 
   }
 
@@ -609,7 +616,7 @@ export class DirectMessagesComponent {
       rightRow.classList.add('editMessageVisible');
       setTimeout(() => {
         rightRow.classList.remove('editMessageVisible');
-      }, 2000);
+      }, 3000);
     }
 
 }
@@ -673,6 +680,12 @@ messageInput = viewChild<ElementRef<HTMLTextAreaElement>>('messageInput');
     input.value += '@'
     input.dispatchEvent(new Event('input', { bubbles: true }));
     input.focus();
+}
+
+startThreadSessionWithSpecificMessagge(messageUUID: string) {
+  this.directChat.selectedThreadId.set(messageUUID)
+   
+
 }
 }
 

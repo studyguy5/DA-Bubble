@@ -14,6 +14,14 @@ export interface Message {
     created_at: string;
 }
 
+// export interface ThreadMessage {
+//     uuid: string;
+//     chat_room_id: string;
+//     author_id: string;
+//     content: string;
+//     created_at: string;
+// }
+
 export interface ChatRoomMember {
     user_id: any;
     uuid: string;

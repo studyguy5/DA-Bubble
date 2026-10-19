@@ -49,10 +49,27 @@
         }
     </div>
 
-    <div [class.firstMessage]="userChat().length === 1" [class.multipleMessages]="userChat().length > 1"
-        class="innerMessageWrapper">
-        @if(userChat(); as messages){
-        @if(userChat().length > 0){
+    @if(mode() === 'thread'){
+        <div class="threadsMessageWrapper" [class.visible]="threadsComponent()">
+            @if(this.directChat.selectedThreadMessage(); as threadMessage){
+                
+                <div class="threadsMessage">
+                    <p>{{threadMessage.content}}</p>
+                </div>
+                <!-- @for(threadMessage of threadsMessages(); track threadMessage.uuid){
+                    <div [class.threadsMessage]="threadsMessages()">
+                        <p>{{threadMessage.content}}</p>
+                        
+                    </div>
+                } -->
+            }
+        </div>
+    }@else if(mode() === 'main'){
+
+    <div [class.firstMessage]="directChat.userChat.length === 1" [class.multipleMessages]="directChat.userChat().length > 1"
+        class="innerMessageWrapper" [class.innerMessageWrapper]="!threadsComponent()">
+        @if(directChat.userChat(); as messages){
+        @if(directChat.userChat().length > 0){
 
         @for(message of messages; track message.uuid){
         <div class="messageWrapper">
@@ -110,7 +127,7 @@
                             </svg>
 
 
-                            <svg class="threadsIcon" width="40" height="40" viewBox="0 0 40 40" fill="none"
+                            <svg (click)="startThreadSessionWithSpecificMessagge(message.uuid)" class="threadsIcon" width="40" height="40" viewBox="0 0 40 40" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <mask id="mask0_1823_21560" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="8"
                                     y="8" width="24" height="24">
@@ -181,7 +198,7 @@
             </div>
         </div>
         }
-        }@else if(userChat().length < 1 || userChat()==undefined || userChat()==[]){ @if(selectedUser(); as user){ <div
+        }@else if(directChat.userChat().length < 1 || directChat.userChat()==undefined || directChat.userChat()==[]){ @if(selectedUser(); as user){ <div
             class="welcomeMessageWrapper">
             <div class="ImageAndName">
                 <img [src]="user.avatar_url ? user.avatar_url : this.DEFAULT_MALE_AVATAR">
@@ -192,9 +209,10 @@
     }
     }
     }
-
+    
 
     </div>
+}
     <div #tagMembersDiv class="chatInputField">
         <textarea (input)="searchForMembersInTextField()" #messageInput id="messageInput" type="textArea"
             placeholder="Nachricht schreiben"></textarea>

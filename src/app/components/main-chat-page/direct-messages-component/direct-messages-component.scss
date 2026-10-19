@@ -721,3 +721,24 @@
 .chatHeaderForThreads{
     height: 104px;
 }
+
+.threadsMessageWrapper{
+    height:100%;
+    width: 100%;
+    display:none;
+}
+.threadsMessageWrapper.visible{
+    display:flex;
+    flex-direction: column;
+    gap:10px;
+    height:100%;
+}
+
+.threadsMessage{
+    display:flex;
+    flex-direction: column;
+    gap:10px;
+    height:60px;
+    width:200px;
+    background-color: red;
+}
