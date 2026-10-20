@@ -127,11 +127,12 @@ export class DirectMessagesComponent {
 
   postEmojiToSupabase(emoji: string, message_uuid: string) {
     this.userReactionService.pushReactions(emoji, message_uuid)
+  
   }
   asReaction: boolean = false
   openEmojiPickerDialog(asReaction: boolean, event?: MouseEvent, message_uuid?: string) {
     
-    let input = document.getElementById('messageInput') as HTMLTextAreaElement;
+    const input = this.messageInput()?.nativeElement as HTMLTextAreaElement;
     let targetElement = event?.target as HTMLElement;
     
     const rightTextArea: any = targetElement.closest('.messageWrapper')?.querySelector('#editMessageInput') as HTMLTextAreaElement;
@@ -197,8 +198,9 @@ export class DirectMessagesComponent {
       
       )
       ref.closed.subscribe((emoji: any) => {
+        // debugger;
         
-        if(emoji && !asReaction && rightTextArea === null){
+        if(emoji && !asReaction && rightTextArea === undefined){
           input.value += emoji.unicode
         }else if(emoji && !asReaction && rightTextArea){
           rightTextArea.value += emoji.unicode
@@ -495,6 +497,7 @@ export class DirectMessagesComponent {
 
   checkIfChannelOrUserSelected() {
     debugger;
+    if(this.mode() === 'main'){
     if (this.selectedUser()) {
       this.sendMessageToSelectedUser()
       console.log('send message to user', this.selectedUser())
@@ -504,7 +507,25 @@ export class DirectMessagesComponent {
     } else {
       console.warn('No user or channel selected')
     }
+  }else if(this.mode() === 'thread') {
+    // send Message to thread
+    this.sendThreadMessageIntoThreadChannel()
+  }
+  }
 
+  sendThreadMessageIntoThreadChannel() {
+    let input = this.messageInput()?.nativeElement;
+    if (!input) return
+    let message = input.value
+    this.directChat.pushThreadMessageToSupabase(message as any)
+    input.value = ''
+  }
+
+  sendMessageToSelectedThread() {
+    const input = document.getElementById('messageInput') as HTMLTextAreaElement;
+    if (!input) return
+    const message = input.value
+    this.directChat.pushThreadMessageToSupabase(message as any)
   }
 
   async sendMessageToSelectedCHANNEL() {

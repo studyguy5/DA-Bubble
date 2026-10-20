@@ -734,11 +734,13 @@
     height:100%;
 }
 
-.threadsMessage{
+.threadMessageCount{
     display:flex;
-    flex-direction: column;
-    gap:10px;
-    height:60px;
-    width:200px;
-    background-color: red;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    >p{
+        color:grey;
+        margin:0px;
+    }
 }
