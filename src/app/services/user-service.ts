@@ -111,8 +111,9 @@ export class UserService {
     // debugger;
     const { data, error }: any = await this.supabase
       .from('messages')
-      .select('*')
+      .select('*, replies:messages!parent_message_id(count)')
       .eq('chat_room_id', uuid)
+      .is('parent_message_id', null)
       .order('created_at', { ascending: true })
     if (!data || error) {
       console.error('Fehler beim Abrufen der Channel Nachrichten:', error);
@@ -166,7 +167,7 @@ export class UserService {
       let uuid: any = chatRoom?.map((item: any) => item.uuid)
     const { data: messages, error: messagesError } = await this.supabase
       .from('messages')
-      .select('*')
+      .select('*, replies:messages!parent_message_id(count)')
       .in('chat_room_id', uuid)
       .order('created_at', { ascending: true })
     if (!messages || messagesError) {

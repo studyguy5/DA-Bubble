@@ -496,7 +496,7 @@ export class DirectMessagesComponent {
 
 
   checkIfChannelOrUserSelected() {
-    debugger;
+    // debugger;
     if(this.mode() === 'main'){
     if (this.selectedUser()) {
       this.sendMessageToSelectedUser()
@@ -584,6 +584,7 @@ export class DirectMessagesComponent {
         { event: '*', schema: 'public', table: 'messages' },
         (payload) => {
           this.showMessagesFromSelectedChannelOrUser()
+          this.directChat.pullThreadMessagesForReplies()
           console.log('Change received!', payload)
         }
       )
@@ -705,7 +706,7 @@ messageInput = viewChild<ElementRef<HTMLTextAreaElement>>('messageInput');
 
 startThreadSessionWithSpecificMessagge(messageUUID: string) {
   this.directChat.selectedThreadId.set(messageUUID)
-   
+  this.directChat.pullThreadMessagesForReplies()
 
 }
 }

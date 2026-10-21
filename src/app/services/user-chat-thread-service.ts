@@ -31,7 +31,7 @@ export class UserChatThreadService {
         content: message,
         parent_message_id: this.userChat().find((message) => message.uuid === this.selectedThreadId())?.uuid
       })
-      .select('uuid, chat_room_id, author_id, content, created_at')
+      .select('uuid, chat_room_id, author_id, content, created_at, parent_message_id')
       .single();
     if (error) {
       console.error('Error inserting message:', error);
@@ -43,8 +43,9 @@ export class UserChatThreadService {
   async pullThreadMessagesForReplies() {
     const { data, error } = await this.supabase
       .from('messages')
-      .select('uuid, chat_room_id, author_id, content, created_at')
+      .select('uuid, chat_room_id, author_id, content, created_at, parent_message_id')
       .eq('parent_message_id', this.selectedThreadId())
+      // .is('parent_message_id', null)
       .order('created_at', { ascending: true });
     if (error) {
       console.error('Error fetching messages:', error);

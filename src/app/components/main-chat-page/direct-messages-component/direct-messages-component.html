@@ -139,10 +139,10 @@
         </div>
         }
         @if(this.directChat.replies().length > 0){
-            @for(threadmessage of this.directChat.replies(); track threadmessage.uuid){
-                
-            
-            <div class="messageWrapper">
+        @for(threadmessage of this.directChat.replies(); track threadmessage.uuid){
+
+
+        <div class="messageWrapper">
             <div class="topLineAndTimestamp">
                 <hr>
                 <p>{{threadmessage?.created_at| date: 'dd.MM.yy'}}</p>
@@ -154,15 +154,14 @@
 
                 <div class="ProfileNameMessageReactionBox">
                     <div class="nameAndTimeBox">
-                        <div [class.foreignMessage]="threadmessage?.author_id !== this.ownMessage"
-                            class="actionBox">
+                        <div [class.foreignMessage]="threadmessage?.author_id !== this.ownMessage" class="actionBox">
                             <img (click)="postEmojiToSupabase( './icons/check_green.svg', directChat.selectedThreadMessage()?.uuid ?? '')"
                                 src="./icons/check_green.svg">
                             <img (click)="postEmojiToSupabase( './icons/thumbs_up.svg', directChat.selectedThreadMessage()?.uuid ?? '')"
                                 src="./icons/thumbs_up.svg">
 
 
-                            <svg (click)="openEmojiPickerDialog(asReaction = true, $event, threadmessage?.uuid)"
+                            <svg (click)="openEmojiPickerDialog(asReaction = true, $event, threadmessage.uuid)"
                                 class="smileyIcon" width="40" height="40" viewBox="0 0 40 40" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <mask id="mask0_178682_16898" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="8"
@@ -177,8 +176,8 @@
                             </svg>
                         </div>
 
-                        <p [class.visible]="threadmessage?.author_id === this.ownMessage"
-                            class="time">{{threadmessage?.created_at | date: 'HH:mm'}}</p>
+                        <p [class.visible]="threadmessage?.author_id === this.ownMessage" class="time">
+                            {{threadmessage?.created_at | date: 'HH:mm'}}</p>
                         <p class="profileName">{{(allMembers().find(member => member.uuid ==
                             threadmessage?.author_id)?.username) !== 'null' ?
                             (allMembers().find(member => member.uuid ==
@@ -186,16 +185,16 @@
                             (allMembers().find(member => member.uuid ==
                             threadmessage?.author_id)?.username) === 'null' ?
                             'User' : 'User'}}</p>
-                        <p [class.visible]="threadmessage?.author_id !== this.ownMessage"
-                            class="time">{{threadmessage?.created_at | date: 'HH:mm'}}</p>
+                        <p [class.visible]="threadmessage?.author_id !== this.ownMessage" class="time">
+                            {{threadmessage?.created_at | date: 'HH:mm'}}</p>
 
                     </div>
-                    <p [class.foreignMessage]="threadmessage?.author_id !== this.ownMessage"
-                        class="content">{{threadmessage?.content}}</p>
+                    <p [class.foreignMessage]="threadmessage?.author_id !== this.ownMessage" class="content">
+                        {{threadmessage?.content}}</p>
                     <div class="reactionsAndSmileyBox">
                         @if(emoji(); as emoji){
 
-                        @for(reaction of countEach().get(directChat.selectedThreadMessage()?.uuid ?? '') ?? []; track
+                        @for(reaction of countEach().get(threadmessage.uuid) ; track
                         reaction.emoji){
 
                         <div class="emojiBoxWithCounter">
@@ -226,7 +225,7 @@
 
             </div>
         </div>
-    }
+        }
         }
     </div>
     }@else if(mode() === 'main'){
@@ -344,8 +343,13 @@
                     <p [class.foreignMessage]="message.author_id !== this.ownMessage" class="content">
                         {{message.content}}</p>
                     <div class="threadMessageCount">
-                        <p>{{this.directChat.replies().length}} Antworten</p>
-                        <p>Letze Antwort {{message.created_at | date: 'HH:mm'}}</p>
+                        @let count = $any(message).replies?.[0]?.count ?? 0;
+                        @if (count > 0) {
+                        <p>{{ count }} Antworten</p>
+                        <p>Letze Antwort am {{message.created_at | date: 'HH:mm'}}</p>
+                        }
+                        <!-- <p>{{ directChat.userChat().filter(reply => reply.parent_message_id == message.uuid).length}}
+                            Antworten</p> -->
                     </div>
                     <div class="reactionsAndSmileyBox">
                         @if(emoji(); as emoji){

@@ -12,6 +12,7 @@ export interface Message {
     author_id: string;
     content: string;
     created_at: string;
+    parent_message_id: string | null;
 }
 
 // export interface ThreadMessage {
