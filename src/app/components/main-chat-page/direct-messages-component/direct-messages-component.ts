@@ -53,14 +53,17 @@ export class DirectMessagesComponent {
   threadsComponent = input< any | null>(null)
   // threadsMessages = output<Message[]|null>()
   mode = input<'main' | 'thread'>('main')
-  // mode = input<string>('')
+  isLoading = signal<boolean>(false)
   constructor(
     @Inject(Dialog) private dialog: Dialog,
     private overlay: Overlay, private userService: UserService, private userReactionService: UserReactionService, private editMessageService: EditMessageService
   ) {
     console.log('KLICK', this.channel?.uuid);
     effect(() => {
+      if (this.mode() !== 'main') return;
       this.channel = this.selectedChannel();
+      const participant = this.selectedUser();
+      this.isLoading.set(!!this.channel || !!participant)
       console.log('EFFECT-AUSWAHL', {
         
         channel: this.channel?.uuid,
@@ -447,10 +450,11 @@ export class DirectMessagesComponent {
 
   async showMessagesFromSelectedChannelOrUser() {
     // funktion optimieren, da zu langsam
+    try{
     console.log('showMessagesFromSelectedChannelOrUser')
-    const channel = this.selectedChannel();
+    let channel = this.selectedChannel();
     let user: any = await this.supabase.auth.getUser();
-    const participant: any = this.selectedUser();
+    let participant: any = this.selectedUser();
     if (channel) {
       await Promise.all([
         this.getSelectedMEMBERS(channel.uuid),
@@ -460,7 +464,7 @@ export class DirectMessagesComponent {
     } 
     if(!channel) {
       console.warn('Kein Channel ausgewählt – Nachrichten werden nicht angezeigt.');
-      
+      channel = null
     }
 
     if (participant) {
@@ -470,20 +474,21 @@ export class DirectMessagesComponent {
     } else {
       console.warn('Kein Benutzer ausgewählt – Nachrichten werden nicht angezeigt.');
     }
+  } finally {
+    this.isLoading.set(false)
+  }
   }
 
   async getMessagesFromSelectedCHANNEL(uuid: string) {
     const messages = await this.userService.getMessagesFromSelectedChannel(uuid)
     this.directChat.userChat.set(messages as any)
     console.log('Nachrichten für den ausgewählten Channel:', messages);
-    
   }
   
   async getMessagesFromSelectedUSER(author_id: string, participant_uuid: string | null) {
     const messages: any = await this.userService.getMessagesFromSelectedUser(author_id, participant_uuid)
     console.log('messages from UserService:', messages);
     this.directChat.userChat.set(messages ?? [] as Message[])
-
   }
 
 
@@ -596,6 +601,8 @@ export class DirectMessagesComponent {
             console.log('Change received!', payload)
           }
         )
+        
+        
         .subscribe()
   }
 

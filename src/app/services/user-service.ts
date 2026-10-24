@@ -14,11 +14,12 @@ export class UserService {
   channelTable = signal<Channel[]>([])
   constructor() {
     effect(() => {
-      
+
       this.getAllUsers()
       this.getAllChannels()
     })
     this.getCurrentSignedInUser()
+
     this.subscribeToChanges()
   }
 
@@ -34,7 +35,10 @@ export class UserService {
       )
       .on(
         'postgres_changes',
-        { event: '*', schema: 'public', table: 'chat_rooms' },
+        {
+          event: '*', schema: 'public', table: 'chat_rooms',
+          filter: `message_type = 'channel'`
+        },
         (payload) => {
           this.getAllChannels()
           console.log('Change received!', payload)
@@ -46,7 +50,7 @@ export class UserService {
   logoutService() {
     // debugger
     this.supabase.auth.signOut()
-    
+
   }
 
   async getAllUsers() {
@@ -63,15 +67,18 @@ export class UserService {
 
   async getAllChannels() {
 
-    let { data: channel, error } = await this.supabase
-      .from('chat_rooms')
-      .select('message_type, name, description, created_by, uuid, created_at')
-      .eq('message_type', 'channel')
-    if (!channel || error) return
-    // debugger;
-    this.channelTable.set(channel as any)
-    console.log('Data from supabase:', channel)
-    // console.log('Data from Signal', this.channelTable)
+    let userId = await this.supabase.auth.getUser();
+    const { data, error } = await this.supabase
+      .from('chat_room_members')
+      .select('role, chat_rooms!inner(uuid, name, description, message_type, created_by, created_at)')
+      .in('role', ['owner', 'member'])
+      .eq('user_id', userId.data.user?.id)
+      .eq('chat_rooms.message_type', 'channel');
+    let names = data?.map((item: any) => item.chat_rooms)
+    
+    console.log('Data channel:======================', names)
+    if (!data || error) return
+    this.channelTable.set(names as any)
   }
 
   async getCurrentSignedInUser() {
@@ -86,7 +93,7 @@ export class UserService {
       .eq('uuid', user?.id);
     // console.log('profiles', profiles)
     if (!profiles || error) return
-    return profiles[0].username
+    return profiles[0].username;
   }
 
   selectUserInProfileOverview(user: User) {
@@ -135,47 +142,46 @@ export class UserService {
     if (!roomA || error) {
       console.error('Fehler beim Laden der Private Chat-Rooms:', error);
     }
-    
+
     const { data: roomB, error: roomsBError } = await this.supabase
-    .from('chat_room_members')
+      .from('chat_room_members')
       .select('chat_room_id')
       .eq('user_id', participant_uuid);
-      if (!roomB || roomsBError) console.log('roomsBError', roomB)
+    if (!roomB || roomsBError) console.log('roomsBError', roomB)
 
-    
-    
+
+
     const roomId = roomA
       ?.map(room => room.chat_room_id)
       .filter(id => roomB?.some(room => room.chat_room_id === id));
-      if(!roomId || roomId.length === 0){
-        console.log('roomId456', roomId)
-        return
-      }
-     
-      this.chat_room_id = roomId
-      const { data: chatRoom, error: roomIdError } = await this.supabase
+    if (!roomId || roomId.length === 0) {
+      console.log('roomId456', roomId)
+      return
+    }
+
+    this.chat_room_id = roomId
+    const { data: chatRoom, error: roomIdError } = await this.supabase
       .from('chat_rooms')
       .select('*')
       .in('uuid', this.chat_room_id)
       .eq('message_type', 'private')
-      console.log('chatRoom', chatRoom)
-      // if(!chatRoom || roomIdError){
-      //   console.log('roomIdError', roomIdError)
-      //   return
-      // }
-    
-      let uuid: any = chatRoom?.map((item: any) => item.uuid)
+    console.log('chatRoom', chatRoom)
+    console.log('roomIdError', roomIdError)
+
+
+    let uuid: any = chatRoom?.map((item: any) => item.uuid)
     const { data: messages, error: messagesError } = await this.supabase
       .from('messages')
       .select('*, replies:messages!parent_message_id(count)')
       .in('chat_room_id', uuid)
+      .is('parent_message_id', null)
       .order('created_at', { ascending: true })
     if (!messages || messagesError) {
       console.error('Fehler beim Laden der Nachrichten:', messagesError);
     }
     console.log('Nachrichten:', messages);
     this.messages = messages
-    
+
     return this.messages ?? []
   }
 
@@ -185,8 +191,7 @@ export class UserService {
     if (!uuid) {
       return
     }
-    // debugger;
-    // console.log('requested UUID,', this.uuid);
+
     const { data: members, error } = await this.supabase
       .from('chat_room_members')
       .select('user_id, chat_room_id')
@@ -263,8 +268,8 @@ export class UserService {
         const sharedRoomIds = existingRoom.map(member => member.chat_room_id);
         const userAndParticipant = [...new Set(sharedRoomIds.filter((member: any) => member.user_id === currentUser.data.user?.id).map((member: any) => member.chat_room_id)
           .filter((member: any) => existingRoom.some((member2: any) => member2.user_id === participant?.uuid && member2.chat_room_id === member)))];
-        if(sharedRoomIds.length === 0) return
-        const {data: privateRoom, error: privateRoomError} = await this.supabase
+        if (sharedRoomIds.length === 0) return
+        const { data: privateRoom, error: privateRoomError } = await this.supabase
           .from('chat_rooms')
           .select('uuid')
           .eq('message_type', 'private')
@@ -276,7 +281,7 @@ export class UserService {
         if (privateRoom && privateRoom.length > 0) {
           const thisPrivateRoom = privateRoom[0].uuid ?? null;
           return thisPrivateRoom;
-        }else {
+        } else {
           return false
         }
       }
@@ -353,7 +358,7 @@ export class UserService {
   }
 
 
-  
+
 
 
 }

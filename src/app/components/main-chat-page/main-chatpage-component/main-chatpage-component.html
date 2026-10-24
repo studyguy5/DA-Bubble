@@ -28,7 +28,8 @@
         [selectedUser]="$any(selectedUser())" [selectUserFromDialog]="selectUserFromDialog.bind(this)" style="flex: 1; display:flex"></app-direct-messages-component>
         <!-- <app-direct-messages-component style="flex: 1; display:flex"></app-direct-messages-component> -->
         <!-- <app-user-threads-component></app-user-threads-component> -->
-        <app-direct-messages-component mode="thread" [threadsComponent]="threadsComponent()" style="flex:0 1 485px;; display:flex"></app-direct-messages-component> 
+        <app-direct-messages-component mode="thread" 
+        [threadsComponent]="threadsComponent()" [selectedChannel]="$any(selectedChannel())" [selectedUser]="$any(selectedUser())" style="flex:0 1 485px;; display:flex"></app-direct-messages-component> 
 
     </div>
 </div>

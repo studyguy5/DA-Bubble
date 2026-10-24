@@ -43,7 +43,7 @@ export class ChannelUserSelectionComponent {
 
   async selectFirstChannelAtStart() {
     // debugger;
-    const channel = this.userService.channelTable()[1]
+    const channel = this.userService.channelTable()[0]
     
       
         console.log('automatische Selection',channel)

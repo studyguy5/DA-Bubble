@@ -372,6 +372,12 @@
         &.foreignMessage{
             justify-content: flex-end;
             flex-direction: row-reverse;
+            >.ProfileNameMessageReactionBox{
+                >.content{
+                    background-color: rgba(236, 238, 254, 1);
+                    color:black;
+                }
+            }
         }
         
         >.editMessageBox{
@@ -608,7 +614,7 @@
                 margin-bottom: 0px;
                 padding:10px 25px;
                 color:white;
-                background-color: rgba(68, 77, 242, 1);
+                background-color: rgba(121, 126, 243, 1);
                 border-radius: 20px 0px 20px 20px;
                 &.foreignMessage{
                     border-radius: 0px 20px 20px 20px;
@@ -743,4 +749,12 @@
         color:grey;
         margin:0px;
     }
+}
+
+.messageLoadingSpinner{
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content: center;
+    align-items: center;
 }

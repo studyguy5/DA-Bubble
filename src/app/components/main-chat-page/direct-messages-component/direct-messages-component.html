@@ -3,10 +3,17 @@
         <div class="channelName" [class.threadsComponentActive]="threadsComponent()">
             @if(threadsComponent() === 'threadsComponent'){
             <div class="threadsName">
-                <p>Threads</p>
-                <p>#EntwicklerTeam</p>
+                <!-- @if(selectedChannel(); as channel){
+                <p>#{{channel.name}}</p>
+                }@else if(selectedUser(); as user){
+                <p>@{{user.username}}</p>
+
+                } -->
+                <p>{{selectedChannel()?.name !== 'null' ? '#' + selectedChannel()?.name : selectedUser()?.username !== 'null' ? '@' + selectedUser()?.username : 'Threads'}}</p>
+                <!-- <p>#EntwicklerTeam</p> -->
             </div>
             }
+            @if(!threadsComponent()){
             @if(selectedUser(); as user){
             <img class="avatar" [src]="user.avatar_url === 'null'? this.DEFAULT_MALE_AVATAR : user.avatar_url">
             <h2 (click)="openInfoDialog()">{{user.username === 'null' ? 'User' : user.username}}</h2>
@@ -17,6 +24,7 @@
             <h2 (click)="openInfoDialog()">{{channel.name}}</h2>
             <img class="arrowDonw" src="./icons/chatHeaderArrowDownIcon.svg">
             <img class="lilaArrowDown" src="./icons/lilaArrowDown.svg">
+            }
             }
         </div>
         @if(threadsComponent(); as threadsComponent){
@@ -229,7 +237,9 @@
         }
     </div>
     }@else if(mode() === 'main'){
-
+        @if(isLoading()){
+            <span class="messageLoadingSpinner" aria-label="Nachrichten werden geladen">Nachrichten werden geladen</span>
+        }@else{
     <div [class.firstMessage]="directChat.userChat.length === 1"
         [class.multipleMessages]="directChat.userChat().length > 1" class="innerMessageWrapper"
         [class.innerMessageWrapper]="!threadsComponent()">
@@ -385,17 +395,17 @@
         }@else if(directChat.userChat().length < 1 || directChat.userChat()==undefined || directChat.userChat()==[]){
             @if(selectedUser(); as user){ <div class="welcomeMessageWrapper">
             <div class="ImageAndName">
-                <img [src]="user.avatar_url ? user.avatar_url : this.DEFAULT_MALE_AVATAR">
-                <p>{{user.username}}</p>
+                <img [src]="user.avatar_url !== 'null' ? user.avatar_url : this.DEFAULT_MALE_AVATAR">
+                <p>{{user.username !== 'null' ? user.username : 'User'}}</p>
             </div>
-            <p>Diese Unterhaltung findet nur zwischen dir und <b>@{{user.username}}</b> statt</p>
+            <p>Diese Unterhaltung findet nur zwischen dir und <b>@{{user.username !== 'null' ? user.username : 'User'}}</b> statt</p>
     </div>
     }
     }
     }
 
 
-    </div>
+    </div>}
     }
     <div #tagMembersDiv class="chatInputField">
         <textarea (input)="searchForMembersInTextField()" #messageInput id="messageInput" type="textArea"

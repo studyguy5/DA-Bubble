@@ -103,7 +103,10 @@ export class AddMemberToChannelComponent {
     });
     }
   }
-
+  pushMemberToChannel(){
+    this.addMemberToChannelInSupabase()
+    this.unselectMemberToAdd()
+  }
   unselectMemberToAdd(){
     // debugger;
     let wrapper = document.querySelector('.inputWrapper') as HTMLInputElement
@@ -154,7 +157,8 @@ export class AddMemberToChannelComponent {
     .from('chat_room_members')
     .insert({
       chat_room_id: this.data.channel.uuid,
-      user_id: uuid 
+      user_id: uuid,
+      role: 'member' 
       });
     if (!data || error) return
     console.log('inserted Data', data)
