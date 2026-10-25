@@ -9,11 +9,11 @@
                 <p>@{{user.username}}</p>
 
                 } -->
-                <p>{{selectedChannel()?.name !== 'null' ? '#' + selectedChannel()?.name : selectedUser()?.username !== 'null' ? '@' + selectedUser()?.username : 'Threads'}}</p>
+                <p>{{selectedChannel()?.name ? selectedChannel()?.name : selectedUser()?.username}}</p>
                 <!-- <p>#EntwicklerTeam</p> -->
             </div>
             }
-            @if(!threadsComponent()){
+            @if(mode() === 'main'){
             @if(selectedUser(); as user){
             <img class="avatar" [src]="user.avatar_url === 'null'? this.DEFAULT_MALE_AVATAR : user.avatar_url">
             <h2 (click)="openInfoDialog()">{{user.username === 'null' ? 'User' : user.username}}</h2>
@@ -64,7 +64,7 @@
         <div class="messageWrapper">
             <div class="topLineAndTimestamp">
                 <hr>
-                <p>{{directChat.selectedThreadMessage()?.created_at| date: 'dd.MM.yy'}}</p>
+                <p>{{directChat.selectedThreadMessage()?.created_at | date: 'EEEE d. MMMM'}}</p>
                 <!-- <p>Debug – Nachrichten im Signal: {{ userChat().length }}</p> -->
                 <hr>
             </div>
@@ -250,7 +250,7 @@
         <div class="messageWrapper">
             <div class="topLineAndTimestamp">
                 <hr>
-                <p>{{message.created_at | date: 'dd.MM.yy'}}</p>
+                <p>{{message.created_at | date: 'EEEE d. MMMM'}}</p>
                 <!-- <p>Debug – Nachrichten im Signal: {{ userChat().length }}</p> -->
                 <hr>
             </div>

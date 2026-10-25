@@ -104,6 +104,7 @@ export class AddMemberToChannelComponent {
     }
   }
   pushMemberToChannel(){
+    debugger;
     this.addMemberToChannelInSupabase()
     this.unselectMemberToAdd()
   }
@@ -146,7 +147,7 @@ export class AddMemberToChannelComponent {
   async addMemberToChannelInSupabase(){
     const choosenMember = document.querySelector('.selectedMember') as HTMLInputElement
     const memberList = await this.memberListHelperFunction()
-    const memberUsername = choosenMember.innerText
+    const memberUsername = choosenMember.innerText.trim()
     let name = memberList?.find((item: any) => item.username == memberUsername)
     if(!name) return
     let uuid = name.uuid

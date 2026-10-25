@@ -224,7 +224,7 @@
         flex-direction: column;
         gap:10px;
         overflow-y: scroll;
-        >p{
+        >.channel{
             display: flex;
             align-items: center;
             justify-content: center;
@@ -239,6 +239,10 @@
             margin: 0px;
             &:hover{
                 background-color:rgb(209, 204, 204, 0.5);
+            }
+            &.active{
+                background-color:rgba(236, 238, 254, 1);
+                color: rgba(68, 77, 242, 1);
             }
         }
     }
@@ -368,6 +372,11 @@
     font-family: 'Nunito_regular';
     cursor: pointer;
     &:hover{
+        border-radius:0px 25px 25px 0px;
+        background-color:rgba(236, 238, 254, 1);
+        color: rgba(68, 77, 242, 1);
+    }
+    &.active{
         border-radius:0px 25px 25px 0px;
         background-color:rgba(236, 238, 254, 1);
         color: rgba(68, 77, 242, 1);

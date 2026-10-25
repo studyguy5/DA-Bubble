@@ -75,7 +75,7 @@ export class MainChatpageComponent {
 
 selectUserFromDialog(user: any) {
   if(!this.channelUserSelection as any) return
-  this.channelUserSelection.selectUserAndEmitToParentComponent(user);
+  this.channelUserSelection.selectUserAndEmitToParentComponent(user, event);
 }
 
 

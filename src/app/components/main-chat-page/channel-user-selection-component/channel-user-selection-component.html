@@ -23,9 +23,9 @@
     <div [class.withoutDelay]="this.wasOpenBefore" [class.channelListVisible]="this.collapsingListIsOpen" class="channelKollapsingList">
         <div class="actualChannelsToChoose">
             @for(channel of userService.channelTable(); track channel.uuid){
-            <p (click)="selectChannelAndEmitToParentComponent(channel)"><img src="./icons/lilaRoute.svg"> {{channel.name}}</p>    
+            <p class="channel" (click)="selectChannelAndEmitToParentComponent(channel, $event)"><img src="./icons/lilaRoute.svg"> {{channel.name}}</p>    
             }
-            <p ><img src="./icons/lilaRoute.svg"> Entwicklerteam</p>
+            <!-- <p ><img src="./icons/lilaRoute.svg"> Entwicklerteam</p> -->
             
         </div>
         <div class="newChannelButton">
@@ -46,11 +46,11 @@
         @if(userService.userTable().length > 0){
         @for(user of userService.userTable(); track user){
         @if(user.gender === 'male'){
-            <div (click)="selectUserAndEmitToParentComponent(user)" class="member">
+            <div (click)="selectUserAndEmitToParentComponent(user, $event)" class="member" >
         <img [src]="user.avatar_url === 'null' ? this.DEFAULT_MALE_AVATAR : user.avatar_url"> <p>{{user.username === 'null' ? 'User' : user.username}}</p>
             </div>
         }@else{
-            <div (click)="selectUserAndEmitToParentComponent(user)" class="member">
+            <div (click)="selectUserAndEmitToParentComponent(user, $event)" class="member" >
             <img [src]="user.avatar_url === 'null' ? this.DEFAULT_FEMALE_AVATAR : user.avatar_url"> <p>{{user.username === 'null' ? 'User' : user.username}}</p>
             </div>
         }

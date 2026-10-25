@@ -40,27 +40,42 @@ export class ChannelUserSelectionComponent {
     }, 200)
 
   }
-
+  active = false
   async selectFirstChannelAtStart() {
-    // debugger;
     const channel = this.userService.channelTable()[0]
-    
+  
       
         console.log('automatische Selection',channel)
-      this.selectChannelAndEmitToParentComponent(channel)
+      this.selectChannelFirstTime(channel)
       
     
   }
 
-  selectUserAndEmitToParentComponent(user: User) {
-    // debugger;
+  selectUserAndEmitToParentComponent(user: User, event: any) {
+    let allMembers = document.querySelectorAll('.member') as NodeListOf<HTMLDivElement>;
+    allMembers.forEach(member => {
+      member.classList.remove('active')
+    })
+    let target = event.target as HTMLElement;
+    target.classList.add('active')
     console.log(user)
     this.selectedUser.emit(user)
   }
 
-  selectChannelAndEmitToParentComponent(selectedChannel: Channel) {
 
-    // console.log(selectedChannel)
+  selectChannelFirstTime(channel: Channel) {
+    this.selectedChannel.emit(channel)
+  }
+  selectChannelAndEmitToParentComponent(selectedChannel: Channel, event: any) {
+    let allChannels = document.querySelectorAll('.channel') as NodeListOf<HTMLDivElement>;
+    if(allChannels){
+      allChannels.forEach(member => {
+        member.classList.remove('active')
+      })
+      let target = event.target as HTMLElement;
+      target.classList.add('active')
+    }
+    
     this.selectedChannel.emit(selectedChannel)
   }
 
