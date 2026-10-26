@@ -6,6 +6,7 @@ import { Overlay } from '@angular/cdk/overlay';
 import { ChannelInfoComponent } from '../channel-info-component/channel-info-component';
 import { AddMemberToChannelComponent } from '../add-member-to-channel-component/add-member-to-channel-component';
 import { TagMembersComponent } from '../tag-members-component/tag-members-component';
+import { ProfileOverviewComponent } from '../profile-overview-component/profile-overview-component';
 import { createClient, RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { environment } from '../../../../environment/environment';
 import { MemberOverviewComponent } from '../member-overview-component/member-overview-component';
@@ -23,10 +24,17 @@ import { EmojiPickerComponent } from '../emoji-picker-component/emoji-picker-com
 import twemoji from '@twemoji/api';
 import { JsonPipe } from '@angular/common';
 import { output } from '@angular/core';
+import { afterRenderEffect } from '@angular/core';
+
+interface ProfileMember {
+  username: string;
+  avatar_url: string | null;
+  uuid: string;
+}
 
 @Component({
   selector: 'app-direct-messages-component',
-  imports: [DatePipe],
+  imports: [DatePipe, ProfileOverviewComponent],
   templateUrl: './direct-messages-component.html',
   styleUrl: './direct-messages-component.scss',
 })
@@ -54,11 +62,21 @@ export class DirectMessagesComponent {
   // threadsMessages = output<Message[]|null>()
   mode = input<'main' | 'thread'>('main')
   isLoading = signal<boolean>(false)
+  scrollContainer = viewChild<ElementRef<HTMLElement>>('scrollContainer');
   constructor(
     @Inject(Dialog) private dialog: Dialog,
-    private overlay: Overlay, private userService: UserService, private userReactionService: UserReactionService, private editMessageService: EditMessageService
+    private overlay: Overlay, private userService: UserService, private userReactionService: UserReactionService, 
+    private editMessageService: EditMessageService
   ) {
     console.log('KLICK', this.channel?.uuid);
+    afterRenderEffect(() => {
+      const msgs:any = this.directChat.userChat()
+      const element = this.scrollContainer()?.nativeElement
+      console.log('effect läuft', msgs?.length, this.scrollContainer()?.nativeElement)
+      if (element) {
+        element.scrollTo({top: element.scrollHeight, behavior: 'smooth'})
+      }
+    })
     effect(() => {
       if (this.mode() !== 'main') return;
       this.channel = this.selectedChannel();
@@ -269,6 +287,50 @@ export class DirectMessagesComponent {
     )
   }
 
+  async openProfileOverview(member_uuid: any) {
+    await this.searchingForMembers()
+    await this.openProfileOverviewDialog(member_uuid)
+  }
+  membersWithAvatarForDialog = signal<Members[]>([])
+  // membersWithAvatar = signal<ProfileMember[]>([])
+  rightProfile: any
+   async openProfileOverviewDialog(member_uuid: any) {
+       console.log('trigger openProfileOverviewDialog')
+      //  debugger;
+        let memberData = this.membersWithAvatarForDialog()
+        this.rightProfile = memberData.find((item) => 
+        item.uuid == member_uuid
+        )
+        console.log('memberData', memberData)
+        this.dialog.open(ProfileOverviewComponent,
+          // {
+          //   positionStrategy: this.overlay.position()
+          //     .flexibleConnectedTo(this.anchorDiv)
+          //     .withPositions([{
+          //       originX: 'center',
+          //       originY: 'center',
+          //       overlayX: 'end',
+          //       overlayY: 'bottom',
+          //       offsetY: 0,
+          //       offsetX: 20
+          //     }])
+          //     // .withFlexibleDimensions(true)
+          //     // .withViewportMargin(0)
+          //     .withPush(true),
+          {
+            width: '500px',
+            height: '705px',
+            panelClass: 'ProfileOverviewDialog',
+            data: {
+              title: 'add member to channel',
+              channel: this.rightProfile,
+              
+            },
+    
+          }
+        )
+      }
+
   async memberListHelperFunction() {
     let uuid = this.channel.uuid
     const { data, error } = await this.supabase
@@ -280,7 +342,6 @@ export class DirectMessagesComponent {
     return data ?? []
   }
 
-  membersWithAvatarForDialog = signal<Members[]>([])
   async searchingForMembers() {
     // this.cd.detectChanges();
     const data = await this.memberListHelperFunction()

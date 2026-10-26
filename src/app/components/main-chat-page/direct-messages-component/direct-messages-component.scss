@@ -287,7 +287,7 @@
     align-items: unset !important;
     justify-content: unset !important;
     // border-radius: 20px;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 1);
     z-index: 1000;
     display: flex;
 
@@ -327,7 +327,7 @@
 .messageWrapper{
     &:hover{ 
         >.messageReactionsAndProfileWrapper{
-            background-color: rgb(254, 236, 236);
+            background-color:rgb(236, 238, 254);
             >.ProfileNameMessageReactionBox{
                 >.nameAndTimeBox{
                         .actionBox{
@@ -374,10 +374,20 @@
         &.foreignMessage{
             justify-content: flex-end;
             flex-direction: row-reverse;
+            &:hover{
+                >.ProfileNameMessageReactionBox{
+                    >.content{
+                        background-color: rgb(255, 255, 255);
+                    }
+                }
+            }
             >.ProfileNameMessageReactionBox{
                 >.content{
                     background-color: rgba(236, 238, 254, 1);
                     color:black;
+                    // &:hover{
+                    // background-color: rgb(249, 250, 252);
+                    // }
                 }
             }
         }
@@ -501,12 +511,27 @@
             >.nameAndTimeBox{
                 display:flex;
                 align-items: center;
+                justify-content: flex-end;
                 gap:50px;
-                >p{
+                padding: 0px 5px;
+                &.foreignMessage{
+                    justify-content: flex-start;
+                    // flex-direction: row-reverse;
+                }
+                >.profileName{
+                    min-width:45px;
                     margin:0px;
+                    &:hover{
+                        color:blue;
+                        font-weight:bold;
+                        cursor: pointer;
+                        
+                    }
+                    
                 }
                 >.time{
                     display:none;
+                    margin:0px;
                     &.visible{
                         display:flex;
                     }
@@ -520,7 +545,8 @@
                     gap:5px;
                     width:255px;
                     height:46px;
-                    background-color: rgb(163, 133, 133);
+                    background-color: rgb(255, 255, 255);
+                    border: 1px solid rgba(145, 145, 145, 0.747);
                     border-top-left-radius: 20px;
                     border-top-right-radius: 20px;
                     border-bottom-left-radius: 20px;
@@ -590,6 +616,7 @@
                 }
             }
 
+            
             .editMessage{
                 position:absolute;
                 top:78px;

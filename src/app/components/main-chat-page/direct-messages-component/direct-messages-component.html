@@ -241,7 +241,7 @@
             <span class="messageLoadingSpinner" aria-label="Nachrichten werden geladen">Nachrichten werden geladen</span>
         }@else{
     <div [class.firstMessage]="directChat.userChat.length === 1"
-        [class.multipleMessages]="directChat.userChat().length > 1" class="innerMessageWrapper"
+        [class.multipleMessages]="directChat.userChat().length > 1" class="innerMessageWrapper" #scrollContainer
         [class.innerMessageWrapper]="!threadsComponent()">
         @if(directChat.userChat(); as messages){
         @if(directChat.userChat().length > 0){
@@ -282,7 +282,7 @@
                     </div>
                 </div>
                 <div class="ProfileNameMessageReactionBox">
-                    <div class="nameAndTimeBox">
+                    <div [class.foreignMessage]="message.author_id !== this.ownMessage" class="nameAndTimeBox">
                         <div [class.foreignMessage]="message.author_id !== this.ownMessage" class="actionBox">
                             <img (click)="postEmojiToSupabase( './icons/check_green.svg', message.uuid)"
                                 src="./icons/check_green.svg">
@@ -341,7 +341,7 @@
                         </div>
                         <p [class.visible]="message.author_id === this.ownMessage" class="time">{{message.created_at |
                             date: 'HH:mm'}}</p>
-                        <p class="profileName">{{(allMembers().find(member => member.uuid ==
+                        <p (click)="openProfileOverview(message.author_id)" class="profileName">{{(allMembers().find(member => member.uuid ==
                             message.author_id)?.username) !== 'null' ?
                             (allMembers().find(member => member.uuid == message.author_id)?.username) :
                             (allMembers().find(member => member.uuid == message.author_id)?.username) === 'null' ?
@@ -449,3 +449,4 @@
         </div>
     </div>
 </section>
+<!-- <app-profile-overview-component></app-profile-overview-component> -->
