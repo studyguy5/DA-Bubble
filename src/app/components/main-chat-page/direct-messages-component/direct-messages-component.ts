@@ -324,7 +324,8 @@ export class DirectMessagesComponent {
             data: {
               title: 'add member to channel',
               channel: this.rightProfile,
-              
+              onSelectUser: (user: any) =>
+                this.selectUserFromDialog?.(user)
             },
     
           }

@@ -9,7 +9,7 @@
                 <p>@{{user.username}}</p>
 
                 } -->
-                <p>{{selectedChannel()?.name ? selectedChannel()?.name : selectedUser()?.username}}</p>
+                <p>{{selectedChannel()?.name ? '#' + selectedChannel()?.name : '@' + selectedUser()?.username}}</p>
                 <!-- <p>#EntwicklerTeam</p> -->
             </div>
             }

@@ -327,11 +327,26 @@
 .messageWrapper{
     &:hover{ 
         >.messageReactionsAndProfileWrapper{
+            transition: all 0.6s ease;
             background-color:rgb(236, 238, 254);
+            &.foreignMessage{
             >.ProfileNameMessageReactionBox{
                 >.nameAndTimeBox{
                         .actionBox{
+                            transition: all 0.3s ease;
                             opacity:1;
+                            right:30px;
+                        }
+                    
+                }
+            }    
+            }
+            >.ProfileNameMessageReactionBox{
+                >.nameAndTimeBox{
+                        .actionBox{
+                            transition: all 0.3s ease;
+                            opacity:1;
+                            left:30px;
                         }
                     
                 }
@@ -365,6 +380,22 @@
             border: 1px solid rgba(173, 176, 217, 1);
         }
     }
+    
+        
+        &:hover{
+            >.messageReactionsAndProfileWrapper{
+                &.foreignMessage{
+                   
+                   >.ProfileNameMessageReactionBox{
+                       >.content{
+                            transition: all 0.3s ease;
+                           background-color: rgb(255, 255, 255);
+                       }
+                   }
+               } 
+            }
+        }
+    
     >.messageReactionsAndProfileWrapper{
         display:flex;
         flex-direction: row;
@@ -374,13 +405,6 @@
         &.foreignMessage{
             justify-content: flex-end;
             flex-direction: row-reverse;
-            &:hover{
-                >.ProfileNameMessageReactionBox{
-                    >.content{
-                        background-color: rgb(255, 255, 255);
-                    }
-                }
-            }
             >.ProfileNameMessageReactionBox{
                 >.content{
                     background-color: rgba(236, 238, 254, 1);
@@ -541,7 +565,7 @@
                     position:absolute;
                     opacity:0;
                     top:30px;
-                    left:30px;
+                    left:20px;
                     gap:5px;
                     width:255px;
                     height:46px;
@@ -555,12 +579,13 @@
                     align-items: center;
                     &.foreignMessage{
                         top:30px;
-                        right:30px;
+                        right:20px;
                         left:unset;
                         border-top-left-radius: 20px;
                         border-top-right-radius: 20px;
                         border-bottom-left-radius: 0px;
                         border-bottom-right-radius: 20px;
+                        
                     }
                     >p{
                         margin:0px;
@@ -613,6 +638,7 @@
                             border-radius: 100px;
                         }
                     }
+                    
                 }
             }
 

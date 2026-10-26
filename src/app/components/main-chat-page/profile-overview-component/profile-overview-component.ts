@@ -27,7 +27,7 @@ closeDialog(){
 }
 
 openDirektMessageWithThisUser(data: any) {
-  debugger;
+  // debugger;
 this.data.onSelectUser?.(this.data.channel);
 this.closeDialog()
 }
