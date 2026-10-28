@@ -11,7 +11,9 @@ export class UserChatThreadService {
   supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
   selectedThreadId = signal<string>('')
   userChat = signal<Message[]>([])
+
   replies = signal<Message[]>([])
+  allReplies = signal<Message[]>([])
 
   selectedThreadMessage = computed(() => {
     return this.userChat().find((message) => message.uuid === this.selectedThreadId())
@@ -52,6 +54,22 @@ export class UserChatThreadService {
     } else {
       this.replies.set(data)
       console.log('Messages fetched successfully:', data);
+    }
+  }
+
+  async pullAllThreadMessages( chat_room_id?: string) {
+    const { data, error } = await this.supabase
+      .from('messages')
+      .select('uuid, chat_room_id, author_id, content, created_at, parent_message_id')
+      .eq('chat_room_id', chat_room_id)
+      // .not('parent_message_id', 'is', null)
+      // .is('parent_message_id', null)
+      .order('created_at', { ascending: true });
+    if (error) {
+      console.error('Error fetching messages:', error);
+    } else {
+      this.allReplies.set(data)
+      console.log('allReplies fetched successfully:', data);
     }
   }
 }

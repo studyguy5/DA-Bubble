@@ -24,7 +24,7 @@ export class UserReactionService {
     return data
   }
 
-
+// emojis werden eventuell nicht richtig in supabase gepushed!!!==================
   async pushReactions(emoji: string, message_uuid: string){
     const { data, error } = await this.subabase
     .from('message_reactions')

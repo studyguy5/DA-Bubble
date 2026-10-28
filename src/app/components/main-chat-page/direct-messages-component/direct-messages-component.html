@@ -356,7 +356,8 @@
                         @let count = $any(message).replies?.[0]?.count ?? 0;
                         @if (count > 0) {
                         <p>{{ count }} Antworten</p>
-                        <p>Letze Antwort am {{message.created_at | date: 'HH:mm'}}</p>
+                        <p>Letze Antwort am {{this.directChat.allReplies().filter((reply) => reply.parent_message_id == message.uuid).at(-1)?.created_at | date: 'HH:mm'}}</p>
+                        <!-- <p>Letzte Antwort am {{this.directChat.replies().filter((reply) => reply.parent_message_id == message.uuid).at(-1)?.created_at | date: 'HH:mm'}}</p> -->
                         }
                         <!-- <p>{{ directChat.userChat().filter(reply => reply.parent_message_id == message.uuid).length}}
                             Antworten</p> -->
@@ -367,12 +368,12 @@
                         @for(reaction of countEach().get(message.uuid) ?? []; track reaction.emoji){
 
                         <div class="emojiBoxWithCounter">
-
+                            <!-- hier schleife und if anpassen, damit es bei identischen den Counter erhöht======================================== -->
                             @if (reaction.emoji.includes('./')) {
                             <img [src]="reaction.emoji" alt="Reaktion">
-                            <p (click)="postEmojiToSupabase(emoji.toString(), message.uuid)">{{reaction.anzahl}}</p>
+                            <p (click)="postEmojiToSupabase(reaction.emoji, message.uuid)">{{reaction.anzahl}}</p>
                             } @else {
-                            <p (click)="postEmojiToSupabase(emoji.toString(), message.uuid)" class="emoji">{{
+                            <p (click)="postEmojiToSupabase(reaction.emoji, message.uuid)" class="emoji">{{
                                 reaction.emoji }}</p>
                             <p>{{reaction.anzahl}}</p>
                             }

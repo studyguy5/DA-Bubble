@@ -34,7 +34,7 @@ interface ProfileMember {
 
 @Component({
   selector: 'app-direct-messages-component',
-  imports: [DatePipe, ProfileOverviewComponent],
+  imports: [DatePipe],
   templateUrl: './direct-messages-component.html',
   styleUrl: './direct-messages-component.scss',
 })
@@ -52,9 +52,9 @@ export class DirectMessagesComponent {
   twemoji = twemoji
   supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
   selectedUser = input<User | null>(null)
+  selectedChannel = input<Channel | null>(null)
   allMembers = signal<Members[]>([])
   // userChat = signal<Message[]>([])
-  selectedChannel = input<Channel | null>(null)
   positionStrategy?: FlexibleConnectedPositionStrategy;
   emoji = signal<Emoji[]>([])
 
@@ -147,6 +147,7 @@ export class DirectMessagesComponent {
   })
 
   postEmojiToSupabase(emoji: string, message_uuid: string) {
+    // debugger;
     this.userReactionService.pushReactions(emoji, message_uuid)
   
   }
@@ -172,13 +173,13 @@ export class DirectMessagesComponent {
     anchorRect.width = `0px`;
     anchorRect.height = `0px`;
 
-    const offsetX = cursorX - anchorX -450;
+    const offsetX = cursorX - anchorX -50;
     const offsetY = cursorY - anchorY;
 
     const newposition = this.overlay.position().flexibleConnectedTo(this.anchorDiv2).withPositions([{
       originX: 'center',
       originY: 'bottom',
-      overlayX: 'center',
+      overlayX: 'end',
       overlayY: 'bottom',
       offsetY: offsetY,
       offsetX: offsetX
@@ -191,7 +192,7 @@ export class DirectMessagesComponent {
       this.positionStrategy.withPositions([{
         originX: 'center',
         originY: 'bottom',
-        overlayX: 'center',
+        overlayX: 'end',
         overlayY: 'bottom',
         offsetY: offsetY,
         offsetX: offsetX
@@ -206,7 +207,7 @@ export class DirectMessagesComponent {
           restoreFocus: true,
           positionStrategy: this.positionStrategy
             // .withFlexibleDimensions(true)
-            .withViewportMargin(20)
+            .withViewportMargin(30)
             .withPush(true),
           width: '344px',
           height: '400px',
@@ -544,13 +545,16 @@ export class DirectMessagesComponent {
   async getMessagesFromSelectedCHANNEL(uuid: string) {
     const messages = await this.userService.getMessagesFromSelectedChannel(uuid)
     this.directChat.userChat.set(messages as any)
-    console.log('Nachrichten für den ausgewählten Channel:', messages);
+    await this.directChat.pullAllThreadMessages(uuid)
+    // console.log('Nachrichten für den ausgewählten Channel:', messages);
   }
   
   async getMessagesFromSelectedUSER(author_id: string, participant_uuid: string | null) {
     const messages: any = await this.userService.getMessagesFromSelectedUser(author_id, participant_uuid)
     console.log('messages from UserService:', messages);
     this.directChat.userChat.set(messages ?? [] as Message[])
+    // debugger;
+    await this.directChat.pullAllThreadMessages(messages[0]?.chat_room_id)
   }
 
 

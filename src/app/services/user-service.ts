@@ -136,9 +136,9 @@ export class UserService {
     const { data: roomA, error: error } = await this.supabase
       .from('chat_room_members')
       .select('*')
-      .eq('user_id', author_id)
-
-      .order('created_at', { ascending: true })
+      .eq('user_id', author_id) // zeilen mit meinem uuid
+      
+      .order('created_at', { ascending: true }) 
     if (!roomA || error) {
       console.error('Fehler beim Laden der Private Chat-Rooms:', error);
     }
@@ -146,14 +146,14 @@ export class UserService {
     const { data: roomB, error: roomsBError } = await this.supabase
       .from('chat_room_members')
       .select('chat_room_id')
-      .eq('user_id', participant_uuid);
+      .eq('user_id', participant_uuid); // zeilen mit dem anderen uuid
     if (!roomB || roomsBError) console.log('roomsBError', roomB)
 
 
 
     const roomId = roomA
       ?.map(room => room.chat_room_id)
-      .filter(id => roomB?.some(room => room.chat_room_id === id));
+      .filter(id => roomB?.some(room => room.chat_room_id === id)); // die gemeinsamen chat_room_ids
     if (!roomId || roomId.length === 0) {
       console.log('roomId456', roomId)
       return
@@ -164,12 +164,12 @@ export class UserService {
       .from('chat_rooms')
       .select('*')
       .in('uuid', this.chat_room_id)
-      .eq('message_type', 'private')
+      .eq('message_type', 'private') // in chat_rooms die private chat_rooms finden
     console.log('chatRoom', chatRoom)
     console.log('roomIdError', roomIdError)
 
 
-    let uuid: any = chatRoom?.map((item: any) => item.uuid)
+    let uuid: any = chatRoom?.map((item: any) => item.uuid) //die ids der private chat_rooms
     const { data: messages, error: messagesError } = await this.supabase
       .from('messages')
       .select('*, replies:messages!parent_message_id(count)')
@@ -242,55 +242,33 @@ export class UserService {
   }
 
 
-  async checkIfUserRoomExists(participant: any | null) {
-    // const participant: any = this.selectedUser();
-    // debugger;
-    const currentUser = await this.supabase.auth.getUser();
-    const myChatRooms = await this.supabase
-      .from('chat_room_members')
-      .select('chat_room_id')
-      .eq('user_id', currentUser.data.user?.id)
+  async checkIfUserRoomExists(participant: { uuid: string } | null): Promise<string | null> {
+  const { data: { user } } = await this.supabase.auth.getUser();
+  if (!user || !participant) return null;
 
-    if (myChatRooms.error) console.log('error', myChatRooms.error)
-    if (myChatRooms.data && myChatRooms.data.length > 0) {
-      const Rooms = myChatRooms.data.map((item: any) => item.chat_room_id)
-      const { data: existingRoom, error: existingRoomError } = await this.supabase
-        .from('chat_room_members')
-        .select('chat_room_id, user_id')
-        .in('chat_room_id', Rooms)
-        .in('user_id', [participant?.uuid, currentUser.data.user?.id])
+  const { data: members, error } = await this.supabase
+    .from('chat_room_members')
+    .select('chat_room_id, user_id')
+    .in('user_id', [user.id, participant.uuid]); // ich oder der andere
+  if (error) { console.error(error); return null; }
 
-      if (existingRoomError) {
-        console.log('error', existingRoomError)
-        return false
-      }
-      if (existingRoom) {
-        const sharedRoomIds = existingRoom.map(member => member.chat_room_id);
-        const userAndParticipant = [...new Set(sharedRoomIds.filter((member: any) => member.user_id === currentUser.data.user?.id).map((member: any) => member.chat_room_id)
-          .filter((member: any) => existingRoom.some((member2: any) => member2.user_id === participant?.uuid && member2.chat_room_id === member)))];
-        if (sharedRoomIds.length === 0) return
-        const { data: privateRoom, error: privateRoomError } = await this.supabase
-          .from('chat_rooms')
-          .select('uuid')
-          .eq('message_type', 'private')
-          .in('uuid', userAndParticipant);
-        if (privateRoomError) {
-          console.log('error', privateRoomError)
-          return
-        }
-        if (privateRoom && privateRoom.length > 0) {
-          const thisPrivateRoom = privateRoom[0].uuid ?? null;
-          return thisPrivateRoom;
-        } else {
-          return false
-        }
-      }
-      //Problem beseitingen wenn es mehrere private rooms gibt zwischen zwei usern, dann wird die erste genommen. aus supabase löschen oder im code entscheiden ===================================
+  const mine = new Set(members.filter(m => m.user_id === user.id).map(m => m.chat_room_id)); // auf meine Räume filtern
+  const shared = members
+    .filter(m => m.user_id === participant.uuid && mine.has(m.chat_room_id))
+    .map(m => m.chat_room_id); // gemeinsame Räume finden
+  if (shared.length === 0) return null;
 
+  const { data: rooms, error: roomError } = await this.supabase
+    .from('chat_rooms')
+    .select('uuid')
+    .eq('message_type', 'private')
+    .in('uuid', shared)
+    .order('created_at', { ascending: true })
+    .limit(1);
+  if (roomError) { console.error(roomError); return null; }
 
-    }
-
-  }
+  return rooms[0]?.uuid ?? null;
+}
 
 
   async selectPrivateRoomAndSendMessage(privateRoomId: string, messageText: string) {
