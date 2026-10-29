@@ -100,4 +100,15 @@ inputValue = signal('');
     this.inputValue.set(value);
   }
 
+  memberOrChannelFromDialogToInput(memberOrChannel: any) {
+    let input = document.getElementById('messageInput') as HTMLTextAreaElement;
+    if (!input) return
+    if(this.channelData.symbol === '@') {
+      input.value = `@${memberOrChannel}`
+    }else if(this.channelData.symbol === '#') {
+      input.value = `#${memberOrChannel}`
+    }
+    this.closeDialog()
+  }
+
 }

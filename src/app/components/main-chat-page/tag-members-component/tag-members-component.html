@@ -3,7 +3,7 @@
     <div class="memberWrapper">
     @for(channel of allchannels(); track channel.uuid){
             
-            <div  class="memberOverviewItem">
+            <div (click)="memberOrChannelFromDialogToInput(channel.name)" class="memberOverviewItem">
                 <img [src]="">
                 <p>{{channel.name}}</p>
             </div>
@@ -14,7 +14,7 @@
     <div class="memberWrapper">
     @for(channel of filteredChannels(); track channel.uuid){
             
-            <div  class="memberOverviewItem">
+            <div (click)="memberOrChannelFromDialogToInput(channel.name)" class="memberOverviewItem">
                 <img [src]="">
                 <p>{{channel.name}}</p>
             </div>
@@ -25,7 +25,7 @@
 
         <div class="memberWrapper">
         @for(member of memberWithAvatar(); track member.uuid){
-            <div  class="memberOverviewItem">
+            <div (click)="memberOrChannelFromDialogToInput(member.username)" class="memberOverviewItem">
                 <img [src]="member.avatar_url">
                 <p>{{member.username}}</p>
             </div>
@@ -35,7 +35,7 @@
     @if(filteredMembers.length > 0){
         <div class="memberWrapper">
             @for(member of filteredMembers; track member.uuid){
-            <div  class="memberOverviewItem">
+            <div (click)="memberOrChannelFromDialogToInput(member.username)" class="memberOverviewItem">
                 <img [src]="member.avatar_url">
                 <p>{{member.username}}</p>
             </div>

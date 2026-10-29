@@ -20,6 +20,7 @@ interface MemberOverviewDialogData {
   title: string;
   channel: any;
   onSelectUser?: any;
+  members: ProfileMember[]
 }
 interface ProfileMember {
   username: string;
@@ -37,41 +38,41 @@ export class MemberOverviewComponent {
   supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
   // channels = input<Channel | null>(null)
   members = signal<ProfileMember[]>([])
+  memberWithAvatar = signal<ProfileMember[]>([])
   // @ViewChild(ChannelUserSelectionComponent) channelUserSelection!: ChannelUserSelectionComponent;
   constructor(@Inject(DIALOG_DATA) public channelData: MemberOverviewDialogData, 
   @Inject(DialogRef) public dialogRef: DialogRef<MemberOverviewComponent>, @Inject(Dialog) private dialog: Dialog) {
-  this.channelData = channelData
+  this.memberWithAvatar.set(this.channelData.members)
   
   effect(() => {
-    this.searchingForMembers()
-    console.log('Data from direct message', this.channelData)
+    console.log('members =====??????', this.channelData.members)
+    
   })
   }
-  memberWithAvatar = signal<ProfileMember[]>([])
-  async memberListHelperFunction() {
-    let uuid = this.channelData.channel.uuid
-    const { data, error } = await this.supabase
-      .from('chat_room_members')
-      .select('user_id, chat_room_id')
-      .eq('chat_room_id', uuid)
-    if (!data || error) return
+  // async memberListHelperFunction() {
+  //   let uuid = this.channelData.channel.uuid
+  //   const { data, error } = await this.supabase
+  //     .from('chat_room_members')
+  //     .select('user_id, chat_room_id')
+  //     .eq('chat_room_id', uuid)
+  //   if (!data || error) return
 
-    return data ?? []
-  }
-  filterResult: any
-  async searchingForMembers() {
-      // this.cd.detectChanges();
-    const data = await this.memberListHelperFunction()
-    console.log('memberList Data', data)
-    let memberIds = data?.map((item: any) => item.user_id)
-    const { data: avatarUrl, error: avatarError } = await this.supabase
-    .from('profiles')
-    .select('avatar_url, username, uuid, email')
-    .in('uuid', memberIds as any)
-    .order('username', { ascending: true });
-    this.memberWithAvatar.set(avatarUrl as any)
-    if(!avatarUrl || avatarError) return
-  }
+  //   return data ?? []
+  // }
+  // filterResult: any
+  // async searchingForMembers() {
+  //     // this.cd.detectChanges();
+  //   const data = await this.memberListHelperFunction()
+  //   console.log('memberList Data', data)
+  //   let memberIds = data?.map((item: any) => item.user_id)
+  //   const { data: avatarUrl, error: avatarError } = await this.supabase
+  //   .from('profiles')
+  //   .select('avatar_url, username, uuid, email')
+  //   .in('uuid', memberIds as any)
+  //   .order('username', { ascending: true });
+  //   this.memberWithAvatar.set(avatarUrl as any)
+  //   if(!avatarUrl || avatarError) return
+  // }
 
   closeDialog() {
     this.dialogRef.close();

@@ -678,6 +678,7 @@
             >.reactionsAndSmileyBox{
                 display:flex;
                 gap:13px;
+                margin-bottom:8px;
                 >.emojiBoxWithCounter{
                     display:flex;
                     align-items: center;
@@ -780,11 +781,12 @@
 }
 
 .chatHeaderForThreads{
-    height: 104px;
+    min-height: 104px;
 }
 
 .threadsMessageWrapper{
     height:100%;
+    max-height:648px;
     width: 100%;
     display:none;
 }

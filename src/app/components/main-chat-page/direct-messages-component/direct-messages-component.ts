@@ -63,6 +63,7 @@ export class DirectMessagesComponent {
   mode = input<'main' | 'thread'>('main')
   isLoading = signal<boolean>(false)
   scrollContainer = viewChild<ElementRef<HTMLElement>>('scrollContainer');
+  membersWithAvatarForDialog = signal<Members[]>([])
   constructor(
     @Inject(Dialog) private dialog: Dialog,
     private overlay: Overlay, private userService: UserService, private userReactionService: UserReactionService, 
@@ -256,8 +257,8 @@ export class DirectMessagesComponent {
       }
     )
   }
-  openMemberOverviewDialog() {
-    // const membersWithAvatar = this.getSelectedMEMBERS(this.uuid)
+  async openMemberOverviewDialog() {
+    await this.searchingForMembers()
     const channel = this.selectedChannel();
     console.log('anchorDiv', this.anchorDiv)
     this.dialog.open(MemberOverviewComponent,
@@ -281,6 +282,7 @@ export class DirectMessagesComponent {
         data: {
           title: 'View Members',
           channel: channel,
+          members: this.membersWithAvatarForDialog(),
           onSelectUser: (user: any) =>
             this.selectUserFromDialog?.(user)
         },
@@ -292,7 +294,6 @@ export class DirectMessagesComponent {
     await this.searchingForMembers()
     await this.openProfileOverviewDialog(member_uuid)
   }
-  membersWithAvatarForDialog = signal<Members[]>([])
   // membersWithAvatar = signal<ProfileMember[]>([])
   rightProfile: any
    async openProfileOverviewDialog(member_uuid: any) {
@@ -370,6 +371,21 @@ export class DirectMessagesComponent {
 
     return avatarUrl
   }
+
+  async listingMembersToTag() {
+    // this.cd.detectChanges();
+    const data = await this.memberListHelperFunction()
+    console.log('memberList Data', data)
+    let memberIds = data?.map((item: any) => item.user_id)
+    const { data: avatarUrl, error: avatarError } = await this.supabase
+      .from('profiles')
+      .select('avatar_url, username, uuid, email')
+      .in('uuid', memberIds as any)
+      .order('username', { ascending: true });
+   
+    if (!avatarUrl || avatarError) return
+    return avatarUrl
+  }
   filtered: any = []
   async openTagMembersDialog() {
     let input = document.getElementById('messageInput') as HTMLTextAreaElement;
@@ -382,7 +398,7 @@ export class DirectMessagesComponent {
     const relevantPart = atIndex >= 0 ? position1.slice(atIndex + 1) : routeIndex >= 0 ? position1.slice(routeIndex + 1) : position1
     
     console.log('relevantPart', relevantPart)
-    const Memberdata = await this.searchingForMembers()
+    const Memberdata = await this.listingMembersToTag()
     // this.filtered = relevantPart
     console.log('filtered member', this.filtered)
     this.filteredMembers.set(this.filtered)
@@ -409,7 +425,7 @@ export class DirectMessagesComponent {
     const offsetX = cursorX - anchorX;
     const offsetY = cursorY - anchorY;
 
-    const membersWithAvatar = this.getSelectedMEMBERS(this.uuid)
+    // const membersWithAvatar = this.getSelectedMEMBERS(this.uuid)
     const channel = this.selectedChannel();
     console.log('anchorDiv', this.anchorDiv2)
     const newposition = this.overlay.position().flexibleConnectedTo(this.anchorDiv2).withPositions([{
