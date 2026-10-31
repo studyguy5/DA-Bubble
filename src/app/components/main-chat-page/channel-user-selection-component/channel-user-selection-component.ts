@@ -42,11 +42,18 @@ export class ChannelUserSelectionComponent {
   }
   active = false
   async selectFirstChannelAtStart() {
-    const channel = this.userService.channelTable()[0]
-  
-      
-        console.log('automatische Selection',channel)
-      this.selectChannelFirstTime(channel)
+    let welcomeChannelId = await this.userService.getWelcomeChannelId()
+    const channels: any = await this.userService.getAllChannels()
+    // debugger;
+    let channel = this.userService.channelTable()[0] 
+    const member: any = await this.userService.getCurrentSignedInUserIDAndCheckMembership()
+      if(!member){
+       await this.userService.inviteUserToWelcomeChannel(welcomeChannelId?.uuid)
+       this.selectChannelFirstTime(welcomeChannelId as any)
+      }else{
+        this.selectChannelFirstTime(channel as any)
+      }
+        console.log('automatische Selection', welcomeChannelId)
       
     
   }

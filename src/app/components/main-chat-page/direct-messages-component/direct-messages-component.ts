@@ -39,6 +39,7 @@ interface ProfileMember {
   styleUrl: './direct-messages-component.scss',
 })
 export class DirectMessagesComponent {
+  
   readonly DEFAULT_MALE_AVATAR = '/images/male_Avatar1.svg';
 
   @Input() selectUserFromDialog: (user: any) => void = () => { };
@@ -61,9 +62,11 @@ export class DirectMessagesComponent {
   threadsComponent = input< any | null>(null)
   // threadsMessages = output<Message[]|null>()
   mode = input<'main' | 'thread'>('main')
+  allMessagesForSearching = input<any[]>([])
   isLoading = signal<boolean>(false)
   scrollContainer = viewChild<ElementRef<HTMLElement>>('scrollContainer');
   membersWithAvatarForDialog = signal<Members[]>([])
+  static showMessagesFromSelectedChannelOrUser: any;
   constructor(
     @Inject(Dialog) private dialog: Dialog,
     private overlay: Overlay, private userService: UserService, private userReactionService: UserReactionService, 

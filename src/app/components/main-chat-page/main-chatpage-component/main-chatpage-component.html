@@ -3,7 +3,7 @@
     <div class="headerSearchBarAndProfileArea">
         <img src="./images/dabubble_logo.svg">
         <div class="searchBar">
-            <input type="text" placeholder="Dev-Space durchsuchen">
+            <input (input)="searchForTextMessagesInChannelsAndPrivateMessages()" type="text" placeholder="Dev-Space durchsuchen" id="devSearch">
             <img src="./icons/search-Icon.svg">
         </div>
         <div #profileLogoutMiniMenu (click)="openProfileLogoutMiniMenu()" class="profileAndSettings">
@@ -24,7 +24,7 @@
         <app-channel-user-selection-component (selectedChannel)="getChoiceFromChannelSelectionComponent($any($event))" 
         (selectedUser)="getChoiceFromSelectionComponent($any($event))"></app-channel-user-selection-component>
     
-        <app-direct-messages-component mode="main" [selectedChannel]="$any(selectedChannel())" 
+        <app-direct-messages-component mode="main" [allMessagesForSearching]="$any(messagesForSearching())" [selectedChannel]="$any(selectedChannel())" 
         [selectedUser]="$any(selectedUser())" [selectUserFromDialog]="selectUserFromDialog.bind(this)" style="flex: 1; display:flex"></app-direct-messages-component>
         <!-- <app-direct-messages-component style="flex: 1; display:flex"></app-direct-messages-component> -->
         <!-- <app-user-threads-component></app-user-threads-component> -->

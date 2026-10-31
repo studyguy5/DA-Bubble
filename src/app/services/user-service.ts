@@ -44,6 +44,11 @@ export class UserService {
           console.log('Change received!', payload)
         }
       )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'chat_room_members' },
+        () => this.getAllChannels()
+      )
       .subscribe()
   }
 
@@ -75,10 +80,29 @@ export class UserService {
       .eq('user_id', userId.data.user?.id)
       .eq('chat_rooms.message_type', 'channel');
     let names = data?.map((item: any) => item.chat_rooms)
-    
+
     console.log('Data channel:======================', names)
     if (!data || error) return
     this.channelTable.set(names as any)
+  }
+
+  async getWelcomeChannelId() {
+    const { data: welcome } = await this.supabase
+      .from('chat_rooms')
+      .select('uuid, name, description, message_type, created_by, created_at')
+      .eq('name', 'Welcome-Channel')
+      .eq('message_type', 'channel')
+      .maybeSingle();
+    if (!welcome) return;
+
+    return welcome
+  }
+
+  async getCurrentSignedInUserIDAndCheckMembership() {
+    const { data, error: userError } = await this.supabase.auth.getUser();
+    if (!data || userError) return
+    let isPartOfWelcomeChannel = await this.checkIfCurrentUserIsPartOfWelcomeChannel(data.user as any)
+    return isPartOfWelcomeChannel
   }
 
   async getCurrentSignedInUser() {
@@ -94,6 +118,19 @@ export class UserService {
     // console.log('profiles', profiles)
     if (!profiles || error) return
     return profiles[0].username;
+  }
+
+  async checkIfCurrentUserIsPartOfWelcomeChannel(user: User) {
+    const { data, error } = await this.supabase
+      .from('chat_rooms')
+      .select('uuid, name, chat_room_members!inner(user_id)')
+      .eq('name', 'Welcome-Channel')
+      .eq('chat_room_members.user_id', user.id)
+      .maybeSingle()
+
+    if (!data || error) return false;
+    return true
+
   }
 
   selectUserInProfileOverview(user: User) {
@@ -137,8 +174,8 @@ export class UserService {
       .from('chat_room_members')
       .select('*')
       .eq('user_id', author_id) // zeilen mit meinem uuid
-      
-      .order('created_at', { ascending: true }) 
+
+      .order('created_at', { ascending: true })
     if (!roomA || error) {
       console.error('Fehler beim Laden der Private Chat-Rooms:', error);
     }
@@ -243,32 +280,32 @@ export class UserService {
 
 
   async checkIfUserRoomExists(participant: { uuid: string } | null): Promise<string | null> {
-  const { data: { user } } = await this.supabase.auth.getUser();
-  if (!user || !participant) return null;
+    const { data: { user } } = await this.supabase.auth.getUser();
+    if (!user || !participant) return null;
 
-  const { data: members, error } = await this.supabase
-    .from('chat_room_members')
-    .select('chat_room_id, user_id')
-    .in('user_id', [user.id, participant.uuid]); // ich oder der andere
-  if (error) { console.error(error); return null; }
+    const { data: members, error } = await this.supabase
+      .from('chat_room_members')
+      .select('chat_room_id, user_id')
+      .in('user_id', [user.id, participant.uuid]); // ich oder der andere
+    if (error) { console.error(error); return null; }
 
-  const mine = new Set(members.filter(m => m.user_id === user.id).map(m => m.chat_room_id)); // auf meine Räume filtern
-  const shared = members
-    .filter(m => m.user_id === participant.uuid && mine.has(m.chat_room_id))
-    .map(m => m.chat_room_id); // gemeinsame Räume finden
-  if (shared.length === 0) return null;
+    const mine = new Set(members.filter(m => m.user_id === user.id).map(m => m.chat_room_id)); // auf meine Räume filtern
+    const shared = members
+      .filter(m => m.user_id === participant.uuid && mine.has(m.chat_room_id))
+      .map(m => m.chat_room_id); // gemeinsame Räume finden
+    if (shared.length === 0) return null;
 
-  const { data: rooms, error: roomError } = await this.supabase
-    .from('chat_rooms')
-    .select('uuid')
-    .eq('message_type', 'private')
-    .in('uuid', shared)
-    .order('created_at', { ascending: true })
-    .limit(1);
-  if (roomError) { console.error(roomError); return null; }
+    const { data: rooms, error: roomError } = await this.supabase
+      .from('chat_rooms')
+      .select('uuid')
+      .eq('message_type', 'private')
+      .in('uuid', shared)
+      .order('created_at', { ascending: true })
+      .limit(1);
+    if (roomError) { console.error(roomError); return null; }
 
-  return rooms[0]?.uuid ?? null;
-}
+    return rooms[0]?.uuid ?? null;
+  }
 
 
   async selectPrivateRoomAndSendMessage(privateRoomId: string, messageText: string) {
@@ -336,7 +373,17 @@ export class UserService {
   }
 
 
+  async inviteUserToWelcomeChannel(channel_id: string) {
+    const user = await this.supabase.auth.getUser()
+    const { data, error } = await this.supabase
+      .from('chat_room_members')
+      .insert({
+        chat_room_id: channel_id,
+        user_id: user.data.user?.id,
+        role: 'member'
 
+      })
+  }
 
 
 }

@@ -8,10 +8,12 @@ import { ProfileLogoutMiniComponent } from '../profile-logout-mini-component/pro
 import { User } from '@supabase/supabase-js';
 import { Channel } from '../../../interfaces/interfaces';
 import { UserService } from '../../../services/user-service';
+import { UserChatThreadService } from '../../../services/user-chat-thread-service';
 import { ChangeDetectorRef } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Overlay } from '@angular/cdk/overlay';
+import { viewChild } from '@angular/core';
 
 @Component({
   selector: 'app-main-chatpage-component',
@@ -20,16 +22,19 @@ import { Overlay } from '@angular/cdk/overlay';
   styleUrl: './main-chatpage-component.scss',
 })
 export class MainChatpageComponent {
-  
+  dm = viewChild(DirectMessagesComponent)
   @ViewChild(ChannelUserSelectionComponent) channelUserSelection!: ChannelUserSelectionComponent;
   @ViewChild('profileLogoutMiniMenu', { static: false }) profileLogoutMiniMenu!: Element;
   currentUser: string | null = null;
-
+  public directChat = inject(UserChatThreadService)
   userService = inject(UserService);
   selectedUser = signal<User | null>(null);
   selectedChannel = signal<Channel | null>(null);
   threadsComponent = signal< string| null>(null);
-  constructor(@Inject(DOCUMENT) private document: Document, private changeDetectorRef: ChangeDetectorRef, @Inject(Dialog) private dialog: Dialog, private overlay: Overlay) {
+
+  messagesForSearching = signal<any[]>([]);
+  constructor(@Inject(DOCUMENT) private document: Document, private changeDetectorRef: ChangeDetectorRef, @Inject(Dialog) private dialog: Dialog, private overlay: Overlay,
+   private userChatThreadService: UserChatThreadService) {
     
     this.document = document;
     this.addBodyClassForMain();
@@ -105,5 +110,23 @@ openProfileLogoutMiniMenu(){
   )
 }
 
+async searchForTextMessagesInChannelsAndPrivateMessages() {
+  let input: any = document.querySelector('#devSearch')
+  if(input.value.trim() === '' || input.value === undefined || input.value === null || input.value === ' ') return
+  if(input.value.trim().length > 2){
+    console.log('input.value', input.value)
+    const allMessages = await this.userChatThreadService.getAllMessagesForSearchingPuropose();
+    allMessages?.forEach((message: any) => {
+      if(message.content.toLowerCase().includes(input.value.trim().toLowerCase())) {
+        this.directChat.userChat.set([...this.messagesForSearching(), message])
+      }
+    })
+    
+  }else if (input.value.trim().length < 3){
+    this.dm()?.showMessagesFromSelectedChannelOrUser()
 
+    
+  }
+  
+}
 }

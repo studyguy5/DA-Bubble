@@ -17,6 +17,9 @@ body.mainUserPage{
     // align-items: center;
 }
 
+
+    
+    
 .headerSearchBarAndProfileArea{
     display:flex;
     justify-content: space-between;
@@ -29,6 +32,9 @@ body.mainUserPage{
         display:flex;
         justify-content: space-between;
         align-items: center;
+        &:focus-within{
+            outline:1px solid rgba(0, 0, 0, 0.5);
+        }
         input{
             width:700px;
             background-color:transparent;

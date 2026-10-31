@@ -72,4 +72,20 @@ export class UserChatThreadService {
       console.log('allReplies fetched successfully:', data);
     }
   }
+
+  async getAllMessagesForSearchingPuropose() {
+    const { data: { user }, error: userError } = await this.supabase.auth.getUser();
+    const { data, error } = await this.supabase
+      .from('messages')
+      .select('uuid, chat_room_id, author_id, content, created_at, parent_message_id')
+      .or(`message_type.eq.channel,and(message_type.eq.private,author_id.eq.${user?.id})`)
+      .order('created_at', { ascending: true });
+    if (error) {
+      console.error('Error fetching messages:', error);
+    } else {
+      console.log('Messages fetched successfully:', data);
+      return data
+    }
+    return data
+  }
 }
