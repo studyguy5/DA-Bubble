@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { Dialog, DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { FormControl } from '@angular/forms';
 import { createClient } from '@supabase/supabase-js';
-import { environment } from '../../../../environment/environment';
+import { environment } from '../../../../../environment/environment_prod';
 import { ChangeDetectorRef } from '@angular/core';
 
 export interface AddMemberToChannelDialogData {

@@ -3,8 +3,8 @@ import { Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { ChannelUserSelectionComponent } from '../channel-user-selection-component/channel-user-selection-component';
 import { DirectMessagesComponent } from '../direct-messages-component/direct-messages-component';
-import { UserThreadsComponent } from '../user-threads-component/user-threads-component';
-import { ProfileLogoutMiniComponent } from '../profile-logout-mini-component/profile-logout-mini-component';
+
+import { ProfileLogoutMiniComponent } from '../dialogs/profile-logout-mini-component/profile-logout-mini-component';
 import { User } from '@supabase/supabase-js';
 import { Channel } from '../../../interfaces/interfaces';
 import { UserService } from '../../../services/user-service';

@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { Dialog, DIALOG_DATA } from '@angular/cdk/dialog';
-import { UserService } from '../../../services/user-service';
-import { ChannelUserSelectionComponent } from '../channel-user-selection-component/channel-user-selection-component';
+import { UserService } from '../../../../services/user-service';
+import { ChannelUserSelectionComponent } from '../../channel-user-selection-component/channel-user-selection-component';
 
 @Component({
   selector: 'app-profile-overview-component',

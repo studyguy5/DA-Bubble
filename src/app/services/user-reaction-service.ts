@@ -3,7 +3,7 @@ import { Injectable, signal, OnInit } from '@angular/core';
 import { User, Channel } from '../interfaces/interfaces';
 import { createClient, RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { environment } from '../../environment/environment'
-import { EmojiPickerComponent } from '../components/main-chat-page/emoji-picker-component/emoji-picker-component';
+import { EmojiPickerComponent } from '../components/main-chat-page/dialogs/emoji-picker-component/emoji-picker-component';
 
 @Injectable({
   providedIn: 'root',

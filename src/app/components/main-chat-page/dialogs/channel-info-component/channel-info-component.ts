@@ -4,9 +4,9 @@ import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { Inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Data } from '@angular/router';
-import { Channel } from '../../../interfaces/interfaces';
+import { Channel } from '../../../../interfaces/interfaces';
 import { createClient } from '@supabase/supabase-js';
-import { environment } from '../../../../environment/environment';
+import { environment } from '../../../../../environment/environment_prod';
 
 export interface ChannelInfoDialogData {
   title: string;

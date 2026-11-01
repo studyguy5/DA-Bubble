@@ -2,10 +2,10 @@ import { Component, Inject, signal } from '@angular/core';
 import { DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
 import { DialogRef } from '@angular/cdk/dialog';
 import { createClient } from '@supabase/supabase-js';
-import { environment } from '../../../../environment/environment';
+import { environment } from '../../../../../environment/environment';
 import { input, effect } from '@angular/core';
-import { Channel } from '../../../interfaces/interfaces';
-import { ProfileOverviewComponent } from '../profile-overview-component/profile-overview-component';
+import { Channel } from '../../../../interfaces/interfaces';
+import { ProfileOverviewComponent } from '../../dialogs/profile-overview-component/profile-overview-component';
 import { ViewChild } from '@angular/core';
 // import { ChannelUserSelectionComponent } from '../channel-user-selection-component/channel-user-selection-component';
 

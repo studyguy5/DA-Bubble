@@ -1,9 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { createClient } from '@supabase/supabase-js';
-import { environment } from '../../../../environment/environment';
+import { environment } from '../../../../../environment/environment';
 import { Dialog } from '@angular/cdk/dialog';
-import { UserService } from '../../../services/user-service';
-import { ProfileInfos } from '../../../interfaces/interfaces';
+import { UserService } from '../../../../services/user-service';
+import { ProfileInfos } from '../../../../interfaces/interfaces';
 import { signal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';

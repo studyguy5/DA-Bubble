@@ -3,7 +3,7 @@ import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { createClient } from '@supabase/supabase-js';
-import { environment } from '../../../../environment/environment'; 
+import { environment } from '../../../../../environment/environment'; 
 
 interface CreateChannelDialogData {
   title: string;

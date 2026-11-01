@@ -2,7 +2,7 @@ import { Component, Inject, effect } from '@angular/core';
 import { UserService } from '../../../services/user-service';
 import { output } from '@angular/core';
 import { User, Channel } from '../../../interfaces/interfaces';
-import { CreateChannelComponent } from '../create-channel-component/create-channel-component';
+import { CreateChannelComponent } from '../dialogs/create-channel-component/create-channel-component';
 import { Dialog, DialogConfig } from '@angular/cdk/dialog';
 
 
