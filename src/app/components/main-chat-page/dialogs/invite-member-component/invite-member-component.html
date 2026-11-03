@@ -1,1 +1,19 @@
-<p>invite-member-component works!</p>
+<section>
+    <div class="headerAndCloseButton">
+        <p>Leute hinzufügen</p>
+        <img src="./icons/blackCloseIcon.svg" (click)="closeDialog()">
+    </div>
+    <div class="inviteMemberOptions">
+        <div class="firstOption">
+            <input type="radio" name="inviteOption" value="welcomeChannel">
+            <p>alle Mitglieder vom Welcome-Channel einladen</p>
+        </div>
+        <div class="secondOption">
+            <input type="radio" name="inviteOption" value="specificMembers">
+            <p>nur bestimmte Mitglieder einladen</p>
+        </div>
+    </div>
+    <div class="buttonAria">
+        <button>Erstellen</button>
+    </div>
+</section>

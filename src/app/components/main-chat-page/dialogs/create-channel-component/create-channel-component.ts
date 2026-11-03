@@ -3,7 +3,8 @@ import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { createClient } from '@supabase/supabase-js';
-import { environment } from '../../../../../environment/environment'; 
+import { environment } from '../../../../../environment/environment';
+import { InviteMemberComponent } from '../../dialogs/invite-member-component/invite-member-component';
 
 interface CreateChannelDialogData {
   title: string;
@@ -16,7 +17,9 @@ interface CreateChannelDialogData {
 })
 export class CreateChannelComponent {
   supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
-  constructor(@Inject(DIALOG_DATA) public data: CreateChannelDialogData,@Inject(DialogRef) private readonly dialogRef: DialogRef<CreateChannelComponent>) {
+  overlay: any;
+  constructor(@Inject(DIALOG_DATA) public data: CreateChannelDialogData,@Inject(DialogRef) private readonly dialogRef: DialogRef<CreateChannelComponent>, 
+  @Inject(Dialog) private readonly ref: Dialog) {
     
   } 
 
@@ -25,25 +28,28 @@ export class CreateChannelComponent {
     channelDescription: new FormControl(),
   });
 
-  async pushDataIntoSupabase() {
-    console.log('this.channelGroup.value',this.channelGroup.getRawValue())
-    if(!this.channelGroup) return
+  
+
+  openSecondDialogAndPreSaveData() {
+   this.openInviteUserDialog() 
+  }
+
+  openInviteUserDialog() {
     const channelName = this.channelGroup.getRawValue().channelName || '';
     const channelDescription = this.channelGroup.getRawValue().channelDescription || '';
-    console.log('channelName', channelName, 'channelDescription', channelDescription)
-    const channel = await this.supabase
-    .from('chat_rooms')
-    .insert({
-      message_type: 'channel',
-      name: channelName,
-      description: channelDescription,
-      created_at: new Date().toISOString(),
+
+    this.ref.open(InviteMemberComponent, 
+      { 
       
-    })
-    .select()
-    .single()
-    console.log('channel', channel)
-    this.dialogRef.close()
+      width: '710px',
+      height: '279px',
+      panelClass: 'invite-user-dialog',
+      data: {
+        title: 'Invite User',
+        channelName: channelName,
+        channelDescription: channelDescription
+      },
+    });
   }
 
   
