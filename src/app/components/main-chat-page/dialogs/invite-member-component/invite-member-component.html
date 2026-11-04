@@ -13,6 +13,23 @@
             <p>nur bestimmte Mitglieder einladen</p>
         </div>
     </div>
+    <div class="selectMembers">
+        <input (input)="searchUser()" type="text" id="searchInput" placeholder="Suche" formControl="memberList">
+        <div [class.open]="this.open" class="MemberDropdownList">
+            @if(searchInput != null && open && filteredUsers !== null){
+            @for(item of filteredUsers; track item.uuid){
+
+            <div  class="searchResult">
+                <img [src]="item.avatar_url">
+                <p>{{item.username}}</p>
+
+            </div>
+            }
+            }@else if(searchInput == null && !open){
+
+            }
+        </div>
+    </div>
     <div class="buttonAria">
         <button>Erstellen</button>
     </div>
