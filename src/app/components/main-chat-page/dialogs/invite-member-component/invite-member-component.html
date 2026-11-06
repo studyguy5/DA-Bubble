@@ -5,32 +5,32 @@
     </div>
     <div class="inviteMemberOptions">
         <div class="firstOption">
-            <input type="radio" name="inviteOption" value="welcomeChannel">
+            <input (click)="selectOption($event)" type="radio" name="inviteOption" value="welcomeChannel">
             <p>alle Mitglieder vom Welcome-Channel einladen</p>
         </div>
         <div class="secondOption">
-            <input type="radio" name="inviteOption" value="specificMembers">
+            <input (click)="selectOption($event)" type="radio" name="inviteOption" value="specificMembers">
             <p>nur bestimmte Mitglieder einladen</p>
         </div>
     </div>
     <div class="selectMembers">
-        <input (input)="searchUser()" type="text" id="searchInput" placeholder="Suche" formControl="memberList">
+        <input (input)="searchUser()" type="text" id="searchInput" class="searchInput" [class.hidden]="!this.active" placeholder="Suche" formControl="memberList">
         <div [class.open]="this.open" class="MemberDropdownList">
             @if(searchInput != null && open && filteredUsers !== null){
             @for(item of filteredUsers; track item.uuid){
-
+    
             <div  class="searchResult">
                 <img [src]="item.avatar_url">
                 <p>{{item.username}}</p>
-
+    
             </div>
             }
             }@else if(searchInput == null && !open){
-
+    
             }
         </div>
     </div>
     <div class="buttonAria">
-        <button>Erstellen</button>
+        <button id="inviteButton" [disabled]="!this.selected">Erstellen</button>
     </div>
 </section>

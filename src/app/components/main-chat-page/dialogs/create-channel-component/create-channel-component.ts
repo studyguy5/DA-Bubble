@@ -42,7 +42,8 @@ export class CreateChannelComponent {
       { 
       
       width: '710px',
-      height: '279px',
+      minHeight: '279px',
+      maxHeight: '336px',
       panelClass: 'invite-user-dialog',
       data: {
         title: 'Invite User',

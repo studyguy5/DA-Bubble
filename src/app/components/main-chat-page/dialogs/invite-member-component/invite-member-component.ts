@@ -14,15 +14,29 @@ import { UserService } from '../../../../services/user-service';
 export class InviteMemberComponent {
 supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
 data: any;
+active = false;
   constructor(private dialog: Dialog, @Inject(DIALOG_DATA) private DIALOG_DATA: any, @Inject(UserService) private userService: UserService) { 
     this.data = DIALOG_DATA;
   }
 
   open = false
+  selected = false
   searchInput: HTMLInputElement | null = null;
   filteredUsers: any[] = [];
   closeDialog() {
     this.dialog.closeAll();
+  }
+
+  selectOption(event: Event) {
+    if ((event.target as HTMLInputElement).value === 'specificMembers') {
+      this.active = true;
+      this.open = true;
+      this.selected = true
+    } else {
+      this.active = false;
+      this.open = false;
+      this.selected = true
+    }
   }
 
   createChannelAndInviteMembers() {
@@ -44,7 +58,7 @@ data: any;
       this.open = false;
     }else {
       this.open = true;
-      debugger;
+      // debugger;
       let allUsers = await this.userService.getAllUsers();
       let filteredUsers = allUsers?.filter((user: any) => user.username.toLowerCase().includes(this.searchInput!.value.toLowerCase()));
         this.filteredUsers = filteredUsers || [];

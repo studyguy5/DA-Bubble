@@ -34,7 +34,7 @@ section {
     align-items: left;
     justify-self: left;
     width: 500px;
-    height:100px;
+    height: 100px;
 
     >.firstOption {
         display: flex;
@@ -52,23 +52,63 @@ section {
     width: 100%;
     display: flex;
     justify-content: flex-end;
+    position: relative;
 
     button {
-        margin-right:15px;
-                padding:12px 25px;
-                border-radius: 25px;
-                border: 1px transparent;
-                color: white;
-                background-color: rgba(68, 77, 242, 1);
-                transition: 0.3s;
-                &:hover{
-                    transition: 0.3s;
-                    background-color:rgba(68, 77, 242, 0.7);
-                    cursor: pointer;
-                }
+        // position:absolute;
+        margin-top: 20px;
+        // top: 10px;
+        margin-right: 15px;
+        padding: 12px 25px;
+        border-radius: 25px;
+        border: 1px transparent;
+        color: white;
+        background-color: rgba(68, 77, 242, 1);
+        transition: 0.3s;
+
+        &:hover {
+            transition: 0.3s;
+            background-color: rgba(68, 77, 242, 0.7);
+            cursor: pointer;
+        }
     }
 }
 
-.selectMembers{
-    width:300px;
+.selectMembers {
+    width: 630px;
+    >.searchInput {
+        width: 100%;
+        padding: 10px 15px;
+        border-radius: 25px;
+        border: 1px solid rgba(173, 176, 217, 1);
+        box-sizing: border-box;
+
+    }
+
+    >.hidden {
+        display: none;
+    }
+
+    >.MemberDropdownList {
+        position: absolute;
+        width: 400px;
+        &.open {
+            display: block;
+            background-color: white;
+            border-radius: 25px;
+        }
+        >.searchResult {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            gap: 15px;
+            width: 400px;
+            padding: 10px 15px;
+            // border-radius: 25px;
+            // border: 1px solid rgba(173, 176, 217, 1);
+            box-sizing: border-box;
+            margin-top: 5px;
+            cursor: pointer;
+        }
+    }
 }
