@@ -49,9 +49,11 @@ section {
 
 
 .buttonAria {
-    width: 100%;
+    width: 50%;
+    z-index: 3;
     display: flex;
     justify-content: flex-end;
+    align-self: end;
     position: relative;
 
     button {
@@ -74,24 +76,48 @@ section {
     }
 }
 
+.selectMembers.hidden {
+    display: none;
+}
 .selectMembers {
     width: 630px;
+    border: 1px solid rgba(173, 176, 217, 1);
+    padding: 19px 15px;
+    border-radius: 25px;
+    box-sizing: border-box;
+
+    >.selectedUser {
+        display: flex;
+        justify-content:space-evenly;
+        align-items: center;
+        width:130px;
+        height: 34px;
+        border-radius: 100px;
+        border: 1px solid rgba(173, 176, 217, 1);
+        >img {
+            width:34px;
+            height:34px;
+        }
+        >p{
+            margin:0px;
+        }
+    }
     >.searchInput {
         width: 100%;
-        padding: 10px 15px;
-        border-radius: 25px;
-        border: 1px solid rgba(173, 176, 217, 1);
-        box-sizing: border-box;
-
+        border: none;
+        &:focus {
+            outline: none;
+        }
     }
 
-    >.hidden {
-        display: none;
+    .hidden {
+        display: none !important;
     }
 
     >.MemberDropdownList {
         position: absolute;
         width: 400px;
+        display: none;
         &.open {
             display: block;
             background-color: white;
@@ -105,7 +131,7 @@ section {
             width: 400px;
             padding: 10px 15px;
             // border-radius: 25px;
-            // border: 1px solid rgba(173, 176, 217, 1);
+            z-index: 15;
             box-sizing: border-box;
             margin-top: 5px;
             cursor: pointer;

@@ -28,7 +28,9 @@ export class CreateChannelComponent {
     channelDescription: new FormControl(),
   });
 
-  
+  closeDialog() {
+    this.dialogRef.close();
+  }
 
   openSecondDialogAndPreSaveData() {
    this.openInviteUserDialog() 

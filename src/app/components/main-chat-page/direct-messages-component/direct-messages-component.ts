@@ -76,7 +76,7 @@ export class DirectMessagesComponent {
     afterRenderEffect(() => {
       const msgs:any = this.directChat.userChat()
       const element = this.scrollContainer()?.nativeElement
-      console.log('effect läuft', msgs?.length, this.scrollContainer()?.nativeElement)
+      // console.log('effect läuft', msgs?.length, this.scrollContainer()?.nativeElement)
       if (element) {
         element.scrollTo({top: element.scrollHeight, behavior: 'smooth'})
       }

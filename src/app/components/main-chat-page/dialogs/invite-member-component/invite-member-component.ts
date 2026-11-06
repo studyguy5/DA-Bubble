@@ -1,9 +1,9 @@
-import { Component, Inject } from '@angular/core';
-import { Dialog, DIALOG_DATA } from '@angular/cdk/dialog';
+import { Component, Inject, signal } from '@angular/core';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../../../environment/environment';
-import { DialogRef } from '@angular/cdk/dialog';
 import { UserService } from '../../../../services/user-service';
+import { Dialog } from '@angular/cdk/dialog';
 
 @Component({
   selector: 'app-invite-member-component',
@@ -15,26 +15,35 @@ export class InviteMemberComponent {
 supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
 data: any;
 active = false;
-  constructor(private dialog: Dialog, @Inject(DIALOG_DATA) private DIALOG_DATA: any, @Inject(UserService) private userService: UserService) { 
+inputActive = true;
+isSelected = false
+  constructor(
+    private dialogRef: DialogRef<any>,
+    private dialog: Dialog,
+    @Inject(DIALOG_DATA) private DIALOG_DATA: any,
+    @Inject(UserService) private userService: UserService
+  ) {
     this.data = DIALOG_DATA;
   }
 
-  open = false
+  open = signal(false)
   selected = false
   searchInput: HTMLInputElement | null = null;
   filteredUsers: any[] = [];
   closeDialog() {
-    this.dialog.closeAll();
+    this.dialogRef.close();
   }
 
   selectOption(event: Event) {
     if ((event.target as HTMLInputElement).value === 'specificMembers') {
       this.active = true;
-      this.open = true;
+      this.open.set(true);
       this.selected = true
+      this.inputActive = true;
     } else {
+      this.inputActive = false;
       this.active = false;
-      this.open = false;
+      this.open.set(false);
       this.selected = true
     }
   }
@@ -51,18 +60,21 @@ active = false;
       // Handle specific members invitation
     }
   }
-
+  user = signal<any>(null);
   async searchUser() {
+    this.isSelected = false;
     this.searchInput = document.getElementById('searchInput') as HTMLInputElement;
     if(this.searchInput.value.length < 3) {
-      this.open = false;
+      this.open.set(false);
     }else {
-      this.open = true;
-      // debugger;
-      let allUsers = await this.userService.getAllUsers();
-      let filteredUsers = allUsers?.filter((user: any) => user.username.toLowerCase().includes(this.searchInput!.value.toLowerCase()));
-        this.filteredUsers = filteredUsers || [];
-        console.log('filteredUsers', filteredUsers)
+      this.searchInput.value = this.searchInput.value.trim();
+      if(this.user() === null) {
+        this.user.set(await this.userService.getAllUsers());
+      }
+        this.filteredUsers = this.user()?.filter((user: any) => user.username.toLowerCase().includes(this.searchInput!.value.toLowerCase()));
+        
+        console.log('filteredUsers', this.filteredUsers)
+      this.open.set(true);
       }
     }
   
@@ -116,5 +128,24 @@ active = false;
       return
     }
     if(!error)this.dialog.closeAll();
+  }
+  
+  selectedUsers: any[] = [];
+  selectUser(user: any) {
+    debugger;
+    console.log('user ausgewählt', user)
+    
+    this.searchInput!.value = '';
+    this.isSelected = true;
+    let searchBar = document.querySelector('.selectMembers') as HTMLInputElement;
+    this.selectedUsers.push(user);
+    this.inputActive = false;
+
+  }
+
+  removeUser(user: any) {
+    let index = this.selectedUsers.indexOf(user);
+    this.selectedUsers.splice(index, 1);
+    //schauen ob mehere ausgewählt werden können ===================
   }
 }

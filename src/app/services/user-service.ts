@@ -59,7 +59,7 @@ export class UserService {
   }
 
   async getAllUsers() {
-
+    // if (this.userTable().length) return;
     let { data: Userprofile, error } = await this.supabase
       .from('profiles')
       .select('*')

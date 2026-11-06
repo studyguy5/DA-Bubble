@@ -13,13 +13,24 @@
             <p>nur bestimmte Mitglieder einladen</p>
         </div>
     </div>
-    <div class="selectMembers">
-        <input (input)="searchUser()" type="text" id="searchInput" class="searchInput" [class.hidden]="!this.active" placeholder="Suche" formControl="memberList">
-        <div [class.open]="this.open" class="MemberDropdownList">
-            @if(searchInput != null && open && filteredUsers !== null){
-            @for(item of filteredUsers; track item.uuid){
+    <div [class.hidden]="!this.active" class="selectMembers">
+        @if(isSelected === true){
+            
+        }
+        @for(item of selectedUsers; track item.uuid){
     
-            <div  class="searchResult">
+        <div class="selectedUser">
+            <img [src]="item.avatar_url">
+            <p>{{item.username}}</p>
+            <img src="./icons/blackCloseIcon.svg" (click)="removeUser(item)">
+        </div>
+        }
+        <input (input)="searchUser()" type="text" id="searchInput" class="searchInput" [class.hidden]="!this.inputActive" placeholder="Suche" formControl="memberList">
+        <div [class.open]="!this.isSelected" class="MemberDropdownList">
+            @if(this.open() === true && !this.isSelected){
+            @for(item of this.filteredUsers; track item.uuid){
+    
+            <div (click)="selectUser(item)"  class="searchResult">
                 <img [src]="item.avatar_url">
                 <p>{{item.username}}</p>
     
