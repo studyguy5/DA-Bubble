@@ -14,18 +14,18 @@
         </div>
     </div>
     <div [class.hidden]="!this.active" class="selectMembers">
-        @if(isSelected === true){
-            
-        }
-        @for(item of selectedUsers; track item.uuid){
-    
-        <div class="selectedUser">
-            <img [src]="item.avatar_url">
-            <p>{{item.username}}</p>
-            <img src="./icons/blackCloseIcon.svg" (click)="removeUser(item)">
+        <div  class="selectedMembersOverInputField">
+
+            @for(item of selectedUsers; track item.uuid){
+        
+            <div class="selectedUser">
+                <img [src]="item.avatar_url">
+                <p>{{item.username}}</p>
+                <img src="./icons/blackCloseIcon.svg" (click)="removeUser(item)">
+            </div>
+            }
         </div>
-        }
-        <input (input)="searchUser()" type="text" id="searchInput" class="searchInput" [class.hidden]="!this.inputActive" placeholder="Suche" formControl="memberList">
+        <input (input)="searchUser()" type="text" id="searchInput" [class.combined]="selectedUsers.length > 0" class="searchInput"  placeholder="Suche" formControl="memberList">
         <div [class.open]="!this.isSelected" class="MemberDropdownList">
             @if(this.open() === true && !this.isSelected){
             @for(item of this.filteredUsers; track item.uuid){
