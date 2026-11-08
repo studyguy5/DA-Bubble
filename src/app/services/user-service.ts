@@ -37,7 +37,7 @@ export class UserService {
         'postgres_changes',
         {
           event: '*', schema: 'public', table: 'chat_rooms',
-          filter: `message_type = 'channel'`
+          filter: `message_type=eq.channel`
         },
         (payload) => {
           this.getAllChannels()

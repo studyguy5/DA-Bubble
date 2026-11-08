@@ -9,7 +9,7 @@
         @for(member of memberWithAvatar(); track member.uuid){
         <div (click)="openProfileOverviewDialog(member.uuid)" class="memberOverviewItem">
             <img [src]="member.avatar_url">
-            <p>{{member.username}}</p>
+            <p>{{member.username === this.owner().username ? member.username + ' (Du)' : member.username}}</p>
         </div>
         }
         <div class="addMemberPoint">

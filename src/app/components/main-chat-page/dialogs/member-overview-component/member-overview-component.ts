@@ -43,36 +43,23 @@ export class MemberOverviewComponent {
   constructor(@Inject(DIALOG_DATA) public channelData: MemberOverviewDialogData, 
   @Inject(DialogRef) public dialogRef: DialogRef<MemberOverviewComponent>, @Inject(Dialog) private dialog: Dialog) {
   this.memberWithAvatar.set(this.channelData.members)
-  
+  this.getOwner()
   effect(() => {
     console.log('members =====??????', this.channelData.members)
     
   })
   }
-  // async memberListHelperFunction() {
-  //   let uuid = this.channelData.channel.uuid
-  //   const { data, error } = await this.supabase
-  //     .from('chat_room_members')
-  //     .select('user_id, chat_room_id')
-  //     .eq('chat_room_id', uuid)
-  //   if (!data || error) return
 
-  //   return data ?? []
-  // }
-  // filterResult: any
-  // async searchingForMembers() {
-  //     // this.cd.detectChanges();
-  //   const data = await this.memberListHelperFunction()
-  //   console.log('memberList Data', data)
-  //   let memberIds = data?.map((item: any) => item.user_id)
-  //   const { data: avatarUrl, error: avatarError } = await this.supabase
-  //   .from('profiles')
-  //   .select('avatar_url, username, uuid, email')
-  //   .in('uuid', memberIds as any)
-  //   .order('username', { ascending: true });
-  //   this.memberWithAvatar.set(avatarUrl as any)
-  //   if(!avatarUrl || avatarError) return
-  // }
+  owner: any = signal(null)
+  getOwner() {
+    let currentUser = this.supabase.auth.getSession()
+    currentUser.then((data) => {
+      console.log('currentUser', data.data?.session?.user?.id)
+      this.owner.set(this.channelData.members.find((member: any) => member.uuid == data.data?.session?.user?.id))
+      console.log('owner', this.owner)
+    })
+  }
+  
 
   closeDialog() {
     this.dialogRef.close();

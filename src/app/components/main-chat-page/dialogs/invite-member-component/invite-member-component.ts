@@ -49,7 +49,7 @@ export class InviteMemberComponent {
   }
 
   createChannelAndInviteMembers() {
-    let options = document.querySelectorAll('inviteMemberOptions > input[type="radio"]:checked') as NodeListOf<HTMLInputElement>;
+    let options = document.querySelectorAll('.inviteMemberOptions  input[type="radio"]:checked') as NodeListOf<HTMLInputElement>;
     if (options.length === 0) {
       console.log('No option selected');
       return;
@@ -58,6 +58,7 @@ export class InviteMemberComponent {
       this.pushDataIntoSupabase();
     } else if (options[0].value === 'specificMembers') {
       // Handle specific members invitation
+      this.pushInvitedMembersOnly();
     }
   }
   user = signal<any>(null);
@@ -96,12 +97,13 @@ export class InviteMemberComponent {
       return
     }
     let specificMembers = this.selectedUsers.map((user: any) => ({
-      // user_id: user.uuid,
-      // role: 'member',
-      ...user,
-      channel_room_id: channel.data.uuid
+
+      user_id: user.uuid,
+      role: 'member',
+      chat_room_id: channel.data.uuid
     }))
 
+    debugger;
     const { data, error } = await this.supabase
       .from('chat_room_members')
       .insert(specificMembers) // hier werden die mitlgieder in die neue Tabelle eingefügt, damit sie mitlgied des neuen Channels werden
@@ -145,14 +147,18 @@ export class InviteMemberComponent {
       return
     }
 
+    const { data: { session } } = await this.supabase.auth.getSession();
+    const ownId = session?.user.id;
+    if (!ownId) return;
     // überführt alle einträge in ein neues Objekt und ersetzt die chat_room_id mit der id des neuen Channels
     let dataOfMembers: any = memberData; // Änderung der typisierung zu any, um die Typfehler zu vermeiden
-    let members = dataOfMembers.chat_room_members.filter((member: any) => member.user_id !== this.data.userId).map((member: any) => ({
+    let members = dataOfMembers.chat_room_members.filter((member: any) => member.user_id !== ownId).map((member: any) => ({
       ...member,
       chat_room_id: channel.data.uuid,
 
     }))
     console.log('members', members)
+    console.log('ownId', this.data.userId)
     const { data, error } = await this.supabase
       .from('chat_room_members')
       .insert(members) // hier werden die mitlgieder in die neue Tabelle eingefügt, damit sie mitlgied des neuen Channels werden
@@ -172,6 +178,7 @@ export class InviteMemberComponent {
     console.log('user ausgewählt', user)
 
     this.searchInput!.value = '';
+    this.searchInput?.focus();
     this.isSelected = true;
     let searchBar = document.querySelector('.selectMembers') as HTMLInputElement;
     this.selectedUsers.push(user);

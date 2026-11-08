@@ -42,6 +42,6 @@
         </div>
     </div>
     <div class="buttonAria">
-        <button id="inviteButton" [disabled]="!this.selected">Erstellen</button>
+        <button id="inviteButton" (click)="createChannelAndInviteMembers()" [disabled]="!this.selected">Erstellen</button>
     </div>
 </section>
