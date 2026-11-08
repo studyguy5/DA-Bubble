@@ -94,3 +94,24 @@ body.mainUserPage{
     display: flex;
 
 }
+
+
+
+// app-direct-messages-component[mode="thread"] {
+//   display: none;
+// }
+
+app-direct-messages-component[mode="thread"] {
+  flex: 0 0 0;          /* geschlossen: Basis 0, nicht schrumpfbar, nicht wachsend */
+  width: 0;
+  min-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: flex-basis 0.8s ease-in-out, width 0.8s ease-in-out, opacity 0.8s ease-in-out;
+}
+
+app-direct-messages-component.threadsComponentActive {
+  flex: 0 0 500px;      /* offen: feste Basis */
+  width: 500px;
+  opacity: 1;
+}

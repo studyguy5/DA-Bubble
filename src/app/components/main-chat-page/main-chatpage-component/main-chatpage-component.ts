@@ -14,6 +14,7 @@ import { ViewChild } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Overlay } from '@angular/cdk/overlay';
 import { viewChild } from '@angular/core';
+import { effect } from '@angular/core';
 
 @Component({
   selector: 'app-main-chatpage-component',
@@ -31,7 +32,7 @@ export class MainChatpageComponent {
   selectedUser = signal<User | null>(null);
   selectedChannel = signal<Channel | null>(null);
   threadsComponent = signal< string| null>(null);
-
+  openthreadsComponent = signal<boolean>(false);
   messagesForSearching = signal<any[]>([]);
   constructor(@Inject(DOCUMENT) private document: Document, private changeDetectorRef: ChangeDetectorRef, @Inject(Dialog) private dialog: Dialog, private overlay: Overlay,
    private userChatThreadService: UserChatThreadService) {
@@ -39,6 +40,10 @@ export class MainChatpageComponent {
     this.document = document;
     this.addBodyClassForMain();
     this.fillTreadsSignal();
+    effect(() => {
+      console.log('threadsComponent signal value from parent', this.openthreadsComponent())
+      
+    })
   }
 
   fillTreadsSignal(){

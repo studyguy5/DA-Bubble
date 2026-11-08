@@ -28,7 +28,7 @@
             }
         </div>
         @if(threadsComponent(); as threadsComponent){
-        <div class="threadsCloseButton"><img src="./icons/blackCloseIcon.svg"></div>
+        <div (click)="closeThreadsComponent()" class="threadsCloseButton"><img  src="./icons/blackCloseIcon.svg"></div>
 
         }
         @if(members(); as membersArray){

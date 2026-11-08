@@ -60,7 +60,7 @@ export class DirectMessagesComponent {
   emoji = signal<Emoji[]>([])
 
   threadsComponent = input< any | null>(null)
-  // threadsMessages = output<Message[]|null>()
+  openthreadsComponent = output<boolean>()
   mode = input<'main' | 'thread'>('main')
   allMessagesForSearching = input<any[]>([])
   isLoading = signal<boolean>(false)
@@ -112,12 +112,12 @@ export class DirectMessagesComponent {
     }
   }
   
+  // openThreadsComponent: any = false
   addExtraClassForThreadsComponent() {
     // debugger;
     console.log('threadsComponent input value from child', JSON.stringify(this.threadsComponent()))
-    // if (this.threadsComponent()) {
-    //   const channelname = document.querySelector('.channelName');
-    //   channelname?.classList.add('threadsComponentActive');
+    // if (this.mode() === 'thread') {
+    //   document.documentElement.classList.add('threadView')
     // }
     return
   }
@@ -799,7 +799,13 @@ messageInput = viewChild<ElementRef<HTMLTextAreaElement>>('messageInput');
 startThreadSessionWithSpecificMessagge(messageUUID: string) {
   this.directChat.selectedThreadId.set(messageUUID)
   this.directChat.pullThreadMessagesForReplies()
+  this.openthreadsComponent.emit(true)
+  
+}
+
+closeThreadsComponent() {
+  this.openthreadsComponent.emit(false)
+  console.log('closeThreadsComponent')
+}
 
 }
-}
-
