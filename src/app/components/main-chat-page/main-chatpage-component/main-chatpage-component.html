@@ -22,12 +22,11 @@
     </div>
     <div class="mainChatArea">
         <app-channel-user-selection-component (selectedChannel)="getChoiceFromChannelSelectionComponent($any($event))" 
-        (selectedUser)="getChoiceFromSelectionComponent($any($event))"></app-channel-user-selection-component>
+        (selectedUser)="getChoiceFromSelectionComponent($any($event))" (devSpaceChannel)="openOrCloseDevSpace($any($event))"></app-channel-user-selection-component>
     
-        <app-direct-messages-component mode="main" [allMessagesForSearching]="$any(messagesForSearching())" [selectedChannel]="$any(selectedChannel())" 
+        <app-direct-messages-component mode="main" [allMessagesForSearching]="$any(messagesForSearching())" [selectedChannel]="$any(selectedChannel())" [devSpaceSwitch]="devSpaceChannel()"
         [selectedUser]="$any(selectedUser())" (openthreadsComponent)="openthreadsComponent.set($event)" [selectUserFromDialog]="selectUserFromDialog.bind(this)" style="flex: 1; display:flex"></app-direct-messages-component>
-        <!-- <app-direct-messages-component style="flex: 1; display:flex"></app-direct-messages-component> -->
-        <!-- <app-user-threads-component></app-user-threads-component> -->
+       
         <app-direct-messages-component mode="thread" 
         [threadsComponent]="threadsComponent()" [selectedChannel]="$any(selectedChannel())" [selectedUser]="$any(selectedUser())" 
         [class.threadsComponentActive]="openthreadsComponent()" (openthreadsComponent)="openthreadsComponent.set($event)"  [selectUserFromDialog]="selectUserFromDialog.bind(this)" ></app-direct-messages-component> 

@@ -18,8 +18,8 @@ export class UserChatThreadService {
   selectedThreadMessage = computed(() => {
     return this.userChat().find((message) => message.uuid === this.selectedThreadId())
   })
-  constructor() { 
-    
+  constructor() {
+
   }
 
   async pushThreadMessageToSupabase(message: Message) {
@@ -57,7 +57,7 @@ export class UserChatThreadService {
     }
   }
 
-  async pullAllThreadMessages( chat_room_id?: string) {
+  async pullAllThreadMessages(chat_room_id?: string) {
     const { data, error } = await this.supabase
       .from('messages')
       .select('uuid, chat_room_id, author_id, content, created_at, parent_message_id')
@@ -74,18 +74,27 @@ export class UserChatThreadService {
   }
 
   async getAllMessagesForSearchingPuropose() {
+    const sel = 'uuid, chat_room_id, author_id, content, created_at, parent_message_id, chat_rooms!inner ( message_type )'
     const { data: { user }, error: userError } = await this.supabase.auth.getUser();
     const { data, error } = await this.supabase
       .from('messages')
-      .select('uuid, chat_room_id, author_id, content, created_at, parent_message_id')
-      .or(`message_type.eq.channel,and(message_type.eq.private,author_id.eq.${user?.id})`)
+      .select(sel)
+      .eq('chat_rooms.message_type', 'channel')
       .order('created_at', { ascending: true });
-    if (error) {
-      console.error('Error fetching messages:', error);
-    } else {
-      console.log('Messages fetched successfully:', data);
-      return data
+
+    const { data: data2, error: error2 } = await this.supabase
+      .from('messages')
+      .select(sel)
+      .eq('chat_rooms.message_type', 'private')
+      .eq('author_id', user?.id)
+      .order('created_at', { ascending: true });
+
+    if (error || error2) {
+      console.error('Error fetching messages:', error ?? error2);
+      return [];
     }
-    return data
+
+    console.log('Messages fetched successfully:', data, data2);
+    return [...(data ?? []), ...(data2 ?? [])];
   }
 }

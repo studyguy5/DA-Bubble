@@ -34,6 +34,7 @@ export class MainChatpageComponent {
   threadsComponent = signal< string| null>(null);
   openthreadsComponent = signal<boolean>(false);
   messagesForSearching = signal<any[]>([]);
+  devSpaceChannel = signal<boolean>(false);
   constructor(@Inject(DOCUMENT) private document: Document, private changeDetectorRef: ChangeDetectorRef, @Inject(Dialog) private dialog: Dialog, private overlay: Overlay,
    private userChatThreadService: UserChatThreadService) {
     
@@ -62,6 +63,13 @@ export class MainChatpageComponent {
     this.currentUser = await this.userService.getCurrentSignedInUser();
       this.changeDetectorRef.detectChanges();
       console.log('current user', this.currentUser)
+  }
+
+  openOrCloseDevSpace(choise: boolean){ 
+    console.log('choise', choise)
+    this.devSpaceChannel.set(choise);
+    this.selectedChannel.set(null);
+    this.selectedUser.set(null);
   }
 
   

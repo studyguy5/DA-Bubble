@@ -1,5 +1,5 @@
 <section [class.collapseSelectBox]="!this.selectBoxIsOpen" class="mainUserChannelSelectionBox">
-    <div class="devSpaceTopDiv">
+    <div (click)="openDevSpace()" class="devSpaceTopDiv">
         <img src="./images/devSpaceLogo.svg">
         <h2>DevSpace</h2>
         <div class="editsquare">

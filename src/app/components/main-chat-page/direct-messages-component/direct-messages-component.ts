@@ -63,6 +63,8 @@ export class DirectMessagesComponent {
   openthreadsComponent = output<boolean>()
   mode = input<'main' | 'thread'>('main')
   allMessagesForSearching = input<any[]>([])
+  devSpaceSwitch = input<boolean>(false)
+
   isLoading = signal<boolean>(false)
   scrollContainer = viewChild<ElementRef<HTMLElement>>('scrollContainer');
   membersWithAvatarForDialog = signal<Members[]>([])
@@ -90,7 +92,7 @@ export class DirectMessagesComponent {
         
         channel: this.channel?.uuid,
       });
-      
+      console.log('devSpaceSwitch', this.devSpaceSwitch())
       this.showMessagesFromSelectedChannelOrUser()
       
     })
@@ -797,10 +799,11 @@ messageInput = viewChild<ElementRef<HTMLTextAreaElement>>('messageInput');
 }
 
 startThreadSessionWithSpecificMessagge(messageUUID: string) {
+  debugger;
   this.directChat.selectedThreadId.set(messageUUID)
   this.directChat.pullThreadMessagesForReplies()
   this.openthreadsComponent.emit(true)
-  
+  console.log('startThreadSessionWithSpecificMessagge')
 }
 
 closeThreadsComponent() {

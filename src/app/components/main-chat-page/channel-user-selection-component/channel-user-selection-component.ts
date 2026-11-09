@@ -29,6 +29,7 @@ export class ChannelUserSelectionComponent {
 
   selectedUser = output<User>()
   selectedChannel = output<Channel>()
+  devSpaceChannel = output<boolean>()
   constructor(public userService: UserService, @Inject(Dialog) private dialog: Dialog) {
     effect(() => {
 
@@ -41,21 +42,27 @@ export class ChannelUserSelectionComponent {
 
   }
   active = false
+  devSpaceOpen = false
+  openDevSpace() {
+    console.log('openDevSpace')
+    this.devSpaceOpen = !this.devSpaceOpen;
+    this.devSpaceChannel.emit(this.devSpaceOpen);
+  }
   async selectFirstChannelAtStart() {
     let welcomeChannelId = await this.userService.getWelcomeChannelId()
     const channels: any = await this.userService.getAllChannels()
     // debugger;
-    let channel = this.userService.channelTable()[0] 
+    let channel = this.userService.channelTable()[0]
     const member: any = await this.userService.getCurrentSignedInUserIDAndCheckMembership()
-      if(!member){
-       await this.userService.inviteUserToWelcomeChannel(welcomeChannelId?.uuid)
-       this.selectChannelFirstTime(welcomeChannelId as any)
-      }else{
-        this.selectChannelFirstTime(channel as any)
-      }
-        console.log('automatische Selection', welcomeChannelId)
-      
-    
+    if (!member) {
+      await this.userService.inviteUserToWelcomeChannel(welcomeChannelId?.uuid)
+      this.selectChannelFirstTime(welcomeChannelId as any)
+    } else {
+      this.selectChannelFirstTime(channel as any)
+    }
+    console.log('automatische Selection', welcomeChannelId)
+
+
   }
 
   selectUserAndEmitToParentComponent(user: User, event: any) {
@@ -75,14 +82,14 @@ export class ChannelUserSelectionComponent {
   }
   selectChannelAndEmitToParentComponent(selectedChannel: Channel, event: any) {
     let allChannels = document.querySelectorAll('.channel') as NodeListOf<HTMLDivElement>;
-    if(allChannels){
+    if (allChannels) {
       allChannels.forEach(member => {
         member.classList.remove('active')
       })
       let target = event.target as HTMLElement;
       target.classList.add('active')
     }
-    
+
     this.selectedChannel.emit(selectedChannel)
   }
 

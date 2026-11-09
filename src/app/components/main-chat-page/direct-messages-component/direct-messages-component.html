@@ -3,12 +3,7 @@
         <div class="channelName" [class.threadsComponentActive]="threadsComponent()">
             @if(threadsComponent() === 'threadsComponent'){
             <div class="threadsName">
-                <!-- @if(selectedChannel(); as channel){
-                <p>#{{channel.name}}</p>
-                }@else if(selectedUser(); as user){
-                <p>@{{user.username}}</p>
-
-                } -->
+                
                 <p>{{selectedChannel()?.name ? '#' + selectedChannel()?.name : '@' + selectedUser()?.username}}</p>
                 <!-- <p>#EntwicklerTeam</p> -->
             </div>
@@ -24,6 +19,8 @@
             <h2 (click)="openInfoDialog()">{{channel.name}}</h2>
             <img class="arrowDonw" src="./icons/chatHeaderArrowDownIcon.svg">
             <img class="lilaArrowDown" src="./icons/lilaArrowDown.svg">
+            }@else if(devSpaceSwitch() === true && selectedChannel() === null && selectedUser() === null){
+                <p>DevSpace is Active</p>
             }
             }
         </div>
@@ -352,15 +349,14 @@
                     </div>
                     <p [class.foreignMessage]="message.author_id !== this.ownMessage" class="content">
                         {{message.content}}</p>
-                    <div class="threadMessageCount">
+                    <div  class="threadMessageCount">
                         @let count = $any(message).replies?.[0]?.count ?? 0;
                         @if (count > 0) {
-                        <p>{{ count }} Antworten</p>
+                        <p (click)="startThreadSessionWithSpecificMessagge(message.uuid)">{{ count }} Antworten</p>
                         <p>Letze Antwort am {{this.directChat.allReplies().filter((reply) => reply.parent_message_id == message.uuid).at(-1)?.created_at | date: 'HH:mm'}}</p>
-                        <!-- <p>Letzte Antwort am {{this.directChat.replies().filter((reply) => reply.parent_message_id == message.uuid).at(-1)?.created_at | date: 'HH:mm'}}</p> -->
+                        
                         }
-                        <!-- <p>{{ directChat.userChat().filter(reply => reply.parent_message_id == message.uuid).length}}
-                            Antworten</p> -->
+                        
                         </div>
                         <div class="reactionsAndSmileyBox">
                         @if(emoji(); as emoji){
