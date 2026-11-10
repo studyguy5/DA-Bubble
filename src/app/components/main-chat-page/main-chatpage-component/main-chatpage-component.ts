@@ -66,10 +66,29 @@ export class MainChatpageComponent {
   }
 
   openOrCloseDevSpace(choise: boolean){ 
-    console.log('choise', choise)
-    this.devSpaceChannel.set(choise);
-    this.selectedChannel.set(null);
-    this.selectedUser.set(null);
+    if(choise === true){
+      this.unselectMemberAndChannel();
+      this.devSpaceChannel.set(choise);
+      this.selectedChannel.set(null);
+      this.selectedUser.set(null);
+      this.directChat.userChat.set([]);
+    }else{
+      this.devSpaceChannel.set(choise);
+      console.log('choise', choise)
+    }
+  }
+  unselectMemberAndChannel(){
+    
+    let allMembers = document.querySelectorAll('.member') as NodeListOf<HTMLDivElement>;
+    let allChannels = document.querySelectorAll('.channel') as NodeListOf<HTMLDivElement>;
+    if (allChannels) {
+      allChannels.forEach(member => {
+        member.classList.remove('active')
+      })
+    }
+    allMembers.forEach(member => {
+      member.classList.remove('active')
+    })
   }
 
   

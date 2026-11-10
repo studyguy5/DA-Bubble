@@ -1,6 +1,6 @@
 <section class="mainDirectChannelMessageBox">
     <div class="chatHeader" [class.chatHeaderForThreads]="threadsComponent()">
-        <div class="channelName" [class.threadsComponentActive]="threadsComponent()">
+        <div class="channelName" [class.threadsComponentActive]="threadsComponent()" [class.devSpaceActive]="devSpaceSwitch()">
             @if(threadsComponent() === 'threadsComponent'){
             <div class="threadsName">
                 
@@ -20,7 +20,12 @@
             <img class="arrowDonw" src="./icons/chatHeaderArrowDownIcon.svg">
             <img class="lilaArrowDown" src="./icons/lilaArrowDown.svg">
             }@else if(devSpaceSwitch() === true && selectedChannel() === null && selectedUser() === null){
-                <p>DevSpace is Active</p>
+                <div class="devSpaceWrapper">
+                    <p>DevSpace is Active Neue Nachricht</p>
+                    <div class="searchBarForMembers">
+                        <input type="text" placeholder="Nachricht schreiben an....">
+                    </div>
+                </div>
             }
             }
         </div>
@@ -389,6 +394,8 @@
             </div>
         </div>    
     }
+        }@else if(devSpaceSwitch() === true && selectedChannel() === null && selectedUser() === null){
+            <p>Dev-Mode startrek</p>
         }
         @if(directChat.userChat(); as messages){
         @if(directChat.userChat().length > 0){
@@ -499,7 +506,7 @@
                     </div>
                     <p [class.foreignMessage]="message.author_id !== this.ownMessage" class="content">
                         {{message.content}}</p>
-                    <div class="threadMessageCount">
+                    <div (click)="startThreadSessionWithSpecificMessagge(message.uuid)" class="threadMessageCount">
                         @let count = $any(message).replies?.[0]?.count ?? 0;
                         @if (count > 0) {
                         <p>{{ count }} Antworten</p>

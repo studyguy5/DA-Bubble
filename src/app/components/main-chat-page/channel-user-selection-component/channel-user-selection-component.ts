@@ -43,10 +43,10 @@ export class ChannelUserSelectionComponent {
   }
   active = false
   devSpaceOpen = false
-  openDevSpace() {
+  openDevSpace(choise: boolean) {
     console.log('openDevSpace')
-    this.devSpaceOpen = !this.devSpaceOpen;
-    this.devSpaceChannel.emit(this.devSpaceOpen);
+    
+    this.devSpaceChannel.emit(choise);
   }
   async selectFirstChannelAtStart() {
     let welcomeChannelId = await this.userService.getWelcomeChannelId()
@@ -67,6 +67,12 @@ export class ChannelUserSelectionComponent {
 
   selectUserAndEmitToParentComponent(user: User, event: any) {
     let allMembers = document.querySelectorAll('.member') as NodeListOf<HTMLDivElement>;
+    let allChannels = document.querySelectorAll('.channel') as NodeListOf<HTMLDivElement>;
+    if (allChannels) {
+      allChannels.forEach(member => {
+        member.classList.remove('active')
+      })
+    }
     allMembers.forEach(member => {
       member.classList.remove('active')
     })
@@ -74,6 +80,7 @@ export class ChannelUserSelectionComponent {
     target.classList.add('active')
     console.log(user)
     this.selectedUser.emit(user)
+    this.openDevSpace(false)
   }
 
 
@@ -82,6 +89,10 @@ export class ChannelUserSelectionComponent {
   }
   selectChannelAndEmitToParentComponent(selectedChannel: Channel, event: any) {
     let allChannels = document.querySelectorAll('.channel') as NodeListOf<HTMLDivElement>;
+    let allMembers = document.querySelectorAll('.member') as NodeListOf<HTMLDivElement>;
+    allMembers.forEach(member => {
+      member.classList.remove('active')
+    })
     if (allChannels) {
       allChannels.forEach(member => {
         member.classList.remove('active')
@@ -91,6 +102,7 @@ export class ChannelUserSelectionComponent {
     }
 
     this.selectedChannel.emit(selectedChannel)
+    this.openDevSpace(false)
   }
 
   showChannels() {

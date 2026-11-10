@@ -799,7 +799,6 @@ messageInput = viewChild<ElementRef<HTMLTextAreaElement>>('messageInput');
 }
 
 startThreadSessionWithSpecificMessagge(messageUUID: string) {
-  debugger;
   this.directChat.selectedThreadId.set(messageUUID)
   this.directChat.pullThreadMessagesForReplies()
   this.openthreadsComponent.emit(true)
