@@ -37,11 +37,13 @@ interface MemberOverviewDialogData {
 export class TagMembersComponent {
 supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
 memberWithAvatar = signal<ProfileMember[]>([])
+// allMembers = signal<ProfileMember[]>([])
 allchannels = signal<Channel[]>([])
 inputValue = signal('');
 // filteredMembers = signal<ProfileMember[]>([])
   constructor(@Inject(DIALOG_DATA) public channelData: MemberOverviewDialogData, @Inject(DialogRef) public dialogRef: DialogRef<TagMembersComponent>) {
     this.memberWithAvatar.set(channelData.members)
+    // this.allMembers.set(channelData.members)
     console.log('Data from direct message', this.channelData.symbol)
     this.checkSymbol()
   } 
@@ -75,7 +77,7 @@ inputValue = signal('');
         console.log('search is not null', search)
       }
     const members = this.memberWithAvatar();
-    // console.log('filteredMembers WOOOO', this.filteredMembers());
+    console.log('allMembers =====================', this.memberWithAvatar());
 
     if (!search) {
       return members;

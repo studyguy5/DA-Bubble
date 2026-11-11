@@ -752,10 +752,13 @@
                 align-items: center;
                 transition: opacity 0.3s ease-in-out;
                 cursor: pointer;
+                pointer-events:none;
             }
 
             .editMessageVisible {
                 opacity: 1;
+                cursor: pointer;
+                pointer-events: auto;
             }
 
             >.content {

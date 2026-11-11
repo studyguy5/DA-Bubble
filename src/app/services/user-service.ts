@@ -143,7 +143,7 @@ export class UserService {
     const uuid = await this.supabase.auth.getUser();
     const { data: ProfileNames, error } = await this.supabase
       .from('profiles')
-      .select('username, uuid')
+      .select('username, uuid, avatar_url')
 
     if (!ProfileNames || error) console.log('error from ProfileNames', error)
     console.log('ProfileNames for Messages', ProfileNames)

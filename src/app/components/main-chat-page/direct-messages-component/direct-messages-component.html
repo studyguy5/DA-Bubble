@@ -22,8 +22,8 @@
             }@else if(devSpaceSwitch() === true && selectedChannel() === null && selectedUser() === null){
                 <div class="devSpaceWrapper">
                     <p>DevSpace is Active Neue Nachricht</p>
-                    <div class="searchBarForMembers">
-                        <input type="text" placeholder="Nachricht schreiben an....">
+                    <div #topInputField class="searchBarForMembers">
+                        <input (input)="searchForMembersInTextField()" type="text" id="neutralInput" placeholder="Nachricht schreiben an....">
                     </div>
                 </div>
             }

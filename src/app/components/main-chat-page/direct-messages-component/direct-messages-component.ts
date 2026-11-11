@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild, viewChild,  ElementRef, AfterViewInit, computed, inject  } from '@angular/core';
+import { Component, Inject, ViewChild, viewChild, ElementRef, AfterViewInit, computed, inject } from '@angular/core';
 import { input, effect, signal, Input } from '@angular/core';
 import { User, Channel, ChannelMember, Message, ChatRoomMember, Members } from '../../../interfaces/interfaces';
 import { Dialog } from '@angular/cdk/dialog';
@@ -39,12 +39,13 @@ interface ProfileMember {
   styleUrl: './direct-messages-component.scss',
 })
 export class DirectMessagesComponent {
-  
+
   readonly DEFAULT_MALE_AVATAR = '/images/male_Avatar1.svg';
 
   @Input() selectUserFromDialog: (user: any) => void = () => { };
   @ViewChild('addMemberDiv', { static: false }) anchorDiv!: ElementRef;
   @ViewChild('tagMembersDiv', { static: false }) anchorDiv2!: ElementRef;
+  @ViewChild('topInputField', { static: false }) anchorDiv3!: ElementRef;
   @ViewChild(MemberOverviewComponent) memberOverviewComponent!: MemberOverviewComponent;
   uuid: any
   channel: any
@@ -59,7 +60,7 @@ export class DirectMessagesComponent {
   positionStrategy?: FlexibleConnectedPositionStrategy;
   emoji = signal<Emoji[]>([])
 
-  threadsComponent = input< any | null>(null)
+  threadsComponent = input<any | null>(null)
   openthreadsComponent = output<boolean>()
   mode = input<'main' | 'thread'>('main')
   allMessagesForSearching = input<any[]>([])
@@ -71,16 +72,16 @@ export class DirectMessagesComponent {
   static showMessagesFromSelectedChannelOrUser: any;
   constructor(
     @Inject(Dialog) private dialog: Dialog,
-    private overlay: Overlay, private userService: UserService, private userReactionService: UserReactionService, 
+    private overlay: Overlay, private userService: UserService, private userReactionService: UserReactionService,
     private editMessageService: EditMessageService
   ) {
     console.log('KLICK', this.channel?.uuid);
     afterRenderEffect(() => {
-      const msgs:any = this.directChat.userChat()
+      const msgs: any = this.directChat.userChat()
       const element = this.scrollContainer()?.nativeElement
       // console.log('effect läuft', msgs?.length, this.scrollContainer()?.nativeElement)
       if (element) {
-        element.scrollTo({top: element.scrollHeight, behavior: 'smooth'})
+        element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' })
       }
     })
     effect(() => {
@@ -89,12 +90,12 @@ export class DirectMessagesComponent {
       const participant = this.selectedUser();
       this.isLoading.set(!!this.channel || !!participant)
       console.log('EFFECT-AUSWAHL', {
-        
+
         channel: this.channel?.uuid,
       });
       console.log('devSpaceSwitch', this.devSpaceSwitch())
       this.showMessagesFromSelectedChannelOrUser()
-      
+
     })
     this.subscribeToChanges()
     this.getProfiles()
@@ -102,18 +103,18 @@ export class DirectMessagesComponent {
     this.addExtraClassForThreadsComponent()
     this.currentUser()
   }
-  
+
   public directChat = inject(UserChatThreadService)
-  ownMessage:string = ''
+  ownMessage: string = ''
   async currentUser(): Promise<any> {
     let myself = await this.supabase.auth.getUser();
     if (myself.data?.user?.id) {
       this.ownMessage = myself.data?.user?.id
       console.log('currentUser', this.ownMessage)
-      
+
     }
   }
-  
+
   // openThreadsComponent: any = false
   addExtraClassForThreadsComponent() {
     // debugger;
@@ -125,11 +126,11 @@ export class DirectMessagesComponent {
   }
 
   count = 0
-  async getAllReactions(){
+  async getAllReactions() {
     let reactions = await this.userReactionService.getReactions()
     this.emoji.set(reactions as any)
-    }
-  
+  }
+
 
   countEach = computed(() => {
     const counts = new Map<string, { emoji: string; anzahl: number }[]>();
@@ -155,16 +156,16 @@ export class DirectMessagesComponent {
   postEmojiToSupabase(emoji: string, message_uuid: string) {
     // debugger;
     this.userReactionService.pushReactions(emoji, message_uuid)
-  
+
   }
   asReaction: boolean = false
   openEmojiPickerDialog(asReaction: boolean, event?: MouseEvent, message_uuid?: string) {
-    
+
     const input = this.messageInput()?.nativeElement as HTMLTextAreaElement;
     let targetElement = event?.target as HTMLElement;
-    
+
     const rightTextArea: any = targetElement.closest('.messageWrapper')?.querySelector('#editMessageInput') as HTMLTextAreaElement;
-    
+
     if (!input) return
     let position: any = input.selectionStart ?? 0
     const coords = getCaretCoordinates(input, position)
@@ -179,7 +180,7 @@ export class DirectMessagesComponent {
     anchorRect.width = `0px`;
     anchorRect.height = `0px`;
 
-    const offsetX = cursorX - anchorX -50;
+    const offsetX = cursorX - anchorX - 50;
     const offsetY = cursorY - anchorY;
 
     const newposition = this.overlay.position().flexibleConnectedTo(this.anchorDiv2).withPositions([{
@@ -194,7 +195,7 @@ export class DirectMessagesComponent {
     // Wenn Dialog schon offen ist → Position updaten
     if (this.dialog.openDialogs.length > 0 && this.positionStrategy) {
       // debugger
-      
+
       this.positionStrategy.withPositions([{
         originX: 'center',
         originY: 'bottom',
@@ -203,9 +204,9 @@ export class DirectMessagesComponent {
         offsetY: offsetY,
         offsetX: offsetX
       }]),
-      
-      this.positionStrategy.apply()
-    }else{
+
+        this.positionStrategy.apply()
+    } else {
       this.positionStrategy = newposition;
       let ref = this.dialog.open(EmojiPickerComponent,
         {
@@ -221,24 +222,24 @@ export class DirectMessagesComponent {
           data: {
             title: 'Create Channel'
           }
-        
+
         }
-      
+
       )
       ref.closed.subscribe((emoji: any) => {
         // debugger;
-        
-        if(emoji && !asReaction && rightTextArea === undefined){
+
+        if (emoji && !asReaction && rightTextArea === undefined) {
           input.value += emoji.unicode
-        }else if(emoji && !asReaction && rightTextArea){
+        } else if (emoji && !asReaction && rightTextArea) {
           rightTextArea.value += emoji.unicode
-        }else if(emoji && asReaction && message_uuid){
-          
+        } else if (emoji && asReaction && message_uuid) {
+
           this.postEmojiToSupabase(emoji.unicode, message_uuid)
         }
       })
       input.focus();
-      } 
+    }
   }
 
   openInfoDialog() {
@@ -301,43 +302,43 @@ export class DirectMessagesComponent {
   }
   // membersWithAvatar = signal<ProfileMember[]>([])
   rightProfile: any
-   async openProfileOverviewDialog(member_uuid: any) {
-       console.log('trigger openProfileOverviewDialog')
-      //  debugger;
-        let memberData = this.membersWithAvatarForDialog()
-        this.rightProfile = memberData.find((item) => 
-        item.uuid == member_uuid
-        )
-        console.log('memberData', memberData)
-        this.dialog.open(ProfileOverviewComponent,
-          // {
-          //   positionStrategy: this.overlay.position()
-          //     .flexibleConnectedTo(this.anchorDiv)
-          //     .withPositions([{
-          //       originX: 'center',
-          //       originY: 'center',
-          //       overlayX: 'end',
-          //       overlayY: 'bottom',
-          //       offsetY: 0,
-          //       offsetX: 20
-          //     }])
-          //     // .withFlexibleDimensions(true)
-          //     // .withViewportMargin(0)
-          //     .withPush(true),
-          {
-            width: '500px',
-            height: '705px',
-            panelClass: 'ProfileOverviewDialog',
-            data: {
-              title: 'add member to channel',
-              channel: this.rightProfile,
-              onSelectUser: (user: any) =>
-                this.selectUserFromDialog?.(user)
-            },
-    
-          }
-        )
+  async openProfileOverviewDialog(member_uuid: any) {
+    console.log('trigger openProfileOverviewDialog')
+    //  debugger;
+    let memberData = this.membersWithAvatarForDialog()
+    this.rightProfile = memberData.find((item) =>
+      item.uuid == member_uuid
+    )
+    console.log('memberData', memberData)
+    this.dialog.open(ProfileOverviewComponent,
+      // {
+      //   positionStrategy: this.overlay.position()
+      //     .flexibleConnectedTo(this.anchorDiv)
+      //     .withPositions([{
+      //       originX: 'center',
+      //       originY: 'center',
+      //       overlayX: 'end',
+      //       overlayY: 'bottom',
+      //       offsetY: 0,
+      //       offsetX: 20
+      //     }])
+      //     // .withFlexibleDimensions(true)
+      //     // .withViewportMargin(0)
+      //     .withPush(true),
+      {
+        width: '500px',
+        height: '705px',
+        panelClass: 'ProfileOverviewDialog',
+        data: {
+          title: 'add member to channel',
+          channel: this.rightProfile,
+          onSelectUser: (user: any) =>
+            this.selectUserFromDialog?.(user)
+        },
+
       }
+    )
+  }
 
   async memberListHelperFunction() {
     let uuid = this.channel.uuid
@@ -378,45 +379,77 @@ export class DirectMessagesComponent {
   }
 
   async listingMembersToTag() {
-    // this.cd.detectChanges();
-    const data = await this.memberListHelperFunction()
-    console.log('memberList Data', data)
-    let memberIds = data?.map((item: any) => item.user_id)
-    const { data: avatarUrl, error: avatarError } = await this.supabase
-      .from('profiles')
-      .select('avatar_url, username, uuid, email')
-      .in('uuid', memberIds as any)
-      .order('username', { ascending: true });
-   
-    if (!avatarUrl || avatarError) return
-    return avatarUrl
+    if (this.channel !== null) {
+      const data = await this.memberListHelperFunction()
+      console.log('memberList Data', data)
+      let memberIds = data?.map((item: any) => item.user_id)
+      const { data: avatarUrl, error: avatarError } = await this.supabase
+        .from('profiles')
+        .select('avatar_url, username, uuid, email')
+        .in('uuid', memberIds as any)
+        .order('username', { ascending: true });
+      if (!avatarUrl || avatarError) return
+    } else {
+      const { data: avatarUrl, error: avatarError } = await this.supabase
+        .from('profiles')
+        .select('avatar_url, username, uuid, email')
+        .order('username', { ascending: true });
+      console.log('input on top', avatarUrl)
+      if (!avatarUrl || avatarError) return
+    }
+
   }
   filtered: any = []
+  memberData: any
   async openTagMembersDialog() {
+    // await this.searchingForMembers()
+    // debugger;
     let input = document.getElementById('messageInput') as HTMLTextAreaElement;
+    let inputNeutral = document.getElementById('neutralInput') as HTMLTextAreaElement;
+    if (!input && !inputNeutral) return
     const allchannels = this.userService.channelTable()
+
+
     let position1: any = input.selectionStart ?? 0
-    position1 = input.value.slice(0, position1)
-    const atIndex = position1.lastIndexOf('@')
-    const routeIndex = position1.lastIndexOf('#')
-    
+    let position2: any = inputNeutral.selectionStart ?? 0
+    position1 = input.value.length > 0 ? input.value.slice(0, position1) : inputNeutral.value.slice(0, position2)
+    const atIndex = position1.length > 0 ? position1.lastIndexOf('@') : position2.lastIndexOf('@')
+    const routeIndex = position1.lastIndexOf('#') ?? position2.lastIndexOf('#')
+
     const relevantPart = atIndex >= 0 ? position1.slice(atIndex + 1) : routeIndex >= 0 ? position1.slice(routeIndex + 1) : position1
-    
     console.log('relevantPart', relevantPart)
-    const Memberdata = await this.listingMembersToTag()
-    // this.filtered = relevantPart
+
+
+    const relevantPartNeutral = atIndex >= 0 ? position1.slice(atIndex + 1) : routeIndex >= 0 ? position1.slice(routeIndex + 1) : position1
+    console.log('relevantPartNeutral', relevantPartNeutral)
+    const useDiv3 = inputNeutral.value.length > 0
+
+    if (!useDiv3) {
+      const Memberdata = await this.listingMembersToTag()
+      this.memberData = Memberdata
+    } else {
+      const MemberdataGlobal = this.allMembers()
+      this.memberData = MemberdataGlobal
+    }
+    this.filtered = relevantPart ?? relevantPartNeutral
     console.log('filtered member', this.filtered)
     this.filteredMembers.set(this.filtered)
     // basic Member Anzeige hier raus verlagern, damit es bei der eingabe von @ sofort erscheint und nicht erst gefetched werden muss ================
     if (!input) return
     let position: any = input.selectionStart ?? 0
+    let positionNeutral: any = inputNeutral.selectionStart ?? 0
     let before = input.value.slice(0, position)
     const coords = getCaretCoordinates(input, position)
+    const cordsNeutral = getCaretCoordinates(inputNeutral, positionNeutral)
 
     // x-Position des Cursors relativ zum Viewport
     const inputRect = input.getBoundingClientRect(); // method returns the size of an element and its position relative to the viewport.
     const cursorX = inputRect.left + coords.left;
     const cursorY = inputRect.top + coords.top;
+
+    const inputRectNeutral = inputNeutral.getBoundingClientRect(); // method returns the size of an element and its position relative to the viewport.
+    const cursorXNeutral = inputRectNeutral.left + cordsNeutral.left -150;
+    const cursorYNeutral = inputRectNeutral.top + cordsNeutral.top;
     // const difference = (this.anchorDiv2.nativeElement.offsetWidth / 2) - cursorX
     // Anchor-Element horizontal an die Cursor-Position setzen
     // Aktuelle Position des anchorDiv2 Elements
@@ -425,37 +458,47 @@ export class DirectMessagesComponent {
     const anchorY = anchorRect.top + 10;
     anchorRect.width = `0px`;
     anchorRect.height = `0px`;
-
+    const anchorRect3 = this.anchorDiv3.nativeElement.getBoundingClientRect();
+    const anchorX3 = anchorRect3.left + 210;
+    const anchorY3 = anchorRect3.top - 50
+    anchorRect3.width = `0px`;
+    anchorRect3.height = `0px`;
     // Offset berechnen: Differenz zwischen Cursor und Anchor
     const offsetX = cursorX - anchorX;
     const offsetY = cursorY - anchorY;
 
+    const offsetX3 = cursorXNeutral - anchorX3;
+    const offsetY3 = cursorYNeutral - anchorY3;
+    // const offsetY3 = 100;
     // const membersWithAvatar = this.getSelectedMEMBERS(this.uuid)
     const channel = this.selectedChannel();
-    console.log('anchorDiv', this.anchorDiv2)
-    const newposition = this.overlay.position().flexibleConnectedTo(this.anchorDiv2).withPositions([{
+    console.log('anchorDiv', this.anchorDiv3)
+    const newposition = this.overlay.position().flexibleConnectedTo(inputNeutral.value.length > 0 ? this.anchorDiv3 : this.anchorDiv2).withPositions([{
       originX: 'center',
-      originY: 'bottom',
+      originY: useDiv3 ? 'top' : 'bottom',
       overlayX: 'center',
-      overlayY: 'bottom',
-      offsetY: offsetY,
-      offsetX: offsetX
+      overlayY: useDiv3 ? 'top' : 'bottom',
+      offsetX: useDiv3 ? offsetX3 : offsetX,
+      offsetY: useDiv3 ? offsetY3 : offsetY,
     }])
-
+    const query = useDiv3 ? relevantPartNeutral : relevantPart;
+    console.log('run', { useDiv3, relevantPart, relevantPartNeutral, query });
     // Dialog ist schon offen → nur Position updaten
     // Wenn Dialog schon offen ist → Position updaten
     if (this.dialog.openDialogs.length > 0 && this.positionStrategy) {
-      this.dialog.openDialogs[0].componentInstance.updateInputValue(relevantPart);
+      const dlg = this.dialog.openDialogs[0].componentInstance;
+      dlg.updateInputValue(query);
+      this.dialog.openDialogs[0].componentInstance.updateInputValue(query);
       this.positionStrategy.withPositions([{
         originX: 'center',
-        originY: 'bottom',
+        originY: useDiv3 ? 'top' : 'bottom',
         overlayX: 'center',
-        overlayY: 'bottom',
-        offsetY: offsetY,
-        offsetX: offsetX
+        overlayY: useDiv3 ? 'top' : 'bottom',
+        offsetX: useDiv3 ? offsetX3 : offsetX,
+        offsetY: useDiv3 ? offsetY3 : offsetY,
       }]),
-      
-      this.positionStrategy.apply()
+
+        this.positionStrategy.apply()
       return; // Position updated sich automatisch
 
 
@@ -473,11 +516,12 @@ export class DirectMessagesComponent {
             .withPush(true),
           width: '325px',
           height: 'fit-content',
+          // height: '400px',
           panelClass: 'tagMembersDialog',
           data: {
             title: 'View Members',
-            channel: channel, // aktueller Channel
-            members: Memberdata, // alle Members
+            channel: channel ?? null, // aktueller Channel
+            members: this.memberData, // alle Members
             query: relevantPart, // input Buchstaben bei @ oder #
             allchannel: allchannels, // alle Channels
             symbol: atIndex >= 0 ? '@' : routeIndex >= 0 ? '#' : ''
@@ -534,33 +578,33 @@ export class DirectMessagesComponent {
 
   async showMessagesFromSelectedChannelOrUser() {
     // funktion optimieren, da zu langsam
-    try{
-    console.log('showMessagesFromSelectedChannelOrUser')
-    let channel = this.selectedChannel();
-    let user: any = await this.supabase.auth.getUser();
-    let participant: any = this.selectedUser();
-    if (channel) {
-      await Promise.all([
-        this.getSelectedMEMBERS(channel.uuid),
-        this.getMessagesFromSelectedCHANNEL(channel.uuid)
-      ])
-      user = null
-    } 
-    if(!channel) {
-      console.warn('Kein Channel ausgewählt – Nachrichten werden nicht angezeigt.');
-      channel = null
-    }
+    try {
+      console.log('showMessagesFromSelectedChannelOrUser')
+      let channel = this.selectedChannel();
+      let user: any = await this.supabase.auth.getUser();
+      let participant: any = this.selectedUser();
+      if (channel) {
+        await Promise.all([
+          this.getSelectedMEMBERS(channel.uuid),
+          this.getMessagesFromSelectedCHANNEL(channel.uuid)
+        ])
+        user = null
+      }
+      if (!channel) {
+        console.warn('Kein Channel ausgewählt – Nachrichten werden nicht angezeigt.');
+        channel = null
+      }
 
-    if (participant) {
+      if (participant) {
 
-      this.members.set(null);
-      await this.getMessagesFromSelectedUSER(user.data.user?.id, participant?.uuid)
-    } else {
-      console.warn('Kein Benutzer ausgewählt – Nachrichten werden nicht angezeigt.');
+        this.members.set(null);
+        await this.getMessagesFromSelectedUSER(user.data.user?.id, participant?.uuid)
+      } else {
+        console.warn('Kein Benutzer ausgewählt – Nachrichten werden nicht angezeigt.');
+      }
+    } finally {
+      this.isLoading.set(false)
     }
-  } finally {
-    this.isLoading.set(false)
-  }
   }
 
   async getMessagesFromSelectedCHANNEL(uuid: string) {
@@ -569,7 +613,7 @@ export class DirectMessagesComponent {
     await this.directChat.pullAllThreadMessages(uuid)
     // console.log('Nachrichten für den ausgewählten Channel:', messages);
   }
-  
+
   async getMessagesFromSelectedUSER(author_id: string, participant_uuid: string | null) {
     const messages: any = await this.userService.getMessagesFromSelectedUser(author_id, participant_uuid)
     console.log('messages from UserService:', messages);
@@ -589,20 +633,20 @@ export class DirectMessagesComponent {
 
   checkIfChannelOrUserSelected() {
     // debugger;
-    if(this.mode() === 'main'){
-    if (this.selectedUser()) {
-      this.sendMessageToSelectedUser()
-      console.log('send message to user', this.selectedUser())
-    } else if (this.selectedChannel()) {
-      this.sendMessageToSelectedCHANNEL()
-      console.log('send message to channel', this.selectedChannel())
-    } else {
-      console.warn('No user or channel selected')
+    if (this.mode() === 'main') {
+      if (this.selectedUser()) {
+        this.sendMessageToSelectedUser()
+        console.log('send message to user', this.selectedUser())
+      } else if (this.selectedChannel()) {
+        this.sendMessageToSelectedCHANNEL()
+        console.log('send message to channel', this.selectedChannel())
+      } else {
+        console.warn('No user or channel selected')
+      }
+    } else if (this.mode() === 'thread') {
+      // send Message to thread
+      this.sendThreadMessageIntoThreadChannel()
     }
-  }else if(this.mode() === 'thread') {
-    // send Message to thread
-    this.sendThreadMessageIntoThreadChannel()
-  }
   }
 
   sendThreadMessageIntoThreadChannel() {
@@ -681,42 +725,57 @@ export class DirectMessagesComponent {
         }
       )
       .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'message_reactions' },
-          (payload) => {
-            this.getAllReactions()
-            console.log('Change received!', payload)
-          }
-        )
-        
-        
-        .subscribe()
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'message_reactions' },
+        (payload) => {
+          this.getAllReactions()
+          console.log('Change received!', payload)
+        }
+      )
+
+
+      .subscribe()
   }
 
 
-  
+
 
 
   searchForMembersInTextField() {
+    // debugger;
     let input = document.getElementById('messageInput') as HTMLTextAreaElement;
-    if (!input) return
-    let value = input.value
-    let position: any = input.selectionStart ?? 0
-    let before = input.value.slice(0, position)
-    const coords = getCaretCoordinates(input, position)
-    const match = /([@#])([\w]*)$/.exec(before);
-    
+    let inputNeutral = document.getElementById('neutralInput') as HTMLTextAreaElement;
+    if (!input && !inputNeutral) return
+    if (input.textLength > 0) {
+      let position: any = input.selectionStart ?? 0
+      let before = input.value.slice(0, position)
+      const coords = getCaretCoordinates(input, position)
+      const match = /([@#])([\w]*)$/.exec(before);
+      console.log('match', match)
 
-    if (match) {
-      this.openTagMembersDialog()
-      input.focus();
-      
-    } else {
-      this.dialog.closeAll()
+      if (match) {
+        this.openTagMembersDialog()
+        input.focus();
+
+      } else {
+        this.dialog.closeAll()
+      }
+
+    } else if (inputNeutral.value.length > 0) {
+      let position: any = inputNeutral.selectionStart ?? 0
+      let before = inputNeutral.value.slice(0, position)
+      const coords = getCaretCoordinates(inputNeutral, position)
+      const match = /([@#])([\w]*)$/.exec(before);
+      console.log('match on top Input', match)
+
+      if (match) {
+        this.openTagMembersDialog()
+        inputNeutral.focus();
+
+      } else {
+        this.dialog.closeAll()
+      }
     }
-    
-
-
   }
 
   openEditMessageDialog(message: any, event: MouseEvent) {
@@ -725,9 +784,9 @@ export class DirectMessagesComponent {
     console.log('editMessageDiv', editMessageDiv)
     if (!editMessageDiv.length) return;
     const target = event.target as HTMLElement;
-      const messageRow = target.closest('.actionBox') as HTMLElement;
-      let rightRow = messageRow.nextElementSibling as HTMLDivElement;
-      rightRow?.classList.add('editMessageVisible');
+    const messageRow = target.closest('.actionBox') as HTMLElement;
+    let rightRow = messageRow.nextElementSibling as HTMLDivElement;
+    rightRow?.classList.add('editMessageVisible');
     if (rightRow) {
       rightRow.classList.add('editMessageVisible');
       setTimeout(() => {
@@ -735,29 +794,29 @@ export class DirectMessagesComponent {
       }, 3000);
     }
 
-}
+  }
 
-editMessage(message: any, event: MouseEvent) {
-  const eventTarget = event.target as HTMLElement;
-  const messageRow = eventTarget.closest('.messageWrapper') as HTMLElement;
-  
-  //anzeigen und input befüllen
-  const editMessageBox: any = messageRow.querySelector('.editMessageBox') as HTMLDivElement;
-  editMessageBox.style.display = 'flex';
+  editMessage(message: any, event: MouseEvent) {
+    const eventTarget = event.target as HTMLElement;
+    const messageRow = eventTarget.closest('.messageWrapper') as HTMLElement;
+
+    //anzeigen und input befüllen
+    const editMessageBox: any = messageRow.querySelector('.editMessageBox') as HTMLDivElement;
+    editMessageBox.style.display = 'flex';
 
 
-  // input befüllen und fokus setzen
-  // debugger;s
-  const editinput = document.getElementById('editMessageInput') as HTMLInputElement;
-  editinput.value = message
-  console.log('editinput', editinput.value)
-  
-  editinput.focus();
-  //main box rechts ausblenden
-  if (!editinput || !editinput || !messageRow || !editMessageBox) return;
-  const target = event.target as HTMLElement;
-  const closeMessageBox = target.parentElement?.parentElement?.parentElement as HTMLElement;
-  closeMessageBox.style.display = 'none'; //hauptteil ausblenden
+    // input befüllen und fokus setzen
+    // debugger;s
+    const editinput = document.getElementById('editMessageInput') as HTMLInputElement;
+    editinput.value = message
+    console.log('editinput', editinput.value)
+
+    editinput.focus();
+    //main box rechts ausblenden
+    if (!editinput || !editinput || !messageRow || !editMessageBox) return;
+    const target = event.target as HTMLElement;
+    const closeMessageBox = target.parentElement?.parentElement?.parentElement as HTMLElement;
+    closeMessageBox.style.display = 'none'; //hauptteil ausblenden
   }
   pusheditedMessageAndPush(messageId: string, event: MouseEvent) {
     // debugger;
@@ -788,26 +847,26 @@ editMessage(message: any, event: MouseEvent) {
     editMessageBox.style.display = 'none';
     actionBox.style.display = 'flex';
   }
-messageInput = viewChild<ElementRef<HTMLTextAreaElement>>('messageInput');
-  addATSymbolToTextArea(){
+  messageInput = viewChild<ElementRef<HTMLTextAreaElement>>('messageInput');
+  addATSymbolToTextArea() {
     console.log('textarea:', this.messageInput());
     let input = this.messageInput()?.nativeElement;
     if (!input) return
     input.value += '@'
     input.dispatchEvent(new Event('input', { bubbles: true }));
     input.focus();
-}
+  }
 
-startThreadSessionWithSpecificMessagge(messageUUID: string) {
-  this.directChat.selectedThreadId.set(messageUUID)
-  this.directChat.pullThreadMessagesForReplies()
-  this.openthreadsComponent.emit(true)
-  console.log('startThreadSessionWithSpecificMessagge')
-}
+  startThreadSessionWithSpecificMessagge(messageUUID: string) {
+    this.directChat.selectedThreadId.set(messageUUID)
+    this.directChat.pullThreadMessagesForReplies()
+    this.openthreadsComponent.emit(true)
+    console.log('startThreadSessionWithSpecificMessagge')
+  }
 
-closeThreadsComponent() {
-  this.openthreadsComponent.emit(false)
-  console.log('closeThreadsComponent')
-}
+  closeThreadsComponent() {
+    this.openthreadsComponent.emit(false)
+    console.log('closeThreadsComponent')
+  }
 
 }

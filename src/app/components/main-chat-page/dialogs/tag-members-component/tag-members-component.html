@@ -1,5 +1,5 @@
 
-@if(filteredChannels().length < 1 && this.channelData.symbol === '#'){
+@if(filteredChannels()?.length < 1 && this.channelData.symbol === '#'){
     <div class="memberWrapper">
     @for(channel of allchannels(); track channel.uuid){
             
@@ -10,7 +10,7 @@
             
         }
     </div>
-}@else if(filteredChannels().length > 0 && this.channelData.symbol === '#'){
+}@else if(filteredChannels()?.length > 0 && this.channelData.symbol === '#'){
     <div class="memberWrapper">
     @for(channel of filteredChannels(); track channel.uuid){
             
@@ -21,7 +21,7 @@
             
         }
     </div>
-}@else if(filteredMembers().length < 1 && this.channelData.symbol !== '#'){
+}@else if(filteredMembers()?.length < 1 && this.channelData.symbol !== '#'){
 
         <div class="memberWrapper">
         @for(member of memberWithAvatar(); track member.uuid){
