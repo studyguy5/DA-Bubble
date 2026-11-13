@@ -107,7 +107,7 @@ export class UserService {
 
   async getCurrentSignedInUser() {
     const { data: { user }, error: userError } = await this.supabase.auth.getUser();
-    console.log('user', user)
+    // console.log('user', user)
     if (!user || userError) return
 
 
@@ -134,7 +134,7 @@ export class UserService {
   }
 
   selectUserInProfileOverview(user: User) {
-    console.log('selected user in profile overview', user)
+    // console.log('selected user in profile overview', user)
     this.userTable.set([user])
   }
 
@@ -146,7 +146,7 @@ export class UserService {
       .select('username, uuid, avatar_url')
 
     if (!ProfileNames || error) console.log('error from ProfileNames', error)
-    console.log('ProfileNames for Messages', ProfileNames)
+    // console.log('ProfileNames for Messages', ProfileNames)
     // this.allMembers.set(ProfileNames as any)
     return ProfileNames
   }
@@ -160,7 +160,7 @@ export class UserService {
       .is('parent_message_id', null)
       .order('created_at', { ascending: true })
     if (!data || error) {
-      console.error('Fehler beim Abrufen der Channel Nachrichten:', error);
+      // console.error('Fehler beim Abrufen der Channel Nachrichten:', error);
       return;
     }
     // console.log('Nachrichten für den ausgewählten Channel:', data);
@@ -177,7 +177,7 @@ export class UserService {
 
       .order('created_at', { ascending: true })
     if (!roomA || error) {
-      console.error('Fehler beim Laden der Private Chat-Rooms:', error);
+      // console.error('Fehler beim Laden der Private Chat-Rooms:', error);
     }
 
     const { data: roomB, error: roomsBError } = await this.supabase
@@ -192,7 +192,7 @@ export class UserService {
       ?.map(room => room.chat_room_id)
       .filter(id => roomB?.some(room => room.chat_room_id === id)); // die gemeinsamen chat_room_ids
     if (!roomId || roomId.length === 0) {
-      console.log('roomId456', roomId)
+      // console.log('roomId456', roomId)
       return
     }
 
@@ -259,6 +259,7 @@ export class UserService {
     const user = await this.supabase.auth.getUser();
     if (channel) {
       let input = document.getElementById('messageInput') as HTMLTextAreaElement;
+      console.log('input wurde geholt ?=====================', input)
       if (!input) return
       let message = input.value
       console.log('send message', message)

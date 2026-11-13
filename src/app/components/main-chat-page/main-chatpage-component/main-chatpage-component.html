@@ -24,7 +24,7 @@
         <app-channel-user-selection-component (selectedChannel)="getChoiceFromChannelSelectionComponent($any($event))" 
         (selectedUser)="getChoiceFromSelectionComponent($any($event))" (devSpaceChannel)="openOrCloseDevSpace($any($event))"></app-channel-user-selection-component>
     
-        <app-direct-messages-component mode="main" [allMessagesForSearching]="$any(messagesForSearching())" [selectedChannel]="$any(selectedChannel())" [devSpaceSwitch]="devSpaceChannel()"
+        <app-direct-messages-component mode="main" [allMessagesForSearching]="$any(messagesForSearching())" (devSpcaeChange)="devSpaceChannel.set(false)" (selectedChannelChange)="selectedChannel.set($any($event))" (selectedUserChange)="selectedUser.set($any($event))" [selectedChannel]="$any(selectedChannel())" [devSpaceSwitch]="devSpaceChannel()"
         [selectedUser]="$any(selectedUser())" (openthreadsComponent)="openthreadsComponent.set($event)" [selectUserFromDialog]="selectUserFromDialog.bind(this)" style="flex: 1; display:flex"></app-direct-messages-component>
        
         <app-direct-messages-component mode="thread" 

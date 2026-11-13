@@ -104,11 +104,23 @@ inputValue = signal('');
 
   memberOrChannelFromDialogToInput(memberOrChannel: any) {
     let input = document.getElementById('messageInput') as HTMLTextAreaElement;
-    if (!input) return
-    if(this.channelData.symbol === '@') {
-      input.value = `@${memberOrChannel}`
-    }else if(this.channelData.symbol === '#') {
-      input.value = `#${memberOrChannel}`
+    let inputNeutral = document.getElementById('neutralInput') as HTMLTextAreaElement;
+    if (!input && !inputNeutral) return
+
+    if(input.value.length > 0) {
+      if(this.channelData.symbol === '@') {
+        input.value += `${memberOrChannel}`
+      }else if(this.channelData.symbol === '#') {
+        input.value = `${memberOrChannel}`
+      }
+      
+    }
+    if(inputNeutral.value.length > 0) {
+      if(this.channelData.symbol === '@') {
+        inputNeutral.value += `${memberOrChannel}`
+      }else if(this.channelData.symbol === '#') {
+        inputNeutral.value = `#${memberOrChannel}`
+      }
     }
     this.closeDialog()
   }

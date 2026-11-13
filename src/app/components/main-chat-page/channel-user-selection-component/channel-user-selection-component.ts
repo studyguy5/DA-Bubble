@@ -78,13 +78,14 @@ export class ChannelUserSelectionComponent {
     })
     let target = event.target as HTMLElement;
     target.classList.add('active')
-    console.log(user)
+    console.log('Selected User???????????============', user)
     this.selectedUser.emit(user)
     this.openDevSpace(false)
   }
 
 
   selectChannelFirstTime(channel: Channel) {
+    // debugger;
     this.selectedChannel.emit(channel)
   }
   selectChannelAndEmitToParentComponent(selectedChannel: Channel, event: any) {

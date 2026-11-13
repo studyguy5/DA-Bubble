@@ -29,8 +29,10 @@ export class MainChatpageComponent {
   currentUser: string | null = null;
   public directChat = inject(UserChatThreadService)
   userService = inject(UserService);
+
   selectedUser = signal<User | null>(null);
   selectedChannel = signal<Channel | null>(null);
+  
   threadsComponent = signal< string| null>(null);
   openthreadsComponent = signal<boolean>(false);
   messagesForSearching = signal<any[]>([]);

@@ -53,8 +53,10 @@ export class DirectMessagesComponent {
   members = signal<ChannelMember[] | null>([])
   twemoji = twemoji
   supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
+
   selectedUser = input<User | null>(null)
   selectedChannel = input<Channel | null>(null)
+  
   allMembers = signal<Members[]>([])
   // userChat = signal<Message[]>([])
   positionStrategy?: FlexibleConnectedPositionStrategy;
@@ -389,6 +391,7 @@ export class DirectMessagesComponent {
         .in('uuid', memberIds as any)
         .order('username', { ascending: true });
       if (!avatarUrl || avatarError) return
+      return avatarUrl
     } else {
       const { data: avatarUrl, error: avatarError } = await this.supabase
         .from('profiles')
@@ -396,6 +399,7 @@ export class DirectMessagesComponent {
         .order('username', { ascending: true });
       console.log('input on top', avatarUrl)
       if (!avatarUrl || avatarError) return
+      return avatarUrl
     }
 
   }
@@ -411,7 +415,7 @@ export class DirectMessagesComponent {
 
 
     let position1: any = input.selectionStart ?? 0
-    let position2: any = inputNeutral.selectionStart ?? 0
+    let position2: any = inputNeutral?.selectionStart ?? 0
     position1 = input.value.length > 0 ? input.value.slice(0, position1) : inputNeutral.value.slice(0, position2)
     const atIndex = position1.length > 0 ? position1.lastIndexOf('@') : position2.lastIndexOf('@')
     const routeIndex = position1.lastIndexOf('#') ?? position2.lastIndexOf('#')
@@ -422,7 +426,7 @@ export class DirectMessagesComponent {
 
     const relevantPartNeutral = atIndex >= 0 ? position1.slice(atIndex + 1) : routeIndex >= 0 ? position1.slice(routeIndex + 1) : position1
     console.log('relevantPartNeutral', relevantPartNeutral)
-    const useDiv3 = inputNeutral.value.length > 0
+    const useDiv3 = inputNeutral?.value.length > 0
 
     if (!useDiv3) {
       const Memberdata = await this.listingMembersToTag()
@@ -437,19 +441,19 @@ export class DirectMessagesComponent {
     // basic Member Anzeige hier raus verlagern, damit es bei der eingabe von @ sofort erscheint und nicht erst gefetched werden muss ================
     if (!input) return
     let position: any = input.selectionStart ?? 0
-    let positionNeutral: any = inputNeutral.selectionStart ?? 0
+    let positionNeutral: any = inputNeutral?.selectionStart ?? 0
     let before = input.value.slice(0, position)
     const coords = getCaretCoordinates(input, position)
-    const cordsNeutral = getCaretCoordinates(inputNeutral, positionNeutral)
+    const cordsNeutral = inputNeutral ? getCaretCoordinates(inputNeutral, positionNeutral) : null
 
     // x-Position des Cursors relativ zum Viewport
     const inputRect = input.getBoundingClientRect(); // method returns the size of an element and its position relative to the viewport.
     const cursorX = inputRect.left + coords.left;
     const cursorY = inputRect.top + coords.top;
 
-    const inputRectNeutral = inputNeutral.getBoundingClientRect(); // method returns the size of an element and its position relative to the viewport.
-    const cursorXNeutral = inputRectNeutral.left + cordsNeutral.left -150;
-    const cursorYNeutral = inputRectNeutral.top + cordsNeutral.top;
+    const inputRectNeutral = inputNeutral ? inputNeutral.getBoundingClientRect() : null; // method returns the size of an element and its position relative to the viewport.
+    const cursorXNeutral = inputRectNeutral && cordsNeutral ? (inputRectNeutral.left + cordsNeutral.left -150) : null;
+    const cursorYNeutral = inputRectNeutral && cordsNeutral ? (inputRectNeutral.top + cordsNeutral.top - 50) : null;
     // const difference = (this.anchorDiv2.nativeElement.offsetWidth / 2) - cursorX
     // Anchor-Element horizontal an die Cursor-Position setzen
     // Aktuelle Position des anchorDiv2 Elements
@@ -458,22 +462,22 @@ export class DirectMessagesComponent {
     const anchorY = anchorRect.top + 10;
     anchorRect.width = `0px`;
     anchorRect.height = `0px`;
-    const anchorRect3 = this.anchorDiv3.nativeElement.getBoundingClientRect();
-    const anchorX3 = anchorRect3.left + 210;
-    const anchorY3 = anchorRect3.top - 50
-    anchorRect3.width = `0px`;
-    anchorRect3.height = `0px`;
+    const anchorRect3 = this.anchorDiv3?.nativeElement.getBoundingClientRect();
+    const anchorX3 = anchorRect3?.left + 210;
+    const anchorY3 = anchorRect3?.top - 80
+    anchorRect3 ? anchorRect3.width = `0px` : undefined;
+    anchorRect3 ? anchorRect3.height = `0px` : undefined;
     // Offset berechnen: Differenz zwischen Cursor und Anchor
     const offsetX = cursorX - anchorX;
     const offsetY = cursorY - anchorY;
 
-    const offsetX3 = cursorXNeutral - anchorX3;
-    const offsetY3 = cursorYNeutral - anchorY3;
+    const offsetX3 = cursorXNeutral ? cursorXNeutral - anchorX3 : undefined;
+    const offsetY3 = cursorYNeutral ? cursorYNeutral - anchorY3 : undefined;
     // const offsetY3 = 100;
     // const membersWithAvatar = this.getSelectedMEMBERS(this.uuid)
     const channel = this.selectedChannel();
     console.log('anchorDiv', this.anchorDiv3)
-    const newposition = this.overlay.position().flexibleConnectedTo(inputNeutral.value.length > 0 ? this.anchorDiv3 : this.anchorDiv2).withPositions([{
+    const newposition = this.overlay.position().flexibleConnectedTo(inputNeutral?.value.length > 0 ? this.anchorDiv3 : this.anchorDiv2).withPositions([{
       originX: 'center',
       originY: useDiv3 ? 'top' : 'bottom',
       overlayX: 'center',
@@ -632,13 +636,23 @@ export class DirectMessagesComponent {
 
 
   checkIfChannelOrUserSelected() {
-    // debugger;
-    if (this.mode() === 'main') {
+    debugger;
+    let symbol
+    if(this.devSpaceSwitch() === true && this.selectedChannel() === null && this.selectedUser() === null){
+     symbol  = this.getMessageAndSwitchToMemberOrChannel()
+      this.devSpcaeChange.emit(false)
+      if(symbol?.memberOrChannelSymbol === '@'){
+        this.sendMessageToSelectedUser()
+      }else if(symbol?.memberOrChannelSymbol === '#'){
+        this.sendMessageToSelectedCHANNEL(symbol?.channel)
+      }
+    }
+    if (this.mode() === 'main' && !this.devSpaceSwitch()) {
       if (this.selectedUser()) {
         this.sendMessageToSelectedUser()
         console.log('send message to user', this.selectedUser())
       } else if (this.selectedChannel()) {
-        this.sendMessageToSelectedCHANNEL()
+        this.sendMessageToSelectedCHANNEL(symbol?.channel)
         console.log('send message to channel', this.selectedChannel())
       } else {
         console.warn('No user or channel selected')
@@ -646,7 +660,32 @@ export class DirectMessagesComponent {
     } else if (this.mode() === 'thread') {
       // send Message to thread
       this.sendThreadMessageIntoThreadChannel()
+    } 
+  }
+selectedUserChange = output<string | null>();
+selectedChannelChange = output<string | null>();
+devSpcaeChange = output<boolean>()
+  getMessageAndSwitchToMemberOrChannel() {
+    // debugger;
+    let channel
+    let input = document.getElementById('messageInput') as HTMLTextAreaElement;
+    let inputNeutral = document.getElementById('neutralInput') as HTMLTextAreaElement;
+    if(!input && !inputNeutral) return
+    let message = input.value.trim()
+    // input.value = ''
+    let memberOrChannelSymbol = inputNeutral.value.slice(0, 1)
+    let choiseFromInput = inputNeutral.value.slice(1, inputNeutral.value.length)
+    console.log('choiseFromInput', choiseFromInput)
+    if(memberOrChannelSymbol === '@') {
+      let member: any = this.allMembers().find(member => member.username === choiseFromInput)
+      this.selectedUserChange.emit(member)
+      // this.checkIfChannelOrUserSelected()
+    }else if(memberOrChannelSymbol === '#') {
+      let channelResult: any = this.userService.channelTable().find(channel => channel.name === choiseFromInput)
+      this.selectedChannelChange.emit(channelResult)
+      channel = channelResult
     }
+    return { memberOrChannelSymbol, channel }
   }
 
   sendThreadMessageIntoThreadChannel() {
@@ -664,9 +703,9 @@ export class DirectMessagesComponent {
     this.directChat.pushThreadMessageToSupabase(message as any)
   }
 
-  async sendMessageToSelectedCHANNEL() {
+  async sendMessageToSelectedCHANNEL(channelManual: any | null) {
     const channel = this.selectedChannel();
-    const data = this.userService.sendMessageToSelectedChannel(channel);
+    const data = this.userService.sendMessageToSelectedChannel(channel ?? channelManual);
 
   }
 
