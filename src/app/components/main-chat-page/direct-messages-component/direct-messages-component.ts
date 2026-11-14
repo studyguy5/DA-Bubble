@@ -13,11 +13,11 @@ import { MemberOverviewComponent } from '../dialogs/member-overview-component/me
 // import { ProfileOverviewComponent } from '../profile-overview-component/profile-overview-component';
 // import { V } from '@angular/cdk/keycodes';
 import { DatePipe } from '@angular/common';
-import { UserService } from '../../../services/user-service';
-import { EditMessageService } from '../../../services/edit-message-service';
+import { UserService } from '../../../services/user-service/user-service';
+import { EditMessageService } from '../../../services/edit-service/edit-message-service';
 import { Emoji } from '../../../interfaces/interfaces';
-import { UserReactionService } from '../../../services/user-reaction-service';
-import { UserChatThreadService } from '../../../services/user-chat-thread-service';
+import { UserReactionService } from '../../../services/user-reaction-service/user-reaction-service';
+import { UserChatThreadService } from '../../../services/chat-service/user-chat-thread-service';
 import getCaretCoordinates from 'textarea-caret';
 import { OverlayRef, FlexibleConnectedPositionStrategy } from '@angular/cdk/overlay';
 import { EmojiPickerComponent } from '../dialogs/emoji-picker-component/emoji-picker-component';

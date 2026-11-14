@@ -6,7 +6,7 @@ import { DialogRef } from '@angular/cdk/dialog';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from './../../../../../environment/environment_prod';
 import { computed } from '@angular/core';
-import { UserService } from '../../../../services/user-service';
+import { UserService } from '../../../../services/user-service/user-service';
 
 import { I } from '@angular/cdk/keycodes';
 import { Channel } from '../../../../interfaces/interfaces';

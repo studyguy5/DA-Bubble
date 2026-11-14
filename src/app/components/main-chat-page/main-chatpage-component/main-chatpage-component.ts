@@ -7,8 +7,8 @@ import { DirectMessagesComponent } from '../direct-messages-component/direct-mes
 import { ProfileLogoutMiniComponent } from '../dialogs/profile-logout-mini-component/profile-logout-mini-component';
 import { User } from '@supabase/supabase-js';
 import { Channel } from '../../../interfaces/interfaces';
-import { UserService } from '../../../services/user-service';
-import { UserChatThreadService } from '../../../services/user-chat-thread-service';
+import { UserService } from '../../../services/user-service/user-service';
+import { UserChatThreadService } from '../../../services/chat-service/user-chat-thread-service';
 import { ChangeDetectorRef } from '@angular/core';
 import { ViewChild } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';

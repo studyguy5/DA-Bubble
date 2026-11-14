@@ -1,5 +1,5 @@
 import { Component, Inject, effect } from '@angular/core';
-import { UserService } from '../../../services/user-service';
+import { UserService } from '../../../services/user-service/user-service';
 import { output } from '@angular/core';
 import { User, Channel } from '../../../interfaces/interfaces';
 import { CreateChannelComponent } from '../dialogs/create-channel-component/create-channel-component';

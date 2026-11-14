@@ -7,7 +7,7 @@
             <input type="email" placeholder="E-Mail" formControlName="email">
             <input type="password" placeholder="Password" formControlName="password">
         </form>
-        <button class="forgotPassword" type="text">Passwort vergessen?</button>
+        <button (click)="redirectToResetWindowViaEmail()" class="forgotPassword" type="text">Passwort vergessen?</button>
         <div class="visibleWall">
             <hr>
             <p>ODER</p>

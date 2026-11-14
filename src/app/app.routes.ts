@@ -4,6 +4,8 @@ import { MainChatpageComponent } from './components/main-chat-page/main-chatpage
 import { LoginMaskComponent } from './components/login-register-pages/login-mask-component/login-mask-component';
 import { RegisterMaskComponent } from './components/login-register-pages/register-mask-component/register-mask-component';
 import { SelectAvatarComponent } from './components/login-register-pages/select-avatar-component/select-avatar-component';
+import { ResetPasswordWithEmailComponent } from './components/login-register-pages/reset-password-with-email-component/reset-password-with-email-component';
+import { CreateNewPasswordComponent } from './components/login-register-pages/create-new-password-component/create-new-password-component';
 
 export const routes: Routes = [
 
@@ -22,6 +24,16 @@ export const routes: Routes = [
             {
                 path: 'selectAvatar',
                 component: SelectAvatarComponent
+            },
+            {
+                path: 'reset-password-with-email',
+                component: ResetPasswordWithEmailComponent 
+
+            },
+            {
+                path: 'verify-email',
+                component: CreateNewPasswordComponent 
+
             }
         ]
     },

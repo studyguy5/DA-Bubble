@@ -1,7 +1,7 @@
 import { Injectable, signal, OnInit } from '@angular/core';
-import { User, Channel } from '../interfaces/interfaces';
+import { User, Channel } from '../../interfaces/interfaces';
 import { createClient, RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
-import { environment } from '../../environment/environment'
+import { environment } from '../../../environment/environment'
 import { effect } from '@angular/core';
 
 @Injectable({

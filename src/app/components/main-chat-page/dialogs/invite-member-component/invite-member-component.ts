@@ -2,7 +2,7 @@ import { Component, Inject, signal } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../../../environment/environment';
-import { UserService } from '../../../../services/user-service';
+import { UserService } from '../../../../services/user-service/user-service';
 import { Dialog } from '@angular/cdk/dialog';
 
 @Component({
