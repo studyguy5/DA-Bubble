@@ -1,4 +1,3 @@
-
 <div class="loginMask">
     <div class="loginInnerMask">
         <p>Anmeldung</p>
@@ -7,17 +6,26 @@
             <input type="email" placeholder="E-Mail" formControlName="email">
             <input type="password" placeholder="Password" formControlName="password">
         </form>
-        <button (click)="redirectToResetWindowViaEmail()" class="forgotPassword" type="text">Passwort vergessen?</button>
+        <button (click)="redirectToResetWindowViaEmail()" class="forgotPassword" type="text">Passwort
+            vergessen?</button>
         <div class="visibleWall">
             <hr>
             <p>ODER</p>
             <hr>
         </div>
-        <button class="googleLogin" type="text"><img src="./images/google_logo.svg" alt="google">Anmelden mit Google</button>
+        <button class="googleLogin" type="text"><img src="./images/google_logo.svg" alt="google">Anmelden mit
+            Google</button>
         <div class="signInGuestLoginButtonArea">
             <button (click)="submitRegisterData()" type="text">Anmelden</button>
             <button (click)="continueAsGuest()" type="text">Guest Login</button>
         </div>
     </div>
+    <div class="startAnimation">
+        <div class="logAndWordWrapper">
+            <img src="./images/dabubble_LogoBig.svg" alt="logo">
+            <div class="wordDiv">
+                <p class="trademark">DABubble</p>
+            </div>
+        </div>
+    </div>
 </div>
-

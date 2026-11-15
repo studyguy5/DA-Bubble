@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../../environment/environment';
 import { ReactiveFormsModule } from '@angular/forms';
+import { signal } from '@angular/core';
 
 
 @Component({
@@ -15,6 +16,7 @@ export class ResetPasswordWithEmailComponent {
 disableButton = true
 input:any
 supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
+userFeedback = signal(false)
   constructor() {
 
   }
@@ -35,10 +37,15 @@ supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
   })
 
   async catchEmailAndSendResetLink(email: { value: string }) {
-    const { data, error } = await this.supabase.auth.resetPasswordForEmail(email.value, {
-    redirectTo: 'http://localhost:4200/create-new-password',
-  })
-    
+  //   const { data, error } = await this.supabase.auth.resetPasswordForEmail(email.value, {
+  //   redirectTo: 'http://localhost:4200/create-new-password',
+  // })
+    this.userFeedback.set(true)
+    console.log('this.userFeedback', this.userFeedback())
+    setTimeout(() => {
+      this.userFeedback.set(false)
+      console.log('this.userFeedback', this.userFeedback())
+    }, 3000);
   }
 
   
