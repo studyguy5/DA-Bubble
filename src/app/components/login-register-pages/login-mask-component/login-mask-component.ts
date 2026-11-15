@@ -104,7 +104,7 @@ export class LoginMaskComponent {
   }
 
   redirectToResetWindowViaEmail() {
-    this.router.navigate(['reset-password-with-email'])
+    this.router.navigate(['reset-password-with-email']);
   }
 }
 

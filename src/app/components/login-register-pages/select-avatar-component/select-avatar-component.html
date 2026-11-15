@@ -33,4 +33,7 @@
             <button (click)="pushAvatarChoiseToSupabase()" type="text">Weiter</button>
         </div>
     </div>
+    <div [class.visible]="this.userFeedback()" class="accountSuccessFullyCreated">
+        <p>Konto erffolgreich erstellt</p>
+    </div>
 </div>

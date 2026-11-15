@@ -3,6 +3,7 @@ import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { Router } from '@angular/router';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../../environment/environment';
+import { signal } from '@angular/core';
 
 @Component({
   selector: 'app-select-avatar-component',
@@ -13,6 +14,7 @@ import { environment } from '../../../../environment/environment';
 export class SelectAvatarComponent {
 supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
 path: string
+userFeedback = signal(false)
 
   constructor(private route: ActivatedRoute, private router: Router) {
     this.path = "./images/avatarDefault.svg"
@@ -32,18 +34,34 @@ path: string
 
   async pushAvatarChoiseToSupabase(){
     // debugger;
-    if(!this.path) return
-    console.log('this.path', this.path)
-    const { data: { user }, error: userError } = await this.supabase.auth.getUser()
-    if(!user || userError) return
-    const { data, error } = await this.supabase
-    .from('profiles')
-    .update({
-      avatar_url: this.path
-    })
-    .eq('uuid', user.id)
-    console.log('data', data)
-    this.router.navigate(['home'])
+    // if(!this.path) return
+    // console.log('this.path', this.path)
+    // const { data: { user }, error: userError } = await this.supabase.auth.getUser()
+    // if(!user || userError) return
+    // const { data, error } = await this.supabase
+    // .from('profiles')
+    // .update({
+    //   avatar_url: this.path
+    // })
+    // .eq('uuid', user.id)
+    // if(error) {
+    //   console.log('error', error)
+    //   return
+    // }
+    // if(user){
+    //   this.userFeedback = true
+    //   setTimeout(() => {
+    //     this.userFeedback = false
+    //   }, 3000);
+    // }
+    // console.log('data', data)
+    // this.router.navigate(['home'])
+    this.userFeedback.set(true)
+    console.log('this.userFeedback', this.userFeedback())
+    setTimeout(() => {
+      this.userFeedback.set(false)
+      console.log('this.userFeedback', this.userFeedback())
+    }, 3000);
   }
   
 }

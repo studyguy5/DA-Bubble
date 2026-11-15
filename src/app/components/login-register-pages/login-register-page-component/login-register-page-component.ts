@@ -25,7 +25,9 @@ export class LoginRegisterPageComponent {
   constructor(@Inject(DOCUMENT) private document: Document, private router: Router, private route: ActivatedRoute) {
 
     this.document = document;
+    if (window.location.pathname === '/') {
     this.router.navigate(['login']);
+  }
     this.addBodyClass()
     this.checkUrl();
     this.router.events.pipe(

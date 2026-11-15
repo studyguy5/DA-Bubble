@@ -31,7 +31,7 @@ export const routes: Routes = [
 
             },
             {
-                path: 'verify-email',
+                path: 'create-new-password',
                 component: CreateNewPasswordComponent 
 
             }

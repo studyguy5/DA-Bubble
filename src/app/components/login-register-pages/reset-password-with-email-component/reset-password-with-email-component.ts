@@ -2,10 +2,12 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../../environment/environment';
+import { ReactiveFormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-reset-password-with-email-component',
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './reset-password-with-email-component.html',
   styleUrl: './reset-password-with-email-component.scss',
 })
@@ -34,7 +36,7 @@ supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
 
   async catchEmailAndSendResetLink(email: { value: string }) {
     const { data, error } = await this.supabase.auth.resetPasswordForEmail(email.value, {
-    redirectTo: 'https://example.com/update-password',
+    redirectTo: 'http://localhost:4200/create-new-password',
   })
     
   }
