@@ -113,11 +113,11 @@ export class UserService {
 
     const { data: profiles, error } = await this.supabase
       .from('profiles')
-      .select('username')
+      .select('username, avatar_url, activity_status')
       .eq('uuid', user?.id);
-    // console.log('profiles', profiles)
+    console.log('profile Info from supabase', profiles)
     if (!profiles || error) return
-    return profiles[0].username;
+    return profiles[0];
   }
 
   async checkIfCurrentUserIsPartOfWelcomeChannel(user: User) {

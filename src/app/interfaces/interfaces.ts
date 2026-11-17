@@ -1,7 +1,7 @@
 export interface User {
     id: string;
     username: string;
-    displayName: string;
+    activity_status: boolean;
     avatar_url: string;
     gender: string;
 }
@@ -32,6 +32,7 @@ export interface ChatRoomMember {
 export interface Members {
     username: string;
     uuid: string;
+    activity_status: boolean;
 }
 
 export interface Channel {

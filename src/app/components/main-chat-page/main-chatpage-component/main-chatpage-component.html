@@ -7,15 +7,16 @@
             <img src="./icons/search-Icon.svg">
         </div>
         <div #profileLogoutMiniMenu (click)="openProfileLogoutMiniMenu()" class="profileAndSettings">
-            @if(currentUser && currentUser !== null && currentUser !== 'null') {
-                {{ currentUser }}
+            @if(currentUser() && currentUser() != null) {
+                {{currentUser()?.username}}
             }@else {
                 {{'Guest'}}
             }
                 
             
-            <p></p>
+            <!-- <p></p> -->
             <img src="./images/profileImageExample.svg">
+            <img [src]="currentUser().activity_status === true ? this.status_online : this.status_offline">
             <img src="./icons/settingsArrowDown.svg">
             <img src="/icons/arrowDownLila.svg">
         </div>

@@ -26,6 +26,8 @@ export class ChannelUserSelectionComponent {
   readonly DEFAULT_MALE_AVATAR = '/images/male_Avatar1.svg';
   readonly DEFAULT_FEMALE_AVATAR = '/images/female_Avatar1.svg';
 
+  readonly status_online = '/icons/status_online.svg';
+  readonly status_offline = '/icons/status_offline.svg';
 
   selectedUser = output<User>()
   selectedChannel = output<Channel>()

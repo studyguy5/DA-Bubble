@@ -370,6 +370,7 @@
     font-size:18px;
     padding:0px 0px 0px 0px;
     font-family: 'Nunito_regular';
+    position:relative;
     cursor: pointer;
     &:hover{
         border-radius:0px 25px 25px 0px;
@@ -380,6 +381,16 @@
         border-radius:0px 25px 25px 0px;
         background-color:rgba(236, 238, 254, 1);
         color: rgba(68, 77, 242, 1);
+    }
+
+    
+    >.activity_status{
+        position:absolute;
+        left:35px;
+        top:40px;
+        width:15px;
+        height:15px;
+        // display:none;
     }
 }
     .withoutDelay{

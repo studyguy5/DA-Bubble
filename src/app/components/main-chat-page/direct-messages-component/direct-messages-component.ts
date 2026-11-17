@@ -308,9 +308,7 @@ export class DirectMessagesComponent {
     console.log('trigger openProfileOverviewDialog')
     //  debugger;
     let memberData = this.membersWithAvatarForDialog()
-    this.rightProfile = memberData.find((item) =>
-      item.uuid == member_uuid
-    )
+    this.rightProfile = memberData
     console.log('memberData', memberData)
     this.dialog.open(ProfileOverviewComponent,
       // {
@@ -334,6 +332,7 @@ export class DirectMessagesComponent {
         data: {
           title: 'add member to channel',
           channel: this.rightProfile,
+          member: member_uuid,
           onSelectUser: (user: any) =>
             this.selectUserFromDialog?.(user)
         },
@@ -360,7 +359,7 @@ export class DirectMessagesComponent {
     let memberIds = data?.map((item: any) => item.user_id)
     const { data: avatarUrl, error: avatarError } = await this.supabase
       .from('profiles')
-      .select('avatar_url, username, uuid, email')
+      .select('avatar_url, username, uuid, activity_status, email')
       .in('uuid', memberIds as any)
       .order('username', { ascending: true });
 

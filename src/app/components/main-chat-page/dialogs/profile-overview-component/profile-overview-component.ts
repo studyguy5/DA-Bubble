@@ -18,8 +18,10 @@ export class ProfileOverviewComponent {
     this.showData()
   }
 
+  readonly status_online = '/icons/status_online.svg';
+  readonly status_offline = '/icons/status_offline.svg';
 showData() {
-  console.log('incoming Data', this.data)
+  console.log('incoming Data Dialog ===================', this.data)
 }
 
 closeDialog(){

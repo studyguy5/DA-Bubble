@@ -48,10 +48,13 @@
         @if(user.gender === 'male'){
             <div (click)="selectUserAndEmitToParentComponent(user, $event)" class="member" >
         <img [src]="user.avatar_url === 'null' ? this.DEFAULT_MALE_AVATAR : user.avatar_url"> <p>{{user.username === 'null' ? 'User' : user.username}}</p>
+             <p>{{user.activity_status}}</p>
             </div>
         }@else{
             <div (click)="selectUserAndEmitToParentComponent(user, $event)" class="member" >
-            <img [src]="user.avatar_url === 'null' ? this.DEFAULT_FEMALE_AVATAR : user.avatar_url"> <p>{{user.username === 'null' ? 'User' : user.username}}</p>
+            <img class="avatarImg" [src]="user.avatar_url === 'null' ? this.DEFAULT_FEMALE_AVATAR : user.avatar_url"> <img class="activity_status" [src]="user.activity_status === true ? this.status_online : this.status_offline"> 
+            <p>{{user.username === 'null' ? 'User' : user.username}}</p>
+            
             </div>
         }
     }

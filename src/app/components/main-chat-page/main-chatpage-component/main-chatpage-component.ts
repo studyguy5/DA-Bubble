@@ -5,8 +5,8 @@ import { ChannelUserSelectionComponent } from '../channel-user-selection-compone
 import { DirectMessagesComponent } from '../direct-messages-component/direct-messages-component';
 
 import { ProfileLogoutMiniComponent } from '../dialogs/profile-logout-mini-component/profile-logout-mini-component';
-import { User } from '@supabase/supabase-js';
-import { Channel } from '../../../interfaces/interfaces';
+// import { User } from '@supabase/supabase-js';
+import { Channel, User } from '../../../interfaces/interfaces';
 import { UserService } from '../../../services/user-service/user-service';
 import { UserChatThreadService } from '../../../services/chat-service/user-chat-thread-service';
 import { ChangeDetectorRef } from '@angular/core';
@@ -26,7 +26,7 @@ export class MainChatpageComponent {
   dm = viewChild(DirectMessagesComponent)
   @ViewChild(ChannelUserSelectionComponent) channelUserSelection!: ChannelUserSelectionComponent;
   @ViewChild('profileLogoutMiniMenu', { static: false }) profileLogoutMiniMenu!: Element;
-  currentUser: string | null = null;
+  currentUser: any = signal<User | null>(null);
   public directChat = inject(UserChatThreadService)
   userService = inject(UserService);
 
@@ -49,6 +49,8 @@ export class MainChatpageComponent {
     })
   }
 
+  readonly status_online = '/icons/status_online.svg';
+  readonly status_offline = '/icons/status_offline.svg';
   fillTreadsSignal(){
     this.threadsComponent.set('threadsComponent');
     console.log('threadsComponent signal value from parent', this.threadsComponent())
@@ -62,9 +64,11 @@ export class MainChatpageComponent {
   async ngOnInit() {
     // debugger;
     
-    this.currentUser = await this.userService.getCurrentSignedInUser();
-      this.changeDetectorRef.detectChanges();
-      console.log('current user', this.currentUser)
+    let currentUser = await this.userService.getCurrentSignedInUser();
+    console.log('current user', currentUser)
+    this.currentUser.set(currentUser);
+    this.changeDetectorRef.detectChanges();
+      console.log('current user', this.currentUser())
   }
 
   openOrCloseDevSpace(choise: boolean){ 
