@@ -1,14 +1,23 @@
 
 
 
+<div class="startAnimation">
+</div>
 <div class="loginHeaderLogoLink">
-    <img src="./images/dabubble_logo.svg" alt="logo">
+        <div class="logAndWordWrapper">
+                <!-- <img src="./images/dabubble_logo.svg" alt="logo"> -->
+                <img src="./images/dabubble_LogoBig.svg" alt="logo">
+                <div class="wordDiv">
+                    <p class="trademark">DABubble</p>
+                </div>
+            </div>
     <div [class.hideRegisterLink]="this.showAvatar" class="questonCreateAccount">
         <p>Neu bei DABubble?</p>
         <p class="createAccount" [routerLink]="['register']">Konto erstellen</p>
     </div>
 </div>
 <main>
+    <!-- animation neu gestalten, damit es schön ausschaut und responsiv ist, am besten oberes logo unten einblenden mit div struktur und nach oben animieren -->
     <!-- @if(activeMask() === 'loginMask'){
         <app-login-mask-component></app-login-mask-component>
     }@else if(activeMask() === 'registerMask'){
