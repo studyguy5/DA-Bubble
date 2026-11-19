@@ -47,6 +47,7 @@ export interface Channel {
 export interface ProfileInfos {
     username: string;
     avatar_url: string;
+    activity_status: boolean;
     email: string;
 }
 

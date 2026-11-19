@@ -12,6 +12,7 @@ export class UserService {
   supabase = createClient(environment.supabaseUrl, environment.supabasePublishKey)
   userTable = signal<User[]>([])
   channelTable = signal<Channel[]>([])
+  currentUser: any = signal<User | null>(null);
   constructor() {
     effect(() => {
 
@@ -31,6 +32,10 @@ export class UserService {
         (payload) => {
           this.getAllUsers()
           console.log('Change received!', payload)
+          this.currentUser.update((state: any) => {
+            return { ...state, ...payload.new }
+          })
+
         }
       )
       .on(
@@ -115,7 +120,7 @@ export class UserService {
       .from('profiles')
       .select('username, avatar_url, activity_status')
       .eq('uuid', user?.id);
-    console.log('profile Info from supabase', profiles)
+    // console.log('profile Info from supabase', profiles)
     if (!profiles || error) return
     return profiles[0];
   }
@@ -177,7 +182,7 @@ export class UserService {
 
       .order('created_at', { ascending: true })
     if (!roomA || error) {
-      // console.error('Fehler beim Laden der Private Chat-Rooms:', error);
+      console.error('Fehler beim Laden der Private Chat-Rooms:', error);
     }
 
     const { data: roomB, error: roomsBError } = await this.supabase
@@ -192,7 +197,7 @@ export class UserService {
       ?.map(room => room.chat_room_id)
       .filter(id => roomB?.some(room => room.chat_room_id === id)); // die gemeinsamen chat_room_ids
     if (!roomId || roomId.length === 0) {
-      // console.log('roomId456', roomId)
+      console.log('roomId456', roomId)
       return
     }
 
@@ -247,7 +252,7 @@ export class UserService {
         avatar_url: avatarUrl?.find((avatar: any) => avatar.uuid == item.user_id)?.avatar_url
       }
     })
-    console.table('membersWithAvatar', membersWithAvatar)
+    // console.table('membersWithAvatar', membersWithAvatar)
     // this.members.set(membersWithAvatar as any)
 
     if (!avatarUrl || avatarError) return

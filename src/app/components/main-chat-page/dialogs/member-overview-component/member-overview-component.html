@@ -9,6 +9,7 @@
         @for(member of memberWithAvatar(); track member.uuid){
         <div (click)="openProfileOverviewDialog(member.uuid)" class="memberOverviewItem">
             <img [src]="member.avatar_url">
+            <img [src]="member.activity_status === true ? this.status_online : this.status_offline">
             <p>{{member.username === this.owner().username ? member.username + ' (Du)' : member.username}}</p>
         </div>
         }

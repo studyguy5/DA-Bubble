@@ -140,6 +140,43 @@
 
 }
 
+.avatarSuccessFullyChanged{
+    width:180px;
+    height: 50px;
+    padding: 10px;
+    border-radius: 15px;
+    background-color: rgba(68, 77, 242, 1);
+    color: white;
+    position: fixed;
+    left: 50%;
+    bottom: -150px;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.avatarSuccessFullyChanged.visible2{
+    bottom: -150px;
+    
+    animation-name: slideDown;
+    animation-duration: 3s;
+}
+@keyframes slideDown {
+    0%{
+        bottom:-150px;
+    }
+    40%{
+        bottom:50%;
+    }
+    70%{
+        bottom:50%;
+    }
+    100%{
+        bottom:-150px;
+    }
+}
+
 .accountSuccessFullyCreated{
     width:180px;
     height: 50px;

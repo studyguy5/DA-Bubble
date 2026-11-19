@@ -5,7 +5,8 @@
     
     padding: 40px;
     box-sizing: border-box;
-    >button{
+    >.sendMessageButton{
+        display: none;
         align-self: center;
         margin-top: 45px;
         width: 100%;
@@ -17,6 +18,9 @@
         border: none;
         font-size: 16px;
         font-family: 'Nunito_600';
+        &.visible{
+            display: block;
+        }
     }
 
     >.profileOverviewHeader{

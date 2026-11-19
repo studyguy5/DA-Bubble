@@ -22,6 +22,37 @@ export class UserChatThreadService {
 
   }
 
+  subscribeToChanges() {
+    const channels = this.supabase.channel('custom-all-channel')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'profiles' },
+        (payload) => {
+          this.userChat.update((state: any) => {
+            return { ...state, ...payload.new }
+          })
+          
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*', schema: 'public', table: 'chat_rooms',
+          filter: `message_type=eq.channel`
+        },
+        (payload) => {
+          
+          console.log('Change received!', payload)
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'chat_room_members' },
+        () => this.userChat()
+      )
+      .subscribe()
+  }
+
   async pushThreadMessageToSupabase(message: Message) {
     const { data: { user }, error: userError } = await this.supabase.auth.getUser();
     const ownId = user?.id
@@ -38,7 +69,7 @@ export class UserChatThreadService {
     if (error) {
       console.error('Error inserting message:', error);
     } else {
-      console.log('Message inserted successfully:', data);
+      // console.log('Message inserted successfully:', data);
     }
   }
 
@@ -53,7 +84,7 @@ export class UserChatThreadService {
       console.error('Error fetching messages:', error);
     } else {
       this.replies.set(data)
-      console.log('Messages fetched successfully:', data);
+      // console.log('Messages fetched successfully:', data);
     }
   }
 
@@ -66,10 +97,10 @@ export class UserChatThreadService {
       // .is('parent_message_id', null)
       .order('created_at', { ascending: true });
     if (error) {
-      console.error('Error fetching messages:', error);
+      // console.error('Error fetching messages:', error);
     } else {
       this.allReplies.set(data)
-      console.log('allReplies fetched successfully:', data);
+      // console.log('allReplies fetched successfully:', data);
     }
   }
 
@@ -90,11 +121,11 @@ export class UserChatThreadService {
       .order('created_at', { ascending: true });
 
     if (error || error2) {
-      console.error('Error fetching messages:', error ?? error2);
+      // console.error('Error fetching messages:', error ?? error2);
       return [];
     }
 
-    console.log('Messages fetched successfully:', data, data2);
+    // console.log('Messages fetched successfully:', data, data2);
     return [...(data ?? []), ...(data2 ?? [])];
   }
 }

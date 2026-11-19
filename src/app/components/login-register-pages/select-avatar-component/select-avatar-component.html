@@ -33,7 +33,10 @@
             <button (click)="pushAvatarChoiseToSupabase()" type="text">Weiter</button>
         </div>
     </div>
-    <div [class.visible]="this.userFeedback()" class="accountSuccessFullyCreated">
+    <div [class.visible]="this.userFeedback()" [class.visible2]="" class="accountSuccessFullyCreated">
         <p>Konto erffolgreich erstellt</p>
+    </div>
+    <div [class.visible2]="this.userFeedbackEdit()" class="avatarSuccessFullyChanged">
+        <p>Avatar erfolgreich geändert</p>
     </div>
 </div>

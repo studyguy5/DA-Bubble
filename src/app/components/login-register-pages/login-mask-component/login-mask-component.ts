@@ -44,7 +44,16 @@ export class LoginMaskComponent {
       console.log('successfully created account', data);
       await this.router.navigate(['home'])
     }
-
+    const { data: session, error: sessionError } = await this.supabase.
+    from('profiles')
+    .update({ activity_status: true })
+    .eq('email', email)
+    .select('activity_status, email')
+    console.log('getSession erfolgreich', session)
+    if(sessionError) {
+      console.log('getSession-Fehler:', sessionError);
+      throw sessionError
+    }
   }
 
   preFillData() {

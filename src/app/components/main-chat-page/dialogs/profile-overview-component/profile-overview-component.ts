@@ -22,17 +22,25 @@ export class ProfileOverviewComponent {
   readonly status_offline = '/icons/status_offline.svg';
 showData() {
   console.log('incoming Data Dialog ===================', this.data)
+  this.switchMessageButton()
+}
+
+switchMessageButton() {
+  this.data.channel.find((user: any) => user.uuid == this.data.member).activity_status === true ? this.sendMessage = false : this.sendMessage = true
 }
 
 closeDialog(){
   this.dialog.closeAll()
 }
 
+sendMessage = false
 openDirektMessageWithThisUser(data: any) {
   // debugger;
-this.data.onSelectUser?.(this.data.channel);
-this.closeDialog()
+    this.sendMessage = true
+    this.data.onSelectUser?.(this.data.channel);
+    this.closeDialog()
+  }
 }
 
-}
+
 

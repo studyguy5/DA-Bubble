@@ -5,11 +5,12 @@
         <img src="./icons/blackCloseIcon.svg" (click)="closeDialog()">
     </div>
     <div class="OwnprofileOverviewContent">
-            @if(profileInfos().length > 0){
-            <img [src]="profileInfos().at(0)?.avatar_url === 'null' ? this.DEFAULT_MALE_AVATAR : profileInfos().at(0)?.avatar_url">
+            @if(this.OwnProfileInfos !== null){
+            <img [src]="this.OwnProfileInfos?.avatar_url === 'null' ? this.DEFAULT_MALE_AVATAR : this.OwnProfileInfos?.avatar_url">
+            <img (click)="openAvatarSelect()" class="AvatarEditMode" src="./icons/edit_square.svg">
             <div class="OwnUserNameAndEditMode">
                 <div [class.invisible]="this.editMode" class="standard">
-                    <p  class="realUsername">{{profileInfos().at(0)?.username === 'null' ? 'User' : profileInfos().at(0)?.username}}</p>
+                    <p  class="realUsername">{{this.OwnProfileInfos?.username === 'null' ? 'User' : this.OwnProfileInfos?.username}}</p>
                     <button  (click)="showEditModeForUserName()" class="editButton"> Bearbeiten</button>
                 </div>
                 <div [class.visible]="this.editMode" class="editView">
@@ -18,7 +19,7 @@
                 </div>
             </div>
             <div class="status">
-                <p [class.invisible]="this.editMode">status comming soon</p>
+                <img [src]="this.OwnProfileInfos?.activity_status === true ? this.status_online : this.status_offline"><p [class.invisible]="this.editMode">{{this.OwnProfileInfos?.activity_status === true ? 'Aktiv' : 'Abwesend'}}</p>
                 <input [class.visible]="this.editMode" class="editNameInputField" type="text" placeholder="Name" [formControl]="fullName">
             </div>
             <div [class.visible]="this.editMode" class="cancelSaveArea">
@@ -31,10 +32,10 @@
                     <p><b>E-Mail-Adresse</b></p>
                 </div>
                 
-                <p>{{profileInfos().at(0)?.email === 'null' || profileInfos().at(0)?.email === null ? 'example@host.com' : profileInfos().at(0)?.email}}</p>
+                <p>{{this.OwnProfileInfos?.email === 'null' || this.OwnProfileInfos?.email === null ? 'example@host.com' : this.OwnProfileInfos?.email}}</p>
             </div>
         }
     </div>
     <!-- <button (click)="openDirektMessageWithThisUser(data)">Nachricht senden</button> -->
 </div>
-
+<!-- <app-select-avatar-component></app-select-avatar-component> -->

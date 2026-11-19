@@ -26,8 +26,9 @@ export class MainChatpageComponent {
   dm = viewChild(DirectMessagesComponent)
   @ViewChild(ChannelUserSelectionComponent) channelUserSelection!: ChannelUserSelectionComponent;
   @ViewChild('profileLogoutMiniMenu', { static: false }) profileLogoutMiniMenu!: Element;
-  currentUser: any = signal<User | null>(null);
+  
   public directChat = inject(UserChatThreadService)
+  
   userService = inject(UserService);
 
   selectedUser = signal<User | null>(null);
@@ -45,7 +46,7 @@ export class MainChatpageComponent {
     this.fillTreadsSignal();
     effect(() => {
       console.log('threadsComponent signal value from parent', this.openthreadsComponent())
-      
+      this.userService.currentUser()
     })
   }
 
@@ -65,10 +66,10 @@ export class MainChatpageComponent {
     // debugger;
     
     let currentUser = await this.userService.getCurrentSignedInUser();
-    console.log('current user', currentUser)
-    this.currentUser.set(currentUser);
+    // console.log('current user', currentUser)
+    this.userService.currentUser.set(currentUser);
     this.changeDetectorRef.detectChanges();
-      console.log('current user', this.currentUser())
+      // console.log('current user', this.userService.currentUser())
   }
 
   openOrCloseDevSpace(choise: boolean){ 
@@ -134,11 +135,12 @@ openProfileLogoutMiniMenu(){
         originY: 'center',
         overlayX: 'start',
         overlayY: 'top',
-        offsetY: 50,
-        offsetX: -10
-      }])
-      .withPush(true),
+        offsetY: 30,
+        offsetX: -270
+      }]).withViewportMargin(0)
+      .withPush(false),
       width: '282px',
+      minWidth: '282px',
       height: '181px',
       panelClass: 'profileLogoutMiniDialog',
       data: {

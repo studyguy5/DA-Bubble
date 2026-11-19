@@ -25,6 +25,7 @@ interface MemberOverviewDialogData {
 interface ProfileMember {
   username: string;
   avatar_url: string | null;
+  activity_status: boolean;
   uuid: string;
 }
 
@@ -50,6 +51,8 @@ export class MemberOverviewComponent {
   })
   }
 
+  readonly status_online = '/icons/status_online.svg';
+  readonly status_offline = '/icons/status_offline.svg';
   owner: any = signal(null)
   getOwner() {
     let currentUser = this.supabase.auth.getSession()

@@ -56,7 +56,7 @@ export class DirectMessagesComponent {
 
   selectedUser = input<User | null>(null)
   selectedChannel = input<Channel | null>(null)
-  
+
   allMembers = signal<Members[]>([])
   // userChat = signal<Message[]>([])
   positionStrategy?: FlexibleConnectedPositionStrategy;
@@ -87,15 +87,16 @@ export class DirectMessagesComponent {
       }
     })
     effect(() => {
+      // this.members()
       if (this.mode() !== 'main') return;
       this.channel = this.selectedChannel();
       const participant = this.selectedUser();
       this.isLoading.set(!!this.channel || !!participant)
-      console.log('EFFECT-AUSWAHL', {
+      // console.log('EFFECT-AUSWAHL', {
 
-        channel: this.channel?.uuid,
-      });
-      console.log('devSpaceSwitch', this.devSpaceSwitch())
+      //   channel: this.channel?.uuid,
+      // });
+      // console.log('devSpaceSwitch', this.devSpaceSwitch())
       this.showMessagesFromSelectedChannelOrUser()
 
     })
@@ -120,7 +121,7 @@ export class DirectMessagesComponent {
   // openThreadsComponent: any = false
   addExtraClassForThreadsComponent() {
     // debugger;
-    console.log('threadsComponent input value from child', JSON.stringify(this.threadsComponent()))
+    // console.log('threadsComponent input value from child', JSON.stringify(this.threadsComponent()))
     // if (this.mode() === 'thread') {
     //   document.documentElement.classList.add('threadView')
     // }
@@ -246,9 +247,9 @@ export class DirectMessagesComponent {
 
   openInfoDialog() {
     const channel = this.selectedChannel();
-    console.log('channel in open Dialog', channel)
+    // console.log('channel in open Dialog', channel)
     if (!channel) {
-      console.warn('Kein Channel ausgewählt – Dialog wird nicht geöffnet.');
+      // console.warn('Kein Channel ausgewählt – Dialog wird nicht geöffnet.');
       return;
     }
 
@@ -268,7 +269,7 @@ export class DirectMessagesComponent {
   async openMemberOverviewDialog() {
     await this.searchingForMembers()
     const channel = this.selectedChannel();
-    console.log('anchorDiv', this.anchorDiv)
+    // console.log('anchorDiv', this.anchorDiv)
     this.dialog.open(MemberOverviewComponent,
       {
         positionStrategy: this.overlay.position()
@@ -305,11 +306,11 @@ export class DirectMessagesComponent {
   // membersWithAvatar = signal<ProfileMember[]>([])
   rightProfile: any
   async openProfileOverviewDialog(member_uuid: any) {
-    console.log('trigger openProfileOverviewDialog')
+    // console.log('trigger openProfileOverviewDialog')
     //  debugger;
     let memberData = this.membersWithAvatarForDialog()
     this.rightProfile = memberData
-    console.log('memberData', memberData)
+    // console.log('memberData', memberData)
     this.dialog.open(ProfileOverviewComponent,
       // {
       //   positionStrategy: this.overlay.position()
@@ -355,7 +356,7 @@ export class DirectMessagesComponent {
   async searchingForMembers() {
     // this.cd.detectChanges();
     const data = await this.memberListHelperFunction()
-    console.log('memberList Data', data)
+    // console.log('memberList Data', data)
     let memberIds = data?.map((item: any) => item.user_id)
     const { data: avatarUrl, error: avatarError } = await this.supabase
       .from('profiles')
@@ -367,12 +368,12 @@ export class DirectMessagesComponent {
 
     // this.memberWithAvatar.set(avatarUrl as any)
     this.membersWithAvatarForDialog.set(avatarUrl as any)
-    console.log('memberWithAvatar normal wurde gesetzt', this.membersWithAvatarForDialog())
+    // console.log('memberWithAvatar normal wurde gesetzt', this.membersWithAvatarForDialog())
 
 
     // debugger
     // console.log('filtered', this.channelData.filteredMembers)
-    console.log('incoming Data', this.membersWithAvatarForDialog())
+    // console.log('incoming Data', this.membersWithAvatarForDialog())
 
     if (!avatarUrl || avatarError) return
 
@@ -382,7 +383,7 @@ export class DirectMessagesComponent {
   async listingMembersToTag() {
     if (this.channel !== null) {
       const data = await this.memberListHelperFunction()
-      console.log('memberList Data', data)
+      // console.log('memberList Data', data)
       let memberIds = data?.map((item: any) => item.user_id)
       const { data: avatarUrl, error: avatarError } = await this.supabase
         .from('profiles')
@@ -396,7 +397,7 @@ export class DirectMessagesComponent {
         .from('profiles')
         .select('avatar_url, username, uuid, email')
         .order('username', { ascending: true });
-      console.log('input on top', avatarUrl)
+      // console.log('input on top', avatarUrl)
       if (!avatarUrl || avatarError) return
       return avatarUrl
     }
@@ -420,11 +421,11 @@ export class DirectMessagesComponent {
     const routeIndex = position1.lastIndexOf('#') ?? position2.lastIndexOf('#')
 
     const relevantPart = atIndex >= 0 ? position1.slice(atIndex + 1) : routeIndex >= 0 ? position1.slice(routeIndex + 1) : position1
-    console.log('relevantPart', relevantPart)
+    // console.log('relevantPart', relevantPart)
 
 
     const relevantPartNeutral = atIndex >= 0 ? position1.slice(atIndex + 1) : routeIndex >= 0 ? position1.slice(routeIndex + 1) : position1
-    console.log('relevantPartNeutral', relevantPartNeutral)
+    // console.log('relevantPartNeutral', relevantPartNeutral)
     const useDiv3 = inputNeutral?.value.length > 0
 
     if (!useDiv3) {
@@ -435,7 +436,7 @@ export class DirectMessagesComponent {
       this.memberData = MemberdataGlobal
     }
     this.filtered = relevantPart ?? relevantPartNeutral
-    console.log('filtered member', this.filtered)
+    // console.log('filtered member', this.filtered)
     this.filteredMembers.set(this.filtered)
     // basic Member Anzeige hier raus verlagern, damit es bei der eingabe von @ sofort erscheint und nicht erst gefetched werden muss ================
     if (!input) return
@@ -451,7 +452,7 @@ export class DirectMessagesComponent {
     const cursorY = inputRect.top + coords.top;
 
     const inputRectNeutral = inputNeutral ? inputNeutral.getBoundingClientRect() : null; // method returns the size of an element and its position relative to the viewport.
-    const cursorXNeutral = inputRectNeutral && cordsNeutral ? (inputRectNeutral.left + cordsNeutral.left -150) : null;
+    const cursorXNeutral = inputRectNeutral && cordsNeutral ? (inputRectNeutral.left + cordsNeutral.left - 150) : null;
     const cursorYNeutral = inputRectNeutral && cordsNeutral ? (inputRectNeutral.top + cordsNeutral.top - 50) : null;
     // const difference = (this.anchorDiv2.nativeElement.offsetWidth / 2) - cursorX
     // Anchor-Element horizontal an die Cursor-Position setzen
@@ -475,7 +476,7 @@ export class DirectMessagesComponent {
     // const offsetY3 = 100;
     // const membersWithAvatar = this.getSelectedMEMBERS(this.uuid)
     const channel = this.selectedChannel();
-    console.log('anchorDiv', this.anchorDiv3)
+    // console.log('anchorDiv', this.anchorDiv3)
     const newposition = this.overlay.position().flexibleConnectedTo(inputNeutral?.value.length > 0 ? this.anchorDiv3 : this.anchorDiv2).withPositions([{
       originX: 'center',
       originY: useDiv3 ? 'top' : 'bottom',
@@ -539,7 +540,7 @@ export class DirectMessagesComponent {
   openAddMemberToChannelDialog() {
     const channel = this.selectedChannel();
     if (!channel) {
-      console.warn('Kein Channel ausgewählt – Dialog wird nicht geöffnet.');
+      // console.warn('Kein Channel ausgewählt – Dialog wird nicht geöffnet.');
       return;
     }
     this.dialog.open(AddMemberToChannelComponent,
@@ -582,7 +583,7 @@ export class DirectMessagesComponent {
   async showMessagesFromSelectedChannelOrUser() {
     // funktion optimieren, da zu langsam
     try {
-      console.log('showMessagesFromSelectedChannelOrUser')
+      // console.log('showMessagesFromSelectedChannelOrUser')
       let channel = this.selectedChannel();
       let user: any = await this.supabase.auth.getUser();
       let participant: any = this.selectedUser();
@@ -601,6 +602,7 @@ export class DirectMessagesComponent {
       if (participant) {
 
         this.members.set(null);
+        console.log('user id format', user.data.user)
         await this.getMessagesFromSelectedUSER(user.data.user?.id, participant?.uuid)
       } else {
         console.warn('Kein Benutzer ausgewählt – Nachrichten werden nicht angezeigt.');
@@ -618,11 +620,11 @@ export class DirectMessagesComponent {
   }
 
   async getMessagesFromSelectedUSER(author_id: string, participant_uuid: string | null) {
-    const messages: any = await this.userService.getMessagesFromSelectedUser(author_id, participant_uuid)
-    console.log('messages from UserService:', messages);
-    this.directChat.userChat.set(messages ?? [] as Message[])
     // debugger;
-    await this.directChat.pullAllThreadMessages(messages[0]?.chat_room_id)
+    const messages: any = await this.userService.getMessagesFromSelectedUser(author_id, participant_uuid)
+    const messages2 = messages ?? []
+    this.directChat.userChat.set(messages2 ?? [] as Message[])
+    await this.directChat.pullAllThreadMessages(messages2[0]?.chat_room_id)
   }
 
 
@@ -637,49 +639,49 @@ export class DirectMessagesComponent {
   checkIfChannelOrUserSelected() {
     debugger;
     let symbol
-    if(this.devSpaceSwitch() === true && this.selectedChannel() === null && this.selectedUser() === null){
-     symbol  = this.getMessageAndSwitchToMemberOrChannel()
+    if (this.devSpaceSwitch() === true && this.selectedChannel() === null && this.selectedUser() === null) {
+      symbol = this.getMessageAndSwitchToMemberOrChannel()
       this.devSpcaeChange.emit(false)
-      if(symbol?.memberOrChannelSymbol === '@'){
+      if (symbol?.memberOrChannelSymbol === '@') {
         this.sendMessageToSelectedUser()
-      }else if(symbol?.memberOrChannelSymbol === '#'){
+      } else if (symbol?.memberOrChannelSymbol === '#') {
         this.sendMessageToSelectedCHANNEL(symbol?.channel)
       }
     }
     if (this.mode() === 'main' && !this.devSpaceSwitch()) {
       if (this.selectedUser()) {
         this.sendMessageToSelectedUser()
-        console.log('send message to user', this.selectedUser())
+        // console.log('send message to user', this.selectedUser())
       } else if (this.selectedChannel()) {
         this.sendMessageToSelectedCHANNEL(symbol?.channel)
-        console.log('send message to channel', this.selectedChannel())
+        // console.log('send message to channel', this.selectedChannel())
       } else {
-        console.warn('No user or channel selected')
+        // console.warn('No user or channel selected')
       }
     } else if (this.mode() === 'thread') {
       // send Message to thread
       this.sendThreadMessageIntoThreadChannel()
-    } 
+    }
   }
-selectedUserChange = output<string | null>();
-selectedChannelChange = output<string | null>();
-devSpcaeChange = output<boolean>()
+  selectedUserChange = output<string | null>();
+  selectedChannelChange = output<string | null>();
+  devSpcaeChange = output<boolean>()
   getMessageAndSwitchToMemberOrChannel() {
     // debugger;
     let channel
     let input = document.getElementById('messageInput') as HTMLTextAreaElement;
     let inputNeutral = document.getElementById('neutralInput') as HTMLTextAreaElement;
-    if(!input && !inputNeutral) return
+    if (!input && !inputNeutral) return
     let message = input.value.trim()
     // input.value = ''
     let memberOrChannelSymbol = inputNeutral.value.slice(0, 1)
     let choiseFromInput = inputNeutral.value.slice(1, inputNeutral.value.length)
-    console.log('choiseFromInput', choiseFromInput)
-    if(memberOrChannelSymbol === '@') {
+    // console.log('choiseFromInput', choiseFromInput)
+    if (memberOrChannelSymbol === '@') {
       let member: any = this.allMembers().find(member => member.username === choiseFromInput)
       this.selectedUserChange.emit(member)
       // this.checkIfChannelOrUserSelected()
-    }else if(memberOrChannelSymbol === '#') {
+    } else if (memberOrChannelSymbol === '#') {
       let channelResult: any = this.userService.channelTable().find(channel => channel.name === choiseFromInput)
       this.selectedChannelChange.emit(channelResult)
       channel = channelResult
@@ -770,6 +772,27 @@ devSpcaeChange = output<boolean>()
           console.log('Change received!', payload)
         }
       )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'profiles' },
+        (payload) => {
+          console.log('Change received!', payload)
+          const profile = payload.new as Partial<ChannelMember> & { uuid: string };
+          this.members.update((state: any) => {
+            if (state.find((member: any) => member.user_id === profile.uuid)) {
+              return state.map((member: any) => {
+                if (member.user_id === profile.uuid) {
+                  return { ...member, ...profile }
+                }
+                return member
+              })
+            } else {
+              return [...state, profile]
+            }
+          }
+          )
+        }
+      )
 
 
       .subscribe()
@@ -789,7 +812,7 @@ devSpcaeChange = output<boolean>()
       let before = input.value.slice(0, position)
       const coords = getCaretCoordinates(input, position)
       const match = /([@#])([\w]*)$/.exec(before);
-      console.log('match', match)
+      // console.log('match', match)
 
       if (match) {
         this.openTagMembersDialog()
@@ -804,7 +827,7 @@ devSpcaeChange = output<boolean>()
       let before = inputNeutral.value.slice(0, position)
       const coords = getCaretCoordinates(inputNeutral, position)
       const match = /([@#])([\w]*)$/.exec(before);
-      console.log('match on top Input', match)
+      // console.log('match on top Input', match)
 
       if (match) {
         this.openTagMembersDialog()
@@ -819,7 +842,7 @@ devSpcaeChange = output<boolean>()
   openEditMessageDialog(message: any, event: MouseEvent) {
     // debugger;
     const editMessageDiv = document.querySelectorAll('.editMessage') as NodeListOf<HTMLDivElement>;
-    console.log('editMessageDiv', editMessageDiv)
+    // console.log('editMessageDiv', editMessageDiv)
     if (!editMessageDiv.length) return;
     const target = event.target as HTMLElement;
     const messageRow = target.closest('.actionBox') as HTMLElement;
@@ -847,7 +870,7 @@ devSpcaeChange = output<boolean>()
     // debugger;s
     const editinput = document.getElementById('editMessageInput') as HTMLInputElement;
     editinput.value = message
-    console.log('editinput', editinput.value)
+    // console.log('editinput', editinput.value)
 
     editinput.focus();
     //main box rechts ausblenden
@@ -887,7 +910,7 @@ devSpcaeChange = output<boolean>()
   }
   messageInput = viewChild<ElementRef<HTMLTextAreaElement>>('messageInput');
   addATSymbolToTextArea() {
-    console.log('textarea:', this.messageInput());
+    // console.log('textarea:', this.messageInput());
     let input = this.messageInput()?.nativeElement;
     if (!input) return
     input.value += '@'
@@ -899,12 +922,12 @@ devSpcaeChange = output<boolean>()
     this.directChat.selectedThreadId.set(messageUUID)
     this.directChat.pullThreadMessagesForReplies()
     this.openthreadsComponent.emit(true)
-    console.log('startThreadSessionWithSpecificMessagge')
+    // console.log('startThreadSessionWithSpecificMessagge')
   }
 
   closeThreadsComponent() {
     this.openthreadsComponent.emit(false)
-    console.log('closeThreadsComponent')
+    // console.log('closeThreadsComponent')
   }
 
 }

@@ -18,10 +18,10 @@
                 <p><img src="./icons/mailIconBlack.svg"></p>
                 <p><b>E-Mail-Adresse</b></p>
             </div>
-            <p>{{data.channel.email}}</p>
+            <p>{{data.channel.find(user => user.uuid == data.member)?.email}}</p>
         </div>
     </div>
-    <button (click)="openDirektMessageWithThisUser(data)">Nachricht senden</button>
+    <button [class.visible]="this.sendMessage" class="sendMessageButton" (click)="openDirektMessageWithThisUser(data)">Nachricht senden</button>
 </div>
 
 }

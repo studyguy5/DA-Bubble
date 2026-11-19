@@ -62,7 +62,7 @@ export class ChannelUserSelectionComponent {
     } else {
       this.selectChannelFirstTime(channel as any)
     }
-    console.log('automatische Selection', welcomeChannelId)
+    // console.log('automatische Selection', welcomeChannelId)
 
 
   }
