@@ -14,6 +14,7 @@ export class UserService {
   channelTable = signal<Channel[]>([])
   currentUser: any = signal<User | null>(null);
   constructor() {
+    this.startOnline_Offline_Status_listener()
     effect(() => {
 
       this.getAllUsers()
@@ -29,13 +30,17 @@ export class UserService {
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'profiles' },
-        (payload) => {
+        (payload: any) => {
           this.getAllUsers()
           console.log('Change received!', payload)
-          this.currentUser.update((state: any) => {
-            return { ...state, ...payload.new }
-          })
-
+          const me = this.currentUser();
+          if (me && payload.new?.uuid === me.uuid) {
+            this.currentUser.update((state: any) => ({
+              ...state,
+              avatar: payload.new.avatar,
+              activity_status: payload.new.activity_status,
+            }));
+          }
         }
       )
       .on(
@@ -118,7 +123,7 @@ export class UserService {
 
     const { data: profiles, error } = await this.supabase
       .from('profiles')
-      .select('username, avatar_url, activity_status')
+      .select('username, avatar_url, activity_status, uuid')
       .eq('uuid', user?.id);
     // console.log('profile Info from supabase', profiles)
     if (!profiles || error) return
@@ -154,6 +159,36 @@ export class UserService {
     // console.log('ProfileNames for Messages', ProfileNames)
     // this.allMembers.set(ProfileNames as any)
     return ProfileNames
+  }
+
+  async switchActivityStatus() {
+    const user = await this.supabase.auth?.getUser();
+    if (!user) return
+    const realUser = user.data.user
+    console.log('realuser', realUser)
+
+    if (document.hidden || !document.hasFocus()) {
+
+      const { data, error } = await this.supabase
+        .from('profiles')
+        .update({ activity_status: false })
+        .eq('uuid', realUser?.id)
+    } else {
+      const { data, error } = await this.supabase
+        .from('profiles')
+        .update({ activity_status: true })
+        .eq('uuid', realUser?.id)
+    }
+  }
+
+  startOnline_Offline_Status_listener() {
+
+    const updateStatus = () => {
+      void this.switchActivityStatus();
+    };
+    document.addEventListener('visibilitychange', updateStatus);
+    window.addEventListener('focus', updateStatus);
+    window.addEventListener('blur', updateStatus);
   }
 
   async getMessagesFromSelectedChannel(uuid: string) {
@@ -208,7 +243,9 @@ export class UserService {
       .in('uuid', this.chat_room_id)
       .eq('message_type', 'private') // in chat_rooms die private chat_rooms finden
     console.log('chatRoom', chatRoom)
-    console.log('roomIdError', roomIdError)
+    if (roomIdError) {
+      console.log('roomIdError', roomIdError)
+    }
 
 
     let uuid: any = chatRoom?.map((item: any) => item.uuid) //die ids der private chat_rooms

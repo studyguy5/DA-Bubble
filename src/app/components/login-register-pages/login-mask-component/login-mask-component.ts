@@ -61,6 +61,8 @@ export class LoginMaskComponent {
     this.loginGroup.get('password')?.setValue('123456');
   }
 
+  
+
   async signInAsGuest() {
     // debugger
     const { data: session, error: sessionError } = await this.supabase.auth.getSession() // bereits anonyme session holen, ließt eine bereits vorhandene session aus dem localen storage

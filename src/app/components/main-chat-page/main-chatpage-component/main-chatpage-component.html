@@ -16,7 +16,7 @@
             
             <!-- <p></p> -->
             <img [src]="(userService.currentUser()?.avatar_url)">
-            <img [src]="userService.currentUser()?.activity_status === true ? this.status_online : this.status_offline">
+            <img [src]="(userService.currentUser()?.activity_status === true ? this.status_online : this.status_offline)">
             <img src="./icons/settingsArrowDown.svg">
             <img src="/icons/arrowDownLila.svg">
         </div>

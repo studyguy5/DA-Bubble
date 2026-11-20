@@ -128,7 +128,7 @@ export class DirectMessagesComponent {
     return
   }
 
-  count = 0
+  count: any = 0
   async getAllReactions() {
     let reactions = await this.userReactionService.getReactions()
     this.emoji.set(reactions as any)
@@ -139,18 +139,23 @@ export class DirectMessagesComponent {
     const counts = new Map<string, { emoji: string; anzahl: number }[]>();
 
     for (const reaction of this.emoji()) {
-      if (!reaction.message_id || !reaction.emoji) continue;
+      if(this.emoji().length <= 20){
 
-      const messageReactions = counts.get(reaction.message_id) ?? []; // message id als key
-      const existingReaction = messageReactions.find(item => item.emoji === reaction.emoji); //emoji suchen
-
-      if (existingReaction) {
-        existingReaction.anzahl += 1;
-      } else {
-        messageReactions.push({ emoji: reaction.emoji, anzahl: 1 });
+        if (!reaction.message_id || !reaction.emoji) continue;
+  
+        const messageReactions = counts.get(reaction.message_id) ?? []; // message id als key
+        const existingReaction = messageReactions.find(item => item.emoji === reaction.emoji); //emoji suchen
+  
+        if (existingReaction) {
+          existingReaction.anzahl += 1;
+        } else {
+          messageReactions.push({ emoji: reaction.emoji, anzahl: 1 });
+        }
+  
+        counts.set(reaction.message_id, messageReactions);
+      }else{
+        this.count = (this.emoji().length - 20)
       }
-
-      counts.set(reaction.message_id, messageReactions);
     }
 
     return counts;

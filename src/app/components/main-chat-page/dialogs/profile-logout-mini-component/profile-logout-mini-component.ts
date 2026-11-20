@@ -29,11 +29,20 @@ export class ProfileLogoutMiniComponent {
    this.userService.logoutService()
    this.router.navigate(['login'])
    this.dialog.closeAll()
+   this.updateStatusToLoggedOut()
   }
   async ngOnInit(): Promise<void> {
       await this.getOwnProfileInfos();
     }
 
+    async updateStatusToLoggedOut(){
+      const  user = await this.supabase.auth.getUser()
+      const thisUser = user.data.user
+      const {data, error} = await this.supabase
+      .from('profiles')
+      .update({activity_status: false})
+      .eq('uuid', thisUser?.id)
+    }
     async getOwnProfileInfos() {
       const { data, error } = await this.supabase.auth.getUser()
       if (!data || error) return

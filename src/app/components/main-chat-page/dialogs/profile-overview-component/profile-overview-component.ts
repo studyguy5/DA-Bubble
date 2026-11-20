@@ -35,9 +35,10 @@ closeDialog(){
 
 sendMessage = false
 openDirektMessageWithThisUser(data: any) {
-  // debugger;
+  const selectedUser = this.data.channel.find((user: any) => 
+    user.uuid === this.data.member)
     this.sendMessage = true
-    this.data.onSelectUser?.(this.data.channel);
+    this.data.onSelectUser?.(selectedUser);
     this.closeDialog()
   }
 }

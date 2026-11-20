@@ -214,11 +214,13 @@
                             <p
                                 (click)="postEmojiToSupabase(emoji.toString(), directChat.selectedThreadMessage()?.uuid ?? '')">
                                 {{reaction.anzahl}}</p>
+                                @if(this.count !== 0){<p>{{count}}</p>}
                             } @else {
                             <p (click)="postEmojiToSupabase(emoji.toString(), directChat.selectedThreadMessage()?.uuid ?? '')"
                                 class="emoji">{{
                                 reaction.emoji }}</p>
                             <p>{{reaction.anzahl}}</p>
+                            @if(this.count !== 0){<p>{{count}}</p>}
                             }
 
                         </div>
@@ -373,10 +375,12 @@
                             @if (reaction.emoji.includes('./')) {
                             <img [src]="reaction.emoji" alt="Reaktion">
                             <p (click)="postEmojiToSupabase(reaction.emoji, message.uuid)">{{reaction.anzahl}}</p>
+                            @if(this.count !== 0){<p>{{count}}</p>}
                             } @else {
                             <p (click)="postEmojiToSupabase(reaction.emoji, message.uuid)" class="emoji">{{
                                 reaction.emoji }}</p>
                             <p>{{reaction.anzahl}}</p>
+                            @if(this.count !== 0){<p>{{count}}</p>}
                             }
 
                         </div>
@@ -526,10 +530,12 @@
                             @if (reaction.emoji.includes('./')) {
                             <img [src]="reaction.emoji" alt="Reaktion">
                             <p (click)="postEmojiToSupabase(reaction.emoji, message.uuid)">{{reaction.anzahl}}</p>
+                            @if(this.count !== 0){<p>{{count}}</p>}
                             } @else {
                             <p (click)="postEmojiToSupabase(reaction.emoji, message.uuid)" class="emoji">{{
                                 reaction.emoji }}</p>
                             <p>{{reaction.anzahl}}</p>
+                            @if(this.count !== 0){<p>{{count}}</p>}
                             }
 
                         </div>
